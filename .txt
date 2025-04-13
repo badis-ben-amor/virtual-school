@@ -1,0 +1,11 @@
+back & front : done : navbar & auth & user
+
+
+
+now : frot : protect routes
+
+now : front : schoolpage : done (just when close editing dialog it's value remain , but solve after )
+now : back :adminUser: front : protected route admin
+
+
+after finish : i can make much school not just one but after i finish one school
