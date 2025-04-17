@@ -12,6 +12,7 @@ export class SchoolService {
   async getOne(userId: number) {
     return await this.schoolRepositoy.findOne({
       where: { owner_id: userId },
+      // include: [{ model: User, attributes: ['id', 'name', 'email'] }],
     });
   }
 

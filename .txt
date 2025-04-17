@@ -1,8 +1,8 @@
 back & front : done : navbar & auth & user
 
+deploment : dtabase : done : postegres on render
 
-
-now : frot : protect routes
+now : back : try to get user data with get school route
 
 now : front : schoolpage : done (just when close editing dialog it's value remain , but solve after )
 now : back :adminUser: front : protected route admin

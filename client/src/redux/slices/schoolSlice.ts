@@ -138,6 +138,7 @@ const schoolSlice = createSlice({
       .addCase(getSchoolThunk.fulfilled, (state, action: any) => {
         state.isLoading = false;
         state.school = action.payload.data;
+        console.log(action);
         state.accessToken = action.payload.accessToken;
       })
       .addCase(getSchoolThunk.rejected, (state, action: any) => {

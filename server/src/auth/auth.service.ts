@@ -126,14 +126,13 @@ export class AuthService {
   }
 
   async refresh(req: Request, res: Response): Promise<Response> {
-    try {
-      const { refreshToken } = req.cookies;
-      if (!refreshToken) throw new UnauthorizedException('Not token provided');
+    const { refreshToken } = req.cookies;
+    if (!refreshToken) throw new UnauthorizedException('Not token provided');
 
+    try {
       const payload = this.jwtService.verify(refreshToken, {
         secret: this.configService.get('REFRESH_TOKEN_SECRET_KEY'),
       });
-
       const newAccessToken = this.jwtService.sign(
         { id: payload.id, isAdmin: payload.isAdmin },
         {
