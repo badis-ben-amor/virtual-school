@@ -4,24 +4,35 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { registerThunk } from "@/redux/slices/authSlice";
 import { Appdipatch } from "@/redux/store";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 
 const Register = () => {
   const dispatch = useDispatch<Appdipatch>();
+  const router = useRouter();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleRegister = (e: any) => {
     e.preventDefault();
 
-    dispatch(registerThunk({ name, email, password }));
+    dispatch(registerThunk({ name, email, password }))
+      .unwrap()
+      .then(() => router.push("/"))
+      .catch((err) => setError(err.message || err));
   };
   return (
     <div className="w-lg mx-auto bg-slate-50 p-4 rounded-lg mt-30">
       <form onSubmit={handleRegister}>
+        {error && (
+          <div className="text-center">
+            <p className="text-red-600">{error}</p>
+          </div>
+        )}
         <div className="mb-2">
           <Label htmlFor="name" className="text-base">
             Name

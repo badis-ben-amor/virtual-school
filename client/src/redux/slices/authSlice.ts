@@ -15,7 +15,9 @@ export const registerThunk = createAsyncThunk(
       const res = await register(name, email, password);
       return res.data;
     } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.message);
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || error.message
+      );
     }
   }
 );
@@ -30,7 +32,9 @@ export const loginThunk = createAsyncThunk(
       const res = await login(email, password);
       return res.data;
     } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.message);
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || error.message
+      );
     }
   }
 );
@@ -52,6 +56,7 @@ const authSlice = createSlice({
   initialState: {
     isLoading: false,
     error: null,
+    accessToken: "",
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -59,8 +64,9 @@ const authSlice = createSlice({
       .addCase(registerThunk.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(registerThunk.fulfilled, (state) => {
+      .addCase(registerThunk.fulfilled, (state, action) => {
         state.isLoading = false;
+        state.accessToken = action.payload.accessToken;
       })
       .addCase(registerThunk.rejected, (state, action: any) => {
         state.isLoading = false;
@@ -70,8 +76,9 @@ const authSlice = createSlice({
       .addCase(loginThunk.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(loginThunk.fulfilled, (state) => {
+      .addCase(loginThunk.fulfilled, (state, action) => {
         state.isLoading = false;
+        state.accessToken = action.payload.accessToken;
       })
       .addCase(loginThunk.rejected, (state, action: any) => {
         state.isLoading = false;

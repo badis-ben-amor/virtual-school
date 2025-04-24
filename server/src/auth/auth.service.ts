@@ -22,57 +22,48 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async register(
-    name: string,
-    email: string,
-    password: string,
-    res: Response,
-  ): Promise<Response> {
-    try {
-      const user = await this.userRepository.findOne({ where: { email } });
-      if (user) throw new BadRequestException('User already exist');
+  async register(name: string, email: string, password: string, res: Response) {
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (user) throw new BadRequestException('User already exist');
 
-      const hashedPassword = await bcrypt.hash(password, 10);
-      const newUser = await this.userRepository.create({
-        name,
-        email,
-        password: hashedPassword,
-      });
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = await this.userRepository.create({
+      name,
+      email,
+      password: hashedPassword,
+    });
 
-      const accessToken = this.jwtService.sign(
-        { id: newUser.id, isAdmin: newUser.isAdmin },
-        {
-          secret: this.configService.get('ACCESS_TOKEN_SECRET_KEY'),
-          expiresIn: this.configService.get('ACCESS_TOKEN_EXPIRES_IN'),
-        },
-      );
-      const refreshToken = this.jwtService.sign(
-        {
-          id: newUser.id,
-          isAdmin: newUser.isAdmin,
-        },
-        {
-          secret: this.configService.get('REFRESH_TOKEN_SECRET_KEY'),
-          expiresIn: this.configService.get('REFRESH_TOKEN_EXPIRES_IN'),
-        },
-      );
+    const accessToken = this.jwtService.sign(
+      { id: newUser.id, isAdmin: newUser.isAdmin },
+      {
+        secret: this.configService.get('ACCESS_TOKEN_SECRET_KEY'),
+        expiresIn: this.configService.get('ACCESS_TOKEN_EXPIRES_IN'),
+      },
+    );
+    const refreshToken = this.jwtService.sign(
+      {
+        id: newUser.id,
+        isAdmin: newUser.isAdmin,
+      },
+      {
+        secret: this.configService.get('REFRESH_TOKEN_SECRET_KEY'),
+        expiresIn: this.configService.get('REFRESH_TOKEN_EXPIRES_IN'),
+      },
+    );
 
-      res.cookie('refreshToken', refreshToken, {
-        httpOnly: true,
-        secure: this.configService.get('NODE_ENV'),
-        sameSite: 'strict',
-        maxAge:
-          this.configService.get('REFRESH_TOKEN_MAX_AGE_DAYS') *
-          24 *
-          60 *
-          60 *
-          1000,
-      });
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: this.configService.get('NODE_ENV'),
+      sameSite: 'strict',
+      maxAge:
+        this.configService.get('REFRESH_TOKEN_MAX_AGE_DAYS') *
+        24 *
+        60 *
+        60 *
+        1000,
+    });
 
-      return res.status(HttpStatus.CREATED).json({ accessToken });
-    } catch (error) {
-      throw new InternalServerErrorException('Register failed');
-    }
+    return res.status(HttpStatus.CREATED).json({ accessToken });
   }
 
   async login({
@@ -83,46 +74,42 @@ export class AuthService {
     email: string;
     password: string;
     res: Response;
-  }): Promise<Response> {
-    try {
-      const user = await this.userRepository.findOne({ where: { email } });
-      if (!user) throw new NotFoundException('User not found');
+  }) {
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (!user) throw new NotFoundException('User not found');
 
-      const comparePassword = await bcrypt.compare(password, user.password);
-      if (!comparePassword)
-        throw new UnauthorizedException('Invalid credentials');
+    const comparePassword = await bcrypt.compare(password, user.password);
+    if (!comparePassword)
+      throw new UnauthorizedException('Invalid credentials');
 
-      const accessToken = this.jwtService.sign(
-        { id: user.id, isAdmin: user.isAdmin },
-        {
-          secret: this.configService.get('ACCESS_TOKEN_SECRET_KEY'),
-          expiresIn: this.configService.get('ACCESS_TOKEN_EXPIRES_IN'),
-        },
-      );
-      const refreshToken = this.jwtService.sign(
-        { id: user.id, isAdmin: user.isAdmin },
-        {
-          secret: this.configService.get('REFRESH_TOKEN_SECRET_KEY'),
-          expiresIn: this.configService.get('REFRESH_TOKEN_EXPIRES_IN'),
-        },
-      );
+    const accessToken = this.jwtService.sign(
+      { id: user.id, isAdmin: user.isAdmin },
+      {
+        secret: this.configService.get('ACCESS_TOKEN_SECRET_KEY'),
+        expiresIn: this.configService.get('ACCESS_TOKEN_EXPIRES_IN'),
+      },
+    );
+    const refreshToken = this.jwtService.sign(
+      { id: user.id, isAdmin: user.isAdmin },
+      {
+        secret: this.configService.get('REFRESH_TOKEN_SECRET_KEY'),
+        expiresIn: this.configService.get('REFRESH_TOKEN_EXPIRES_IN'),
+      },
+    );
 
-      res.cookie('refreshToken', refreshToken, {
-        httpOnly: true,
-        secure: this.configService.get('NODE_ENV') === 'production',
-        sameSite: 'strict',
-        maxAge:
-          this.configService.get('REFRESH_TOKEN_MAX_AGE_DAYS') *
-          24 *
-          60 *
-          60 *
-          1000,
-      });
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: this.configService.get('NODE_ENV') === 'production',
+      sameSite: 'strict',
+      maxAge:
+        this.configService.get('REFRESH_TOKEN_MAX_AGE_DAYS') *
+        24 *
+        60 *
+        60 *
+        1000,
+    });
 
-      return res.status(HttpStatus.OK).json({ accessToken });
-    } catch (error) {
-      throw new InternalServerErrorException('Login failed');
-    }
+    return res.status(HttpStatus.OK).json({ accessToken });
   }
 
   async refresh(req: Request, res: Response): Promise<Response> {

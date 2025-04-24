@@ -1,5 +1,4 @@
 "use client";
-
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { Menu } from "lucide-react";
@@ -30,7 +29,7 @@ const Navbar = () => {
       </div>
 
       <div className="hidden md:flex space-x-2">
-        {!user.name ? (
+        {!user?.name ? (
           <>
             <Link href={"/auth/login"}>
               <Button className="bg-[#8a98a1] hover:bg-[#5aacdb] text-white font-bold">
