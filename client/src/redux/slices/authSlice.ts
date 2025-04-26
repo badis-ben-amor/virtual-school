@@ -67,6 +67,7 @@ const authSlice = createSlice({
       .addCase(registerThunk.fulfilled, (state, action) => {
         state.isLoading = false;
         state.accessToken = action.payload.accessToken;
+        localStorage.setItem("refreshToken", action.payload.refreshToken);
       })
       .addCase(registerThunk.rejected, (state, action: any) => {
         state.isLoading = false;
@@ -79,6 +80,7 @@ const authSlice = createSlice({
       .addCase(loginThunk.fulfilled, (state, action) => {
         state.isLoading = false;
         state.accessToken = action.payload.accessToken;
+        localStorage.setItem("refreshToken", action.payload.refreshToken);
       })
       .addCase(loginThunk.rejected, (state, action: any) => {
         state.isLoading = false;

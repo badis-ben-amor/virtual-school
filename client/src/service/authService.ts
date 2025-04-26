@@ -30,9 +30,10 @@ export const login = async (email: string, password: string) => {
 };
 
 export const refresh = async () => {
+  const refreshToken = localStorage.getItem("refreshToken");
   const res = await axios.post(
     `${process.env.NEXT_PUBLIC_API_URL}/refresh`,
-    {},
+    { refreshToken },
     { withCredentials: true }
   );
   return res;

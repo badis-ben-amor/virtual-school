@@ -63,7 +63,7 @@ export class AuthService {
         1000,
     });
 
-    return res.status(HttpStatus.CREATED).json({ accessToken });
+    return res.status(HttpStatus.CREATED).json({ accessToken, refreshToken });
   }
 
   async login({
@@ -109,11 +109,12 @@ export class AuthService {
         1000,
     });
 
-    return res.status(HttpStatus.OK).json({ accessToken });
+    return res.status(HttpStatus.OK).json({ accessToken, refreshToken });
   }
 
   async refresh(req: Request, res: Response): Promise<Response> {
-    const { refreshToken } = req.cookies;
+    // const { refreshToken } = req.cookies;
+    const { refreshToken } = req.body;
     if (!refreshToken) throw new UnauthorizedException('Not token provided');
 
     try {
