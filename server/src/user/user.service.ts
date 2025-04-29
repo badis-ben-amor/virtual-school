@@ -29,4 +29,8 @@ export class UserService {
       throw new InternalServerErrorException('Get user failed');
     }
   }
+
+  async test() {
+    return 'hi user';
+  }
 }
