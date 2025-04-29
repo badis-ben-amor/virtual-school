@@ -15,6 +15,6 @@ export class UserController {
 
   @Get('test')
   test() {
-    return this.userService.test;
+    return this.userService.test();
   }
 }
