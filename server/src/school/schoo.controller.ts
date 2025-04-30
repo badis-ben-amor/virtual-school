@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { SchoolService } from './school.service';
-import { AuthGuard } from 'guards/auth.guard';
+import { AuthGuard } from '../guards/auth.guard';
 
 @UseGuards(AuthGuard)
 @Controller('school')
