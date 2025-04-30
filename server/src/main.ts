@@ -2,20 +2,14 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
 import { ConfigService } from '@nestjs/config';
-import { Callback } from 'aws-lambda';
-import { createServer, proxy } from 'aws-serverless-express';
 import * as express from 'express';
-
-const binaryMimeTypes: string[] = [];
 
 let cachedServer;
 
 async function bootstrapServer() {
   if (!cachedServer) {
     const expressApp = express();
-
-    // Use a valid adapter here
-    const app = await NestFactory.create(AppModule, );
+    const app = await NestFactory.create(AppModule);
     const configService = app.get(ConfigService);
 
     app.enableCors({
@@ -25,16 +19,15 @@ async function bootstrapServer() {
     app.use(cookieParser());
 
     await app.init();
-    cachedServer = createServer(expressApp, undefined, binaryMimeTypes);
+    cachedServer = expressApp; // Directly use the express app
   }
   return cachedServer;
 }
 
-export async function handler(event: any, context: any, callback: Callback) {
+export default async function handler(req, res) {
   const server = await bootstrapServer();
-  return proxy(server, event, context, 'PROMISE').promise;
+  server(req, res); // Invoke the express server with the request/response
 }
-
 
 // import { NestFactory } from '@nestjs/core';
 // import { AppModule } from './app.module';
