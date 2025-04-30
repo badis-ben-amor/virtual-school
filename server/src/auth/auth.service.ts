@@ -9,7 +9,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/sequelize';
-import { User } from 'src/user/user.model';
+import { User } from '../user/user.model';
 import * as bcrypt from 'bcrypt';
 import { Request, Response } from 'express';
 

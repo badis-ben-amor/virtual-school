@@ -5,7 +5,7 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import { School } from 'src/school/school.model';
+import { School } from '../school/school.model';
 
 @Table({ timestamps: true })
 export class classSchool extends Model {

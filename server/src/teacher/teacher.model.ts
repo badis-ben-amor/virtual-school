@@ -1,6 +1,6 @@
 import { Column, DataType, ForeignKey, Table } from 'sequelize-typescript';
-import { School } from 'src/school/school.model';
-import { Subject } from 'src/subject/subject.model';
+import { School } from '../school/school.model';
+import { Subject } from '../subject/subject.model';
 
 @Table({ timestamps: true })
 export class Teacher {
