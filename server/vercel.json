@@ -3,9 +3,14 @@
   "builds": [
     {
       "src": "src/main.ts",
-      "use": "vercel-node@canary"
+      "use": "@vercel/node"
     }
   ],
+  "functions": {
+    "api/main.ts": {
+      "runtime": "nodejs18.x"
+    }
+  },
   "routes": [
     {
       "src": "/(.*)",
