@@ -5,6 +5,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { SchoolModule } from './school/school.module';
+import * as pg from 'pg';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { SchoolModule } from './school/school.module';
     JwtModule.register({ global: true }),
     SequelizeModule.forRoot({
       dialect: 'postgres',
+      dialectModule: pg,
       host: process.env.DB_HOST,
       port: Number(process.env.DB_PORT),
       username: process.env.DB_USERNAME,
