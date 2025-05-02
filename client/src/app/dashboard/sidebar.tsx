@@ -1,10 +1,10 @@
 import {
-  Backpack,
   Briefcase,
   DoorOpen,
   Home,
   NotebookText,
   School,
+  Users,
 } from "lucide-react";
 import Link from "next/link";
 import React from "react";
@@ -12,8 +12,8 @@ import React from "react";
 const menuItems = [
   { name: "Overview", icon: Home, path: "/dashboard" },
   { name: "School", icon: School, path: "/dashboard/school" },
-  { name: "Classroom", icon: DoorOpen, path: "/classroom" },
-  { name: "Students", icon: Backpack, path: "/students" },
+  { name: "Classes", icon: DoorOpen, path: "/classroom" },
+  { name: "Students", icon: Users, path: "/students" },
   { name: "Teachers", icon: Briefcase, path: "/teachers" },
   { name: "Subjects", icon: NotebookText, path: "/subjects" },
 ];

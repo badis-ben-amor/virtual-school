@@ -1,7 +1,7 @@
 import React from "react";
 
-const page = () => {
+const Dashboard = () => {
   return <div className="flex">Dashboard</div>;
 };
 
-export default page;
+export default Dashboard;

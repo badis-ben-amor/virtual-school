@@ -1,17 +1,7 @@
-"use client";
-import { getUserThunk } from "@/redux/slices/userSlice";
-import { Appdipatch, RootState } from "@/redux/store";
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
 
 const Home = () => {
-  const dispatch = useDispatch<Appdipatch>();
-  const { accessToken } = useSelector((state: RootState) => state.auth);
-
-  useEffect(() => {
-    dispatch(getUserThunk(accessToken));
-  }, []);
-  return <div>home</div>;
+  return <div></div>;
 };
 
 export default Home;
