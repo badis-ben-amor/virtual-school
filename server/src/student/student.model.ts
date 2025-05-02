@@ -5,7 +5,7 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import { classSchool } from '../classSchool/classSchool.model';
+import { classRoom } from '../classRoom/classRoom.model';
 import { School } from '../school/school.model';
 
 @Table({ timestamps: true })
@@ -29,7 +29,7 @@ export class Student extends Model {
   @Column(DataType.INTEGER)
   school_id: number;
 
-  @ForeignKey(() => classSchool)
+  @ForeignKey(() => classRoom)
   @Column(DataType.INTEGER)
   class_school_id: number;
 }

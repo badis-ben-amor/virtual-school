@@ -33,7 +33,6 @@ export class SchoolController {
 
   @Delete()
   deleteSchool(@Req() req: any) {
-    console.log(req.body);
     return this.schoolService.deleteSchool(req.user.id);
   }
 }

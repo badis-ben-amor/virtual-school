@@ -8,7 +8,7 @@ import {
 import { School } from '../school/school.model';
 
 @Table({ timestamps: true })
-export class classSchool extends Model {
+export class ClassRoom extends Model {
   @Column({ type: DataType.INTEGER, autoIncrement: true, primaryKey: true })
   id: number;
 

@@ -5,7 +5,7 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import { classSchool } from '../classSchool/classSchool.model';
+import { classRoom } from '../classRoom/classRoom.model';
 
 @Table({ timestamps: true })
 export class Subject extends Model {
@@ -15,7 +15,7 @@ export class Subject extends Model {
   @Column({ type: DataType.STRING, allowNull: false })
   name: string;
 
-  @ForeignKey(() => classSchool)
+  @ForeignKey(() => classRoom)
   @Column(DataType.INTEGER)
   class_school_id: number;
 }
