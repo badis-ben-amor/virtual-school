@@ -18,6 +18,9 @@ export class Student extends Model {
   firstName: string;
 
   @Column(DataType.STRING(50))
+  w: string;
+
+  @Column(DataType.STRING(50))
   lastName: string;
 
   @Column(DataType.STRING(100))
