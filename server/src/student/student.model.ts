@@ -5,11 +5,10 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import { classRoom } from '../classRoom/classRoom.model';
+import { ClassRoom } from '../classRoom/classRoom.model';
 import { School } from '../school/school.model';
 
 @Table({ timestamps: true })
-// @Table({ timestamps: true })
 export class Student extends Model {
   @Column({ type: DataType.INTEGER, autoIncrement: true, primaryKey: true })
   id: number;
@@ -17,9 +16,6 @@ export class Student extends Model {
   @Column(DataType.STRING(50))
   firstName: string;
 
-  @Column(DataType.STRING(50))
-  w: string;
-  //
   @Column(DataType.STRING(50))
   lastName: string;
 
@@ -33,7 +29,7 @@ export class Student extends Model {
   @Column(DataType.INTEGER)
   school_id: number;
 
-  @ForeignKey(() => classRoom)
+  @ForeignKey(() => ClassRoom)
   @Column(DataType.INTEGER)
   class_school_id: number;
 }
