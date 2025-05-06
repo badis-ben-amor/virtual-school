@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
   Post,
   Put,
   Req,
@@ -10,6 +11,9 @@ import {
 } from '@nestjs/common';
 import { SchoolService } from './school.service';
 import { AuthGuard } from '../guards/auth.guard';
+import { ReqUserDto } from '../common/req.user.dto';
+import { SchoolCreateDto } from './dto/school.create.dto';
+import { SchoolUpdateDto } from './dto/school.update.dto';
 
 @UseGuards(AuthGuard)
 @Controller('school')
@@ -17,22 +21,27 @@ export class SchoolController {
   constructor(private readonly schoolService: SchoolService) {}
 
   @Get()
-  getOne(@Req() req: any) {
-    return this.schoolService.getOne(req.user.id);
+  getAll(@Req() req: ReqUserDto) {
+    return this.schoolService.getAll(req);
+  }
+
+  @Get(':school_id')
+  getOne(@Param('school_id') school_id: any, @Req() req: ReqUserDto) {
+    return this.schoolService.getOne(school_id, req);
   }
 
   @Post()
-  create(@Body() schoolData: any, @Req() req) {
-    return this.schoolService.create(schoolData, req.user.id);
+  create(@Body() schoolCreateDto: SchoolCreateDto, @Req() req: ReqUserDto) {
+    return this.schoolService.create(schoolCreateDto, req);
   }
 
   @Put()
-  update(@Body() schoolData: any, @Req() req: any) {
-    return this.schoolService.update(schoolData, req.user.id);
+  update(@Body() schoolUpdateDto: SchoolUpdateDto, @Req() req: ReqUserDto) {
+    return this.schoolService.update(schoolUpdateDto, req);
   }
 
   @Delete()
-  deleteSchool(@Req() req: any) {
-    return this.schoolService.deleteSchool(req.user.id);
+  deleteSchool(@Req() req: ReqUserDto) {
+    return this.schoolService.deleteSchool(req);
   }
 }

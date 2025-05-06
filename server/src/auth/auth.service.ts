@@ -8,33 +8,35 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { InjectModel } from '@nestjs/sequelize';
-import { User } from '../user/user.model';
+import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
 import { Request, Response } from 'express';
+import { Model } from 'mongoose';
+import { User } from '../user/user.schema';
+import { CreateUserDto } from '../user/dto/user.create.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel(User)
-    private userRepository: typeof User,
+    @InjectModel('User')
+    private readonly userModel: Model<User>,
     private configService: ConfigService,
     private jwtService: JwtService,
   ) {}
 
-  async register(name: string, email: string, password: string, res: Response) {
-    const user = await this.userRepository.findOne({ where: { email } });
+  async register(createUserDto: CreateUserDto, res: Response) {
+    const user = await this.userModel.findOne({ email: createUserDto.email });
     if (user) throw new BadRequestException('User already exist');
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = await this.userRepository.create({
-      name,
-      email,
+    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+    const newUser = await this.userModel.create({
+      username: createUserDto.username,
+      email: createUserDto.email,
       password: hashedPassword,
     });
 
     const accessToken = this.jwtService.sign(
-      { id: newUser.id, isAdmin: newUser.isAdmin },
+      { id: newUser.id },
       {
         secret: this.configService.get('ACCESS_TOKEN_SECRET_KEY'),
         expiresIn: this.configService.get('ACCESS_TOKEN_EXPIRES_IN'),
@@ -43,7 +45,6 @@ export class AuthService {
     const refreshToken = this.jwtService.sign(
       {
         id: newUser.id,
-        isAdmin: newUser.isAdmin,
       },
       {
         secret: this.configService.get('REFRESH_TOKEN_SECRET_KEY'),
@@ -63,7 +64,7 @@ export class AuthService {
         1000,
     });
 
-    return res.status(HttpStatus.CREATED).json({ accessToken, refreshToken });
+    return res.status(HttpStatus.CREATED).json({ accessToken });
   }
 
   async login({
@@ -75,7 +76,7 @@ export class AuthService {
     password: string;
     res: Response;
   }) {
-    const user = await this.userRepository.findOne({ where: { email } });
+    const user = await this.userModel.findOne({ email });
     if (!user) throw new NotFoundException('User not found');
 
     const comparePassword = await bcrypt.compare(password, user.password);
@@ -83,14 +84,14 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
 
     const accessToken = this.jwtService.sign(
-      { id: user.id, isAdmin: user.isAdmin },
+      { id: user.id },
       {
         secret: this.configService.get('ACCESS_TOKEN_SECRET_KEY'),
         expiresIn: this.configService.get('ACCESS_TOKEN_EXPIRES_IN'),
       },
     );
     const refreshToken = this.jwtService.sign(
-      { id: user.id, isAdmin: user.isAdmin },
+      { id: user.id },
       {
         secret: this.configService.get('REFRESH_TOKEN_SECRET_KEY'),
         expiresIn: this.configService.get('REFRESH_TOKEN_EXPIRES_IN'),
@@ -109,12 +110,11 @@ export class AuthService {
         1000,
     });
 
-    return res.status(HttpStatus.OK).json({ accessToken, refreshToken });
+    return res.status(HttpStatus.OK).json({ accessToken });
   }
 
   async refresh(req: Request, res: Response): Promise<Response> {
-    // const { refreshToken } = req.cookies;
-    const { refreshToken } = req.body;
+    const { refreshToken } = req.cookies;
     if (!refreshToken) throw new UnauthorizedException('Not token provided');
 
     try {

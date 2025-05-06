@@ -1,27 +1,25 @@
 import { Body, Controller, Post, Req, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Request, Response } from 'express';
+import { AuthLoginDto } from './dto/auth.login.dto';
+import { CreateUserDto } from '../user/dto/user.create.dto';
 
 @Controller()
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
-  register(
-    @Body('name') name: string,
-    @Body('email') email: string,
-    @Body('password') password: string,
-    @Res() res: Response,
-  ) {
-    return this.authService.register(name, email, password, res);
+  register(@Body() createUserDto: CreateUserDto, @Res() res: Response) {
+    return this.authService.register(createUserDto, res);
   }
 
   @Post('login')
-  login(
-    @Body() { email, password }: { email: string; password: string },
-    @Res() res: Response,
-  ) {
-    return this.authService.login({ email, password, res });
+  login(@Body() authLoginDto: AuthLoginDto, @Res() res: Response) {
+    return this.authService.login({
+      email: authLoginDto.email,
+      password: authLoginDto.password,
+      res,
+    });
   }
 
   @Post('refresh')

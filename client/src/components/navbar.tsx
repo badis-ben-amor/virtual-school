@@ -24,12 +24,12 @@ const Navbar = () => {
 
       <div className="hidden md:flex w-1/2 justify-around">
         <Link href={"/"}>Home</Link>
-        <Link href={"/dashboard"}>School Dashboard</Link>
+        <Link href={"/dashboard"}>Dashboard</Link>
         <Link href={"/about"}>About</Link>
       </div>
 
       <div className="hidden md:flex space-x-2">
-        {!user?.name ? (
+        {!user?.username ? (
           <>
             <Link href={"/auth/login"}>
               <Button className="bg-[#8a98a1] hover:bg-[#5aacdb] text-white font-bold">
@@ -44,7 +44,7 @@ const Navbar = () => {
           </>
         ) : (
           <p className="flex flex-col justify-center bg-[#88b5f7] text-white rounded-lg px-0.5 font-bold">
-            Hello {user.name}
+            Hello {user.username}
           </p>
         )}
       </div>

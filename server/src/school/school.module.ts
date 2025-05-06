@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 import { SchoolController } from './schoo.controller';
 import { SchoolService } from './school.service';
-import { SequelizeModule } from '@nestjs/sequelize';
-import { School } from './school.model';
-import { User } from '../user/user.model';
+import { MongooseModule } from '@nestjs/mongoose';
+import { SchoolSchema } from './school.schema';
 
 @Module({
-  imports: [SequelizeModule.forFeature([School, User])],
+  imports: [
+    MongooseModule.forFeature([{ name: 'School', schema: SchoolSchema }]),
+  ],
   controllers: [SchoolController],
   providers: [SchoolService],
 })

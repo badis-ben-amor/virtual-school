@@ -1,36 +1,22 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
-import { User } from './user.model';
-import { InjectModel } from '@nestjs/sequelize';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { User } from './user.schema';
+import { ReqUserDto } from '../common/req.user.dto';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectModel(User)
-    private readonly userRepository: typeof User,
+    @InjectModel('User')
+    private readonly userModel: Model<User>,
   ) {}
 
-  async getUser(id: number) {
-    try {
-      const user = await this.userRepository.findOne({
-        where: { id },
-        attributes: {
-          exclude: ['password', 'email', 'createdAt', 'updatedAt'],
-        },
-      });
+  async getUser(req: ReqUserDto) {
+    const user = await this.userModel
+      .findById(req.user.id)
+      .select('username -_id');
+    if (!user) throw new NotFoundException('User not find');
 
-      if (!user) throw new NotFoundException('User not find');
-
-      return user;
-    } catch (error) {
-      throw new InternalServerErrorException('Get user failed');
-    }
-  }
-
-  async test() {
-    return 'hi user';
+    return user;
   }
 }

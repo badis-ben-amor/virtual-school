@@ -8,11 +8,11 @@ import NotAuthUser from "@/components/notAuth/NotAuthUser";
 export default function Layout({ children }: { children: ReactNode }) {
   const { user }: { user: any } = useSelector((state: RootState) => state.user);
 
-  if (!user?.id) return <NotAuthUser />;
+  if (!user?.username) return <NotAuthUser />;
   return (
     <div className="flex">
       <Sidebar />
-      {children}
+      <div className="flex-1">{children}</div>
     </div>
   );
 }

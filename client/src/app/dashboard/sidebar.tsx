@@ -20,7 +20,7 @@ const menuItems = [
 
 const Sidebar = () => {
   return (
-    <aside className="text-center w-3xs h-screen bg-gray-200 p-4">
+    <aside className="text-center w-1/5.5 h-screen bg-gray-200 p-4">
       <h2 className="text-2xl font-bold mb-2">School Dachboard</h2>
       <nav className="space-y-2">
         {menuItems.map((e, i) => (
