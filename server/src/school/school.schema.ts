@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { HydratedDocument, Types } from 'mongoose';
+import mongoose, { HydratedDocument } from 'mongoose';
 
 @Schema({ timestamps: true })
 export class School {
@@ -25,7 +25,7 @@ export class School {
   website_url: string;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
-  user_id: Types.ObjectId;
+  user_id: string;
 }
 
 export const SchoolSchema = SchemaFactory.createForClass(School);

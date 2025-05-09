@@ -1,6 +1,6 @@
 import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
-import { AuthGuard } from '../guards/auth.guard';
+import { AuthGuard } from '../common/guards/auth.guard';
 import { ReqUserDto } from '../common/req.user.dto';
 
 @UseGuards(AuthGuard)

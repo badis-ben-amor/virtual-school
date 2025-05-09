@@ -1,13 +1,11 @@
 import { IsMongoId, IsNotEmpty, IsString } from 'class-validator';
 
-export class ClassRoomCreateDto {
+export class SubjectCreateDto {
+  @IsString()
   @IsNotEmpty()
-  @IsString()
-  classroom_name: string;
-
-  @IsString()
-  description: string;
+  subject_name: string;
 
   @IsMongoId()
+  @IsNotEmpty()
   school_id: string;
 }

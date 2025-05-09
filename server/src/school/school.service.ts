@@ -1,10 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { School, SchoolSchema } from './school.schema';
+import { School } from './school.schema';
 import { SchoolCreateDto } from './dto/school.create.dto';
 import { ReqUserDto } from '../common/req.user.dto';
-import { UpdateUserDto } from '../user/dto/user.update.dto';
 import { SchoolUpdateDto } from './dto/school.update.dto';
 
 @Injectable()
@@ -14,11 +13,20 @@ export class SchoolService {
     private readonly schoolModel: Model<School>,
   ) {}
 
+  async create(schoolCreateDto: SchoolCreateDto, req: ReqUserDto) {
+    await this.schoolModel.create({
+      ...schoolCreateDto,
+      user_id: req.user.id,
+    });
+
+    return 'School create successfully';
+  }
+
   async getAll(req: ReqUserDto) {
     return await this.schoolModel.find({ user_id: req.user.id });
   }
 
-  async getOne(school_id: any, req: ReqUserDto) {
+  async getOne(school_id: string, req: ReqUserDto) {
     const school = await this.schoolModel.findOne({
       _id: school_id,
       user_id: req.user.id,
@@ -29,22 +37,31 @@ export class SchoolService {
     return school;
   }
 
-  async create(schoolCreateDto: SchoolCreateDto, req: ReqUserDto) {
-    return await this.schoolModel.create({
-      ...schoolCreateDto,
+  async update(
+    school_id: string,
+    schoolUpdateDto: SchoolUpdateDto,
+    req: ReqUserDto,
+  ) {
+    const updatedSchool = await this.schoolModel.findOneAndUpdate(
+      { _id: school_id, user_id: req.user.id },
+      {
+        ...schoolUpdateDto,
+      },
+    );
+
+    if (!updatedSchool) throw new NotFoundException('School does not exist');
+
+    return 'School updated successfully';
+  }
+
+  async deleteSchool(school_id: string, req: ReqUserDto) {
+    const deletedSchool = await this.schoolModel.findOneAndDelete({
+      _id: school_id,
       user_id: req.user.id,
     });
-  }
 
-  async update(schoolUpdateDto: SchoolUpdateDto, req: ReqUserDto) {
-    return await this.schoolModel.findByIdAndUpdate(
-      req.user.id,
-      schoolUpdateDto,
-      { new: true },
-    );
-  }
+    if (!deletedSchool) throw new NotFoundException('School does not exist');
 
-  async deleteSchool(req: ReqUserDto) {
-    return this.schoolModel.findByIdAndDelete(req.user.id);
+    return 'School deleted successfully';
   }
 }

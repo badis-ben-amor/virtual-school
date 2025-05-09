@@ -13,6 +13,8 @@
     // added
     "paths": { "../*": ["src/*"] },
     "esModuleInterop": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     //
     "incremental": true,
     "skipLibCheck": true,
