@@ -4,7 +4,11 @@ import userReducer from "./slices/userSlice";
 import schoolReducer from "./slices/schoolSlice";
 
 const store = configureStore({
-  reducer: { auth: authReducer, user: userReducer, school: schoolReducer },
+  reducer: {
+    auth: authReducer,
+    user: userReducer,
+    school: schoolReducer,
+  },
 });
 
 export type Appdipatch = typeof store.dispatch;

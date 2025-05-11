@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class SchoolCreateDto {
   @IsNotEmpty()
@@ -19,6 +19,10 @@ export class SchoolCreateDto {
 
   @IsString()
   logo_url: string;
+
+  @IsBoolean()
+  @IsOptional()
+  is_active: boolean;
 
   @IsString()
   website_url: string;

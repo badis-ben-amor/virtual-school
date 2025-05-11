@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { School } from './school.schema';
 import { SchoolCreateDto } from './dto/school.create.dto';
 import { ReqUserDto } from '../common/req.user.dto';
@@ -23,7 +23,44 @@ export class SchoolService {
   }
 
   async getAll(req: ReqUserDto) {
-    return await this.schoolModel.find({ user_id: req.user.id });
+    const schools = await this.schoolModel.aggregate([
+      { $match: { user_id: new mongoose.Types.ObjectId(req.user.id) } },
+      {
+        $lookup: {
+          from: 'teachers',
+          localField: '_id',
+          foreignField: 'school_id',
+          as: 'students',
+        },
+      },
+      {
+        $lookup: {
+          from: 'classrooms',
+          localField: '_id',
+          foreignField: 'school_id',
+          as: 'classrooms',
+        },
+      },
+      {
+        $addFields: {
+          studentsLength: { $size: '$students' },
+          lassroomsLength: { $size: '$classrooms' },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          user_id: 0,
+          createdAt: 0,
+          updatedAt: 0,
+          __v: 0,
+          students: 0,
+          classrooms: 0,
+        },
+      },
+    ]);
+
+    return schools;
   }
 
   async getOne(school_id: string, req: ReqUserDto) {

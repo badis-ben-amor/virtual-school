@@ -3,26 +3,29 @@ import mongoose, { HydratedDocument } from 'mongoose';
 
 @Schema({ timestamps: true })
 export class School {
-  @Prop({ type: String, required: true })
+  @Prop({ required: true })
   school_name: string;
 
-  @Prop({ type: String })
+  @Prop()
   description: string;
 
-  @Prop({ type: String })
+  @Prop()
   address: string;
 
-  @Prop({ type: String })
+  @Prop()
   contact_email: string;
 
-  @Prop({ type: String })
+  @Prop()
   contact_phone: string;
 
-  @Prop({ type: String })
+  @Prop()
   logo_url: string;
 
-  @Prop({ type: String })
+  @Prop()
   website_url: string;
+
+  @Prop({ default: false })
+  is_active: boolean;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
   user_id: string;

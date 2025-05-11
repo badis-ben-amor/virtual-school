@@ -1,7 +1,23 @@
-import { School } from "@/types/school";
+import { School } from "@/types/schoolType";
 import axios from "axios";
 
-export function getSchool(accessToken: string) {
+export function createSchool(accessToken: string, schoolData: School) {
+  return axios.post(
+    `${process.env.NEXT_PUBLIC_API_URL}/school`,
+    {
+      name: schoolData.school_name,
+      description: schoolData.description,
+      address: schoolData.address,
+      contact_email: schoolData.contact_email,
+      contact_phone: schoolData.contact_phone,
+      logo_url: null,
+      website_url: schoolData.website_url,
+    },
+    { headers: { Authorization: `Bearer ${accessToken}` } }
+  );
+}
+
+export function getAllSchools(accessToken: string) {
   return axios.get(`${process.env.NEXT_PUBLIC_API_URL}/school`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -9,27 +25,23 @@ export function getSchool(accessToken: string) {
   });
 }
 
-export function createSchool(accessToken: string, schoolData: School) {
-  return axios.post(
-    `${process.env.NEXT_PUBLIC_API_URL}/school`,
-    {
-      name: schoolData.name,
-      description: schoolData.description,
-      address: schoolData.address,
-      contact_email: schoolData.contact_email,
-      contact_phone: schoolData.contact_phone,
-      logo_url: null,
-      website_url: schoolData.website_url,
+export function getOneSchool(accessToken: string, school_id: string) {
+  return axios.get(`${process.env.NEXT_PUBLIC_API_URL}/school/${school_id}`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
     },
-    { headers: { Authorization: `Bearer ${accessToken}` } }
-  );
+  });
 }
 
-export function updateSchool(accessToken: string, schoolData: School) {
+export function updateSchool(
+  accessToken: string,
+  schoolData: School,
+  school_id: string
+) {
   return axios.put(
-    `${process.env.NEXT_PUBLIC_API_URL}/school`,
+    `${process.env.NEXT_PUBLIC_API_URL}/school/${school_id}`,
     {
-      name: schoolData.name,
+      name: schoolData.school_name,
       description: schoolData.description,
       address: schoolData.address,
       contact_email: schoolData.contact_email,
@@ -40,8 +52,11 @@ export function updateSchool(accessToken: string, schoolData: School) {
     { headers: { Authorization: `Bearer ${accessToken}` } }
   );
 }
-export function deleteSchool(accessToken: string) {
-  return axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/school`, {
-    headers: { Authorization: `Bearer ${accessToken}` },
-  });
+export function deleteSchool(accessToken: string, school_id: string) {
+  return axios.delete(
+    `${process.env.NEXT_PUBLIC_API_URL}/school/${school_id}`,
+    {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    }
+  );
 }

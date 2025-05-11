@@ -28,7 +28,7 @@ export class StudentController {
 
   @Get()
   getAll(@Query() studentQueryDto: StudentQueryDto) {
-    return this.StudentService.getAll(studentQueryDto.classroom_id);
+    return this.StudentService.getAll(studentQueryDto.school_id);
   }
 
   @Get(':student_id')
@@ -38,7 +38,7 @@ export class StudentController {
   ) {
     return this.StudentService.getOne(
       studentParamsDto.student_id,
-      studentQueryDto.classroom_id,
+      studentQueryDto.school_id,
     );
   }
 
@@ -50,7 +50,7 @@ export class StudentController {
   ) {
     return this.StudentService.update(
       studentParamsDto.student_id,
-      studentQueryDto.classroom_id,
+      studentQueryDto.school_id,
       studentUpdateDto,
     );
   }
@@ -62,7 +62,7 @@ export class StudentController {
   ) {
     return this.StudentService.delete(
       studentParamsDto.student_id,
-      studentQueryDto.classroom_id,
+      studentQueryDto.school_id,
     );
   }
 }
