@@ -1,7 +1,7 @@
-import { School } from "@/types/schoolType";
+import { SchoolType } from "@/types/schoolType";
 import axios from "axios";
 
-export function createSchool(accessToken: string, schoolData: School) {
+export function createSchool(accessToken: string, schoolData: SchoolType) {
   return axios.post(
     `${process.env.NEXT_PUBLIC_API_URL}/school`,
     {
@@ -35,7 +35,7 @@ export function getOneSchool(accessToken: string, school_id: string) {
 
 export function updateSchool(
   accessToken: string,
-  schoolData: School,
+  schoolData: SchoolType,
   school_id: string
 ) {
   return axios.put(
