@@ -20,7 +20,7 @@ export const createSchoolThunk = createAsyncThunk(
   ) => {
     try {
       const res = await createSchool(accessToken, schoolData);
-      return res.data;
+      return { res: res.data, accessToken };
     } catch (error: any) {
       if (error.response.status === 401) {
         try {
@@ -189,7 +189,7 @@ const schoolSlice = createSlice({
       })
       .addCase(createSchoolThunk.fulfilled, (state, action: any) => {
         state.isLoading = false;
-        state.accessToken = action.payload.accessToken;
+        state.accessToken = action.accessToken;
       })
       .addCase(createSchoolThunk.rejected, (state, action: any) => {
         state.isLoading = false;

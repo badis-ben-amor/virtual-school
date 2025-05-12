@@ -5,13 +5,7 @@ export function createSchool(accessToken: string, schoolData: SchoolType) {
   return axios.post(
     `${process.env.NEXT_PUBLIC_API_URL}/school`,
     {
-      name: schoolData.school_name,
-      description: schoolData.description,
-      address: schoolData.address,
-      contact_email: schoolData.contact_email,
-      contact_phone: schoolData.contact_phone,
-      logo_url: null,
-      website_url: schoolData.website_url,
+      ...schoolData,
     },
     { headers: { Authorization: `Bearer ${accessToken}` } }
   );
@@ -41,13 +35,7 @@ export function updateSchool(
   return axios.put(
     `${process.env.NEXT_PUBLIC_API_URL}/school/${school_id}`,
     {
-      name: schoolData.school_name,
-      description: schoolData.description,
-      address: schoolData.address,
-      contact_email: schoolData.contact_email,
-      contact_phone: schoolData.contact_phone,
-      logo_url: null,
-      website_url: schoolData.website_url,
+      ...schoolData,
     },
     { headers: { Authorization: `Bearer ${accessToken}` } }
   );

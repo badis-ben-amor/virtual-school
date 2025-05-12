@@ -12,10 +12,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { getAllSchoolsThunk } from "@/redux/slices/schoolSlice";
+import {
+  createSchoolThunk,
+  deleteSchoolThunk,
+  getAllSchoolsThunk,
+  updateSchoolThunk,
+} from "@/redux/slices/schoolSlice";
 import { Appdipatch, RootState } from "@/redux/store";
 import { SchoolType } from "@/types/schoolType";
-import { Mail, MapPin, Phone, School } from "lucide-react";
+import { Mail, MapPin, Pen, Phone, School, Trash } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -27,14 +32,17 @@ const Dashboard = () => {
   const { accessToken } = useSelector((state: RootState) => state.user);
 
   const [schools, setSchools] = useState<SchoolType[]>([]);
-  const [open, setOpen] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [editingSchool, setEditingSchool] = useState(false);
+  const [editeIcon, setEditeIcon] = useState(false);
   const [schoolForm, setSchoolForm] = useState<SchoolType>({
+    _id: "",
     school_name: "",
     description: "",
     address: "",
     contact_email: "",
-    contact_phone: "",
     logo_url: "",
+    contact_phone: "",
     is_active: false,
     website_url: "",
     school_img: null,
@@ -47,15 +55,95 @@ const Dashboard = () => {
   useEffect(() => {
     setSchools(schoolsData);
   }, [schoolsData]);
+
+  const handleOpenDialog = (school?: SchoolType) => {
+    if (school) setEditingSchool(true);
+
+    setTimeout(() => {}, 2000);
+
+    setSchoolForm(
+      school || {
+        _id: "",
+        school_name: "",
+        description: "",
+        address: "",
+        contact_email: "",
+        contact_phone: "",
+        is_active: false,
+        logo_url: "",
+        website_url: "",
+        school_img: null,
+      }
+    );
+    setOpenDialog(true);
+  };
+  const handleSubmit = () => {
+    // const formData = new FormData();
+
+    // formData.append("school_name", schoolForm.school_name);
+    // formData.append("description", schoolForm.description);
+    // formData.append("address", schoolForm.address);
+    // formData.append("contact_email", schoolForm.contact_email);
+    // formData.append("contact_phone", schoolForm.contact_phone);
+    // formData.append("is_active", String(schoolForm.is_active));
+    // formData.append("website_url", schoolForm.website_url);
+    // if (schoolForm.school_img instanceof File)
+    //   formData.append("school_img", schoolForm.school_img);
+
+    if (editingSchool) {
+      dispatch(
+        updateSchoolThunk({
+          accessToken,
+          school_id: schoolForm._id,
+          schoolData: schoolForm,
+        })
+      ).then(() => dispatch(getAllSchoolsThunk(accessToken)));
+    } else {
+      dispatch(createSchoolThunk({ accessToken, schoolData: schoolForm })).then(
+        () => dispatch(getAllSchoolsThunk(accessToken))
+      );
+    }
+
+    handleCloseDialog();
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setSchoolForm({
+      _id: "",
+      school_name: "",
+      description: "",
+      address: "",
+      contact_email: "",
+      contact_phone: "",
+      is_active: false,
+      website_url: "",
+      logo_url: "",
+      school_img: null,
+    });
+    setEditingSchool(false);
+  };
+
+  const handleDeleteSchool = (school_id: string) => {
+    dispatch(deleteSchoolThunk({ accessToken, school_id })).then(() =>
+      dispatch(getAllSchoolsThunk(accessToken))
+    );
+  };
   return (
     <div className="p-2">
       <div className="flex justify-between">
         <h1 className="text-2xl font-bold">Overview</h1>
         <Button
-          onClick={() => setOpen(true)}
+          onClick={() => handleOpenDialog()}
           className="bg-purple-600 hover:bg-purple-700"
         >
           New School
+        </Button>
+        <Button
+          onClick={() => setEditeIcon(!editeIcon)}
+          className="bg-purple-600 hover:bg-purple-700"
+        >
+          {editeIcon ? "Cancel" : "Edite"}
         </Button>
       </div>
 
@@ -69,22 +157,48 @@ const Dashboard = () => {
               school.is_active && "bg-[#ebf5e9]"
             }`}
           >
-            <CardContent>
-              <School className="h-12 w-12 text-purple-600 mb-2" />
-              <h3 className="text-lg font-semibold mb-2">
-                {school.school_name}
-              </h3>
-              <div className="flex gap-1 text-sm text-muted-foreground mb-1">
+            <CardContent className="w-full">
+              <div
+                className={`flex ${
+                  editeIcon ? "justify-between" : "justify-center"
+                }`}
+              >
+                <School className="h-12 w-12 text-purple-600 mb-2" />
+                {editeIcon && (
+                  <>
+                    <Button
+                      size={"sm"}
+                      variant={"outline"}
+                      onClick={() => handleOpenDialog(school)}
+                    >
+                      <Pen />
+                    </Button>
+                    <Button
+                      onClick={() => handleDeleteSchool(school._id)}
+                      size={"sm"}
+                      variant={"destructive"}
+                    >
+                      <Trash />
+                    </Button>
+                  </>
+                )}
+              </div>
+              <div className="flex justify-center">
+                <h3 className="text-lg font-semibold mb-2 ">
+                  {school.school_name}
+                </h3>
+              </div>
+              <div className="flex gap-1 text-sm text-muted-foreground mb-1 justify-center">
                 <Phone className="h-4 w-4 text-indigo-600" />
                 <span>{school.contact_phone || "No"}</span>
               </div>
 
-              <div className="flex gap-1 text-sm text-muted-foreground mb-1">
+              <div className="flex gap-1 text-sm text-muted-foreground mb-1 justify-center">
                 <Mail className="h-4 w-4 text-green-600" />
                 <span>{school.contact_email || "No"}</span>
               </div>
 
-              <div className="flex gap-1 text-sm text-muted-foreground">
+              <div className="flex gap-1 text-sm text-muted-foreground justify-center">
                 <MapPin className="h-4 w-4 text-blue-600" />
                 <span>{school.address || "No"}</span>
               </div>
@@ -93,7 +207,7 @@ const Dashboard = () => {
         ))}
       </div>
 
-      <Dialog open={open} onOpenChange={() => setOpen(false)}>
+      <Dialog open={openDialog} onOpenChange={handleCloseDialog}>
         <DialogContent className="overflow-y-auto max-h-[90vh]">
           <DialogHeader>
             <DialogTitle>Create New School</DialogTitle>
@@ -175,7 +289,7 @@ const Dashboard = () => {
                     onChange={(e) =>
                       setSchoolForm((prev) => ({
                         ...prev,
-                        [e.target.value]: e.target.name,
+                        [e.target.name]: e.target.value,
                       }))
                     }
                   />
@@ -226,7 +340,9 @@ const Dashboard = () => {
             </div>
           </div>
           <DialogFooter>
-            <Button className="w-full">Create</Button>
+            <Button className="w-full" onClick={handleSubmit}>
+              {editingSchool ? "Edite School" : "Create"}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
