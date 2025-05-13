@@ -157,7 +157,7 @@ const Dashboard = () => {
               school.is_active && "bg-[#ebf5e9]"
             }`}
           >
-            <CardContent className="w-full">
+            <CardContent className={`w-full`}>
               <div
                 className={`flex ${
                   editeIcon ? "justify-between" : "justify-center"

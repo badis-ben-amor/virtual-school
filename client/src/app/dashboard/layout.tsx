@@ -10,9 +10,9 @@ export default function Layout({ children }: { children: ReactNode }) {
 
   if (!user?.username) return <NotAuthUser />;
   return (
-    <div className="flex">
+    <div>
       <Sidebar />
-      <div className="flex-1">{children}</div>
+      <div className={`flex-1 sm:pl-42`}>{children}</div>
     </div>
   );
 }

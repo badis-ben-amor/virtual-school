@@ -19,7 +19,7 @@ export class SchoolService {
       user_id: req.user.id,
     });
 
-    return 'School create successfully';
+    return { message: 'School create successfully' };
   }
 
   async getAll(req: ReqUserDto) {
@@ -87,7 +87,7 @@ export class SchoolService {
 
     if (!updatedSchool) throw new NotFoundException('School does not exist');
 
-    return 'School updated successfully';
+    return { message: 'School updated successfully' };
   }
 
   async deleteSchool(school_id: string, req: ReqUserDto) {
@@ -98,6 +98,6 @@ export class SchoolService {
 
     if (!deletedSchool) throw new NotFoundException('School does not exist');
 
-    return 'School deleted successfully';
+    return { message: 'School deleted successfully' };
   }
 }
