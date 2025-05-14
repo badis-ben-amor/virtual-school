@@ -1,14 +1,10 @@
 import { SchoolType } from "@/types/schoolType";
 import axios from "axios";
 
-export function createSchool(accessToken: string, schoolData: SchoolType) {
-  return axios.post(
-    `${process.env.NEXT_PUBLIC_API_URL}/school`,
-    {
-      ...schoolData,
-    },
-    { headers: { Authorization: `Bearer ${accessToken}` } }
-  );
+export function createSchool(accessToken: string, schoolData: FormData) {
+  return axios.post(`${process.env.NEXT_PUBLIC_API_URL}/school`, schoolData, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
 }
 
 export function getAllSchools(accessToken: string) {
@@ -29,14 +25,12 @@ export function getOneSchool(accessToken: string, school_id: string) {
 
 export function updateSchool(
   accessToken: string,
-  schoolData: SchoolType,
+  schoolData: FormData,
   school_id: string
 ) {
   return axios.put(
     `${process.env.NEXT_PUBLIC_API_URL}/school/${school_id}`,
-    {
-      ...schoolData,
-    },
+    schoolData,
     { headers: { Authorization: `Bearer ${accessToken}` } }
   );
 }

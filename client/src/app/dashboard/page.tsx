@@ -20,7 +20,7 @@ import {
 } from "@/redux/slices/schoolSlice";
 import { Appdipatch, RootState } from "@/redux/store";
 import { SchoolType } from "@/types/schoolType";
-import { Mail, MapPin, Pen, Phone, School, Trash } from "lucide-react";
+import { Mail, MapPin, Pen, Phone, Plus, School, Trash } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -78,28 +78,28 @@ const Dashboard = () => {
     setOpenDialog(true);
   };
   const handleSubmit = () => {
-    // const formData = new FormData();
+    const formData = new FormData();
 
-    // formData.append("school_name", schoolForm.school_name);
-    // formData.append("description", schoolForm.description);
-    // formData.append("address", schoolForm.address);
-    // formData.append("contact_email", schoolForm.contact_email);
-    // formData.append("contact_phone", schoolForm.contact_phone);
-    // formData.append("is_active", String(schoolForm.is_active));
-    // formData.append("website_url", schoolForm.website_url);
-    // if (schoolForm.school_img instanceof File)
-    //   formData.append("school_img", schoolForm.school_img);
+    formData.append("school_name", schoolForm.school_name);
+    formData.append("description", schoolForm.description);
+    formData.append("address", schoolForm.address);
+    formData.append("contact_email", schoolForm.contact_email);
+    formData.append("contact_phone", schoolForm.contact_phone);
+    formData.append("is_active", String(schoolForm.is_active));
+    formData.append("website_url", schoolForm.website_url);
+    if (schoolForm.school_img instanceof File)
+      formData.append("school_img", schoolForm.school_img);
 
     if (editingSchool) {
       dispatch(
         updateSchoolThunk({
           accessToken,
           school_id: schoolForm._id,
-          schoolData: schoolForm,
+          schoolData: formData,
         })
       ).then(() => dispatch(getAllSchoolsThunk(accessToken)));
     } else {
-      dispatch(createSchoolThunk({ accessToken, schoolData: schoolForm })).then(
+      dispatch(createSchoolThunk({ accessToken, schoolData: formData })).then(
         () => dispatch(getAllSchoolsThunk(accessToken))
       );
     }
@@ -109,19 +109,21 @@ const Dashboard = () => {
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
-    setSchoolForm({
-      _id: "",
-      school_name: "",
-      description: "",
-      address: "",
-      contact_email: "",
-      contact_phone: "",
-      is_active: false,
-      website_url: "",
-      logo_url: "",
-      school_img: null,
-    });
-    setEditingSchool(false);
+    setTimeout(() => {
+      setSchoolForm({
+        _id: "",
+        school_name: "",
+        description: "",
+        address: "",
+        contact_email: "",
+        contact_phone: "",
+        is_active: false,
+        website_url: "",
+        logo_url: "",
+        school_img: null,
+      });
+      setEditingSchool(false);
+    }, 150);
   };
 
   const handleDeleteSchool = (school_id: string) => {
@@ -132,18 +134,23 @@ const Dashboard = () => {
   return (
     <div className="p-2">
       <div className="flex justify-between">
-        <h1 className="text-2xl font-bold">Overview</h1>
         <Button
           onClick={() => handleOpenDialog()}
-          className="bg-purple-600 hover:bg-purple-700"
+          className="bg-[#e6edf5] hover:bg-[#d9e9fa] text-darck"
         >
-          New School
+          <Plus size={16} color="black" /> Add School
         </Button>
         <Button
           onClick={() => setEditeIcon(!editeIcon)}
-          className="bg-purple-600 hover:bg-purple-700"
+          className="bg-[#e6edf5] hover:bg-[#d9e9fa] text-darck"
         >
-          {editeIcon ? "Cancel" : "Edite"}
+          {editeIcon ? (
+            "Cancel"
+          ) : (
+            <>
+              <Pen /> Edite school
+            </>
+          )}
         </Button>
       </div>
 
@@ -163,7 +170,11 @@ const Dashboard = () => {
                   editeIcon ? "justify-between" : "justify-center"
                 }`}
               >
-                <School className="h-12 w-12 text-purple-600 mb-2" />
+                {school.logo_url ? (
+                  <img className="h-12  " src={school.logo_url} />
+                ) : (
+                  <School className="h-12 w-12 text-[#93c2f5] mb-2" />
+                )}
                 {editeIcon && (
                   <>
                     <Button
@@ -212,10 +223,18 @@ const Dashboard = () => {
           <DialogHeader>
             <DialogTitle>Create New School</DialogTitle>
           </DialogHeader>
+          {editingSchool && (
+            <h2 className="font-semibold text-blue-600 text-sm">
+              All fields is optional.
+            </h2>
+          )}
           <div>
             <div className="space-y-2">
               <Label htmlFor="school_name">
-                School Name <span className="text-red-700">( Required )</span>
+                School Name{" "}
+                {!editingSchool && (
+                  <span className="text-red-700">( Required )</span>
+                )}
               </Label>
               <Input
                 id="school_name"
@@ -229,10 +248,14 @@ const Dashboard = () => {
                 }
                 placeholder="Enter School Name"
               />
-              <h2 className="font-semibold text-blue-600">
-                Other info is optional, you can add it later.
-              </h2>
-              <hr />
+              {!editingSchool && (
+                <>
+                  <h2 className="font-semibold text-blue-600 text-sm">
+                    Other info is optional, you can add it later.
+                  </h2>
+                  <hr />
+                </>
+              )}
               <div className="space-y-2">
                 <Label htmlFor="address">School Address</Label>
                 <Input
@@ -336,6 +359,15 @@ const Dashboard = () => {
                     }
                   />
                 </div>
+                {schoolForm.school_img && (
+                  <div className="">
+                    <img
+                      src={URL.createObjectURL(schoolForm.school_img)}
+                      alt="school img preview"
+                    />
+                    <p className="text-sm">{schoolForm?.school_img?.name}</p>
+                  </div>
+                )}
               </div>
             </div>
           </div>

@@ -22,7 +22,7 @@ const Register = () => {
 
     dispatch(registerThunk({ name, email, password }))
       .unwrap()
-      .then(() => router.push("/"))
+      .then(() => router.push("/dashboard"))
       .catch((err) => setError(err.message || err));
   };
   return (

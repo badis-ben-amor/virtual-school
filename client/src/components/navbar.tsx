@@ -17,7 +17,7 @@ const Navbar = () => {
     setMenuIsOpen(false);
   };
   return (
-    <div className="bg-[#edf2df] flex justify-between px-5 py-1 font-bold top-0 sticky z-50">
+    <div className="bg-[#edf2df] flex justify-between px-5 py-1 font-bold top-0 sm:sticky z-50">
       <Link href={"/"}>
         <Image src={logo} width={36} height={36} alt="logo" />
       </Link>

@@ -9,6 +9,7 @@ import { ClassRoomModule } from './classRoom/classRoom.module';
 import { StudentModule } from './student/student.module';
 import { SubjectModule } from './subject/subject.module';
 import { TeacherModule } from './teacher/teacher.module';
+import { CloudinaryModule } from './common/cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { TeacherModule } from './teacher/teacher.module';
     StudentModule,
     SubjectModule,
     TeacherModule,
+    CloudinaryModule,
   ],
   controllers: [],
   providers: [],

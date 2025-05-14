@@ -9,6 +9,9 @@ export class Classroom {
   @Prop()
   description: string;
 
+  @Prop()
+  room: string;
+
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'School', required: true })
   school_id: string;
 }

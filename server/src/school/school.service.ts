@@ -5,19 +5,37 @@ import { School } from './school.schema';
 import { SchoolCreateDto } from './dto/school.create.dto';
 import { ReqUserDto } from '../common/req.user.dto';
 import { SchoolUpdateDto } from './dto/school.update.dto';
+import { CloudinaryService } from '../common/cloudinary/cloudinary.service';
 
 @Injectable()
 export class SchoolService {
   constructor(
     @InjectModel('School')
     private readonly schoolModel: Model<School>,
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
-  async create(schoolCreateDto: SchoolCreateDto, req: ReqUserDto) {
-    await this.schoolModel.create({
-      ...schoolCreateDto,
-      user_id: req.user.id,
-    });
+  async create(
+    schoolCreateDto: SchoolCreateDto,
+    req: ReqUserDto,
+    file?: Express.Multer.File,
+  ) {
+    if (file) {
+      const logo_url = await this.cloudinaryService.uploadImage(
+        file,
+        process.env.CLOUDINARY_SCHOOL_FOLDER!,
+      );
+      await this.schoolModel.create({
+        ...schoolCreateDto,
+        user_id: req.user.id,
+        logo_url,
+      });
+    } else {
+      await this.schoolModel.create({
+        ...schoolCreateDto,
+        user_id: req.user.id,
+      });
+    }
 
     return { message: 'School create successfully' };
   }
@@ -44,7 +62,7 @@ export class SchoolService {
       {
         $addFields: {
           studentsLength: { $size: '$students' },
-          lassroomsLength: { $size: '$classrooms' },
+          cassroomsLength: { $size: '$classrooms' },
         },
       },
       {
@@ -77,15 +95,36 @@ export class SchoolService {
     school_id: string,
     schoolUpdateDto: SchoolUpdateDto,
     req: ReqUserDto,
+    file: Express.Multer.File,
   ) {
-    const updatedSchool = await this.schoolModel.findOneAndUpdate(
-      { _id: school_id, user_id: req.user.id },
-      {
-        ...schoolUpdateDto,
-      },
-    );
+    const school = await this.schoolModel.findOne({
+      _id: school_id,
+      user_id: req.user.id,
+    });
 
-    if (!updatedSchool) throw new NotFoundException('School does not exist');
+    if (!school) throw new NotFoundException('School does not exist');
+
+    if (file) {
+      if (school.logo_url) {
+        const publicId = school.logo_url.split('/').pop()?.split('.')[0];
+        if (publicId) {
+          this.cloudinaryService.deleteImage(
+            publicId,
+            process.env.CLOUDINARY_SCHOOL_FOLDER!,
+          );
+        }
+      }
+      const logo_url = await this.cloudinaryService.uploadImage(
+        file,
+        process.env.CLOUDINARY_SCHOOL_FOLDER!,
+      );
+      school.set({ ...schoolUpdateDto, logo_url });
+
+      await school.save();
+    } else {
+      school.set({ ...schoolUpdateDto });
+      await school.save();
+    }
 
     return { message: 'School updated successfully' };
   }
@@ -98,6 +137,15 @@ export class SchoolService {
 
     if (!deletedSchool) throw new NotFoundException('School does not exist');
 
+    if (deletedSchool.logo_url) {
+      const publicId = deletedSchool.logo_url.split('/').pop()?.split('.')[0];
+      if (publicId) {
+        this.cloudinaryService.deleteImage(
+          publicId,
+          process.env.CLOUDINARY_SCHOOL_FOLDER!,
+        );
+      }
+    }
     return { message: 'School deleted successfully' };
   }
 }

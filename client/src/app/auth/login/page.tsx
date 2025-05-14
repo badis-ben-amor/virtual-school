@@ -21,7 +21,7 @@ const Login = () => {
 
     dispatch(loginThunk({ email, password }))
       .unwrap()
-      .then(() => router.push("/"))
+      .then(() => router.push("/dashboard"))
       .catch((err) => setError(err.message || err));
   };
 

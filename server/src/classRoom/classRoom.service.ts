@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { Classroom } from './classRoom.schema';
 import { ClassRoomCreateDto } from './dto/classRoom.Create.dto';
 import { School } from '../school/school.schema';
@@ -26,7 +26,30 @@ export class ClassRoomService {
   }
 
   async getAll(school_id: string) {
-    return await this.classRoomModel.find({ school_id });
+    return await this.classRoomModel.aggregate([
+      { $match: { school_id: new mongoose.Types.ObjectId(school_id) } },
+      {
+        $lookup: {
+          from: 'students',
+          localField: '_id',
+          foreignField: 'classroom_id',
+          as: 'students',
+        },
+      },
+      {
+        $addFields: {
+          studentsLength: { $size: '$students' },
+        },
+      },
+      {
+        $project: {
+          students: 0,
+          createdAt: 0,
+          updatedAt: 0,
+          __v: 0,
+        },
+      },
+    ]);
   }
 
   async getOne(classroom_id: string, school_id: string) {

@@ -16,10 +16,10 @@ import React, { useState } from "react";
 const menuItems = [
   { name: "Overview", icon: Home, path: "/dashboard" },
   { name: "School", icon: School, path: "/dashboard/school" },
-  { name: "Classes", icon: DoorOpen, path: "/classroom" },
-  { name: "Students", icon: Users, path: "/students" },
-  { name: "Teachers", icon: Briefcase, path: "/teachers" },
-  { name: "Subjects", icon: NotebookText, path: "/subjects" },
+  { name: "Classes", icon: DoorOpen, path: "/dashboard/classroom" },
+  { name: "Students", icon: Users, path: "/dashboard/students" },
+  { name: "Teachers", icon: Briefcase, path: "/dashboard/teachers" },
+  { name: "Subjects", icon: NotebookText, path: "/dashboard/subjects" },
 ];
 
 const Sidebar = () => {

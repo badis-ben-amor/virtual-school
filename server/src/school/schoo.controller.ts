@@ -2,12 +2,17 @@ import {
   Body,
   Controller,
   Delete,
+  FileTypeValidator,
   Get,
+  MaxFileSizeValidator,
   Param,
+  ParseFilePipe,
   Post,
   Put,
   Req,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { SchoolService } from './school.service';
 import { AuthGuard } from '../common/guards/auth.guard';
@@ -15,6 +20,7 @@ import { ReqUserDto } from '../common/req.user.dto';
 import { SchoolCreateDto } from './dto/school.create.dto';
 import { SchoolUpdateDto } from './dto/school.update.dto';
 import { SchoolParamsMongoIdDto } from './dto/school.params.mongoId.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @UseGuards(AuthGuard)
 @Controller('school')
@@ -22,8 +28,22 @@ export class SchoolController {
   constructor(private readonly schoolService: SchoolService) {}
 
   @Post()
-  create(@Body() schoolCreateDto: SchoolCreateDto, @Req() req: ReqUserDto) {
-    return this.schoolService.create(schoolCreateDto, req);
+  @UseInterceptors(FileInterceptor('school_img'))
+  create(
+    @Body() schoolCreateDto: SchoolCreateDto,
+    @Req() req: ReqUserDto,
+    @UploadedFile(
+      new ParseFilePipe({
+        fileIsRequired: false,
+        validators: [
+          new FileTypeValidator({ fileType: 'image/*' }),
+          new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 10 }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+  ) {
+    return this.schoolService.create(schoolCreateDto, req, file);
   }
 
   @Get()
@@ -41,13 +61,24 @@ export class SchoolController {
   }
 
   @Put(':school_id')
+  @UseInterceptors(FileInterceptor('school_img'))
   update(
     @Param() schoolParamsMongoIdDto: SchoolParamsMongoIdDto,
     @Body() schoolUpdateDto: SchoolUpdateDto,
     @Req() req: ReqUserDto,
+    @UploadedFile(
+      new ParseFilePipe({
+        fileIsRequired: false,
+        validators: [
+          new FileTypeValidator({ fileType: 'image/*' }),
+          new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 10 }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
   ) {
     const school_id = schoolParamsMongoIdDto.school_id;
-    return this.schoolService.update(school_id, schoolUpdateDto, req);
+    return this.schoolService.update(school_id, schoolUpdateDto, req, file);
   }
 
   @Delete(':school_id')

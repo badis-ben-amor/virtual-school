@@ -1,8 +1,10 @@
+import { Transform } from 'class-transformer';
 import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class SchoolCreateDto {
   @IsString()
   @IsNotEmpty()
+  @IsOptional()
   school_name: string;
 
   @IsString()
@@ -21,12 +23,9 @@ export class SchoolCreateDto {
   @IsOptional()
   contact_phone: string;
 
-  @IsString()
-  @IsOptional()
-  logo_url: string;
-
   @IsBoolean()
   @IsOptional()
+  @Transform(({ value }) => value === 'true')
   is_active: boolean;
 
   @IsString()

@@ -12,10 +12,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 export const createSchoolThunk = createAsyncThunk(
   "school/create",
   async (
-    {
-      accessToken,
-      schoolData,
-    }: { accessToken: string; schoolData: SchoolType },
+    { accessToken, schoolData }: { accessToken: string; schoolData: FormData },
     thunkAPI
   ) => {
     try {
@@ -109,7 +106,7 @@ export const updateSchoolThunk = createAsyncThunk(
       accessToken,
       schoolData,
       school_id,
-    }: { accessToken: string; schoolData: SchoolType; school_id: string },
+    }: { accessToken: string; schoolData: FormData; school_id: string },
     thunkAPI
   ) => {
     try {
