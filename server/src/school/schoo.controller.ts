@@ -36,7 +36,7 @@ export class SchoolController {
       new ParseFilePipe({
         fileIsRequired: false,
         validators: [
-          new FileTypeValidator({ fileType: 'image/*' }),
+          // new FileTypeValidator({ fileType: 'image/*' }),
           new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 10 }),
         ],
       }),
