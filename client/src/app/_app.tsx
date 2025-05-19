@@ -1,4 +1,5 @@
 "use client";
+import { getActiveSchoolThunk } from "@/redux/slices/schoolSlice";
 import { getUserThunk } from "@/redux/slices/userSlice";
 import { Appdipatch, RootState } from "@/redux/store";
 import React, { ReactNode, useEffect } from "react";

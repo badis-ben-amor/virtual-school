@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Delete,
-  FileTypeValidator,
   Get,
   MaxFileSizeValidator,
   Param,
@@ -36,7 +35,7 @@ export class SchoolController {
       new ParseFilePipe({
         fileIsRequired: false,
         validators: [
-          // new FileTypeValidator({ fileType: 'image/*' }),
+          // new FileTypeValidator({ fileType: 'image/*' }),   // that not work on vercel but locally worked
           new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 10 }),
         ],
       }),
@@ -49,6 +48,11 @@ export class SchoolController {
   @Get()
   getAll(@Req() req: ReqUserDto) {
     return this.schoolService.getAll(req);
+  }
+
+  @Get('active-school')
+  getActiveSchool(@Req() req: ReqUserDto) {
+    return this.schoolService.getActiveSchool(req);
   }
 
   @Get(':school_id')

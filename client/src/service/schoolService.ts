@@ -23,6 +23,12 @@ export function getOneSchool(accessToken: string, school_id: string) {
   });
 }
 
+export const getActiveSchool = (accessToken: string) => {
+  return axios.get(`${process.env.NEXT_PUBLIC_API_URL}/school/active-school`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+};
+
 export function updateSchool(
   accessToken: string,
   schoolData: FormData,

@@ -16,17 +16,29 @@ import {
   createSchoolThunk,
   deleteSchoolThunk,
   getAllSchoolsThunk,
+  toggleShowEditeIcons,
   updateSchoolThunk,
 } from "@/redux/slices/schoolSlice";
 import { Appdipatch, RootState } from "@/redux/store";
 import { SchoolType } from "@/types/schoolType";
-import { Mail, MapPin, Pen, Phone, Plus, School, Trash } from "lucide-react";
+import {
+  Mail,
+  MapPin,
+  Pen,
+  Phone,
+  Plus,
+  RotateCcw,
+  RotateCw,
+  School,
+  Trash,
+  Trash2,
+} from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const Dashboard = () => {
   const dispatch = useDispatch<Appdipatch>();
-  const { schools: schoolsData } = useSelector(
+  const { schools: schoolsData, showEditeIcons } = useSelector(
     (state: RootState) => state.school
   );
   const { accessToken } = useSelector((state: RootState) => state.user);
@@ -34,7 +46,6 @@ const Dashboard = () => {
   const [schools, setSchools] = useState<SchoolType[]>([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [editingSchool, setEditingSchool] = useState(false);
-  const [editeIcon, setEditeIcon] = useState(false);
   const [schoolForm, setSchoolForm] = useState<SchoolType>({
     _id: "",
     school_name: "",
@@ -58,8 +69,6 @@ const Dashboard = () => {
 
   const handleOpenDialog = (school?: SchoolType) => {
     if (school) setEditingSchool(true);
-
-    setTimeout(() => {}, 2000);
 
     setSchoolForm(
       school || {
@@ -141,11 +150,13 @@ const Dashboard = () => {
           <Plus size={16} color="black" /> Add School
         </Button>
         <Button
-          onClick={() => setEditeIcon(!editeIcon)}
+          onClick={() => dispatch(toggleShowEditeIcons())}
           className="bg-[#e6edf5] hover:bg-[#d9e9fa] text-darck"
         >
-          {editeIcon ? (
-            "Cancel"
+          {showEditeIcons ? (
+            <>
+              <RotateCw /> Cancel Edite
+            </>
           ) : (
             <>
               <Pen /> Edite school
@@ -165,34 +176,30 @@ const Dashboard = () => {
             }`}
           >
             <CardContent className={`w-full`}>
-              <div
-                className={`flex ${
-                  editeIcon ? "justify-between" : "justify-center"
-                }`}
-              >
-                {school.logo_url ? (
-                  <img className="h-12  " src={school.logo_url} />
-                ) : (
-                  <School className="h-12 w-12 text-[#93c2f5] mb-2" />
-                )}
-                {editeIcon && (
-                  <>
-                    <Button
-                      size={"sm"}
-                      variant={"outline"}
+              <div className="flex justify-between">
+                <div>
+                  {showEditeIcons && (
+                    <Pen
+                      className="h-5 w-5 cursor-pointer text-blue-500"
                       onClick={() => handleOpenDialog(school)}
-                    >
-                      <Pen />
-                    </Button>
-                    <Button
+                    />
+                  )}
+                </div>
+                <div>
+                  {school.logo_url ? (
+                    <img className="h-12  " src={school.logo_url} />
+                  ) : (
+                    <School className="h-12 w-12 text-[#93c2f5] mb-2" />
+                  )}
+                </div>
+                <div>
+                  {showEditeIcons && (
+                    <Trash2
+                      className="h-5 w-5 cursor-pointer text-red-500"
                       onClick={() => handleDeleteSchool(school._id)}
-                      size={"sm"}
-                      variant={"destructive"}
-                    >
-                      <Trash />
-                    </Button>
-                  </>
-                )}
+                    />
+                  )}
+                </div>
               </div>
               <div className="flex justify-center">
                 <h3 className="text-lg font-semibold mb-2 ">
@@ -221,7 +228,9 @@ const Dashboard = () => {
       <Dialog open={openDialog} onOpenChange={handleCloseDialog}>
         <DialogContent className="overflow-y-auto max-h-[90vh]">
           <DialogHeader>
-            <DialogTitle>Create New School</DialogTitle>
+            <DialogTitle>
+              {editingSchool ? "Edite School" : "Create New School"}
+            </DialogTitle>
           </DialogHeader>
           {editingSchool && (
             <h2 className="font-semibold text-blue-600 text-sm">
@@ -240,13 +249,13 @@ const Dashboard = () => {
                 id="school_name"
                 name="school_name"
                 value={schoolForm?.school_name}
+                placeholder="Enter School Name"
                 onChange={(e) =>
                   setSchoolForm((prev) => ({
                     ...prev,
                     [e.target.name]: e.target.value,
                   }))
                 }
-                placeholder="Enter School Name"
               />
               {!editingSchool && (
                 <>

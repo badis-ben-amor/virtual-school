@@ -5,6 +5,7 @@ import {
   getOneSchool,
   updateSchool,
   deleteSchool,
+  getActiveSchool,
 } from "@/service/schoolService";
 import { SchoolType } from "@/types/schoolType";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
@@ -99,6 +100,34 @@ export const getOneSchoolThunk = createAsyncThunk(
   }
 );
 
+export const getActiveSchoolThunk = createAsyncThunk(
+  "school/getActive",
+  async (accessToken: string, thunkAPI) => {
+    try {
+      const res = await getActiveSchool(accessToken);
+      return { data: res.data, accessToken };
+    } catch (error: any) {
+      if (error.response.status === 401) {
+        try {
+          const res = await refresh();
+          const { newAccessToken } = res.data;
+          if (newAccessToken) {
+            try {
+              const res = await getActiveSchool(newAccessToken);
+              return { data: res.data, accessToken: newAccessToken };
+            } catch (error: any) {
+              return thunkAPI.rejectWithValue(error.message);
+            }
+          }
+        } catch (error: any) {
+          return thunkAPI.rejectWithValue(error.message);
+        }
+        return thunkAPI.rejectWithValue(error.message);
+      }
+    }
+  }
+);
+
 export const updateSchoolThunk = createAsyncThunk(
   "school/update",
   async (
@@ -175,10 +204,16 @@ const schoolSlice = createSlice({
     isLoading: false,
     schools: [],
     school: {},
+    activeSchool: {},
     error: null,
     accessToken: "",
+    showEditeIcons: false,
   },
-  reducers: {},
+  reducers: {
+    toggleShowEditeIcons: (state) => {
+      state.showEditeIcons = !state.showEditeIcons;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(createSchoolThunk.pending, (state) => {
@@ -207,10 +242,21 @@ const schoolSlice = createSlice({
       .addCase(getOneSchoolThunk.fulfilled, (state, action: any) => {
         state.isLoading = false;
         state.school = action.payload.data;
-        console.log(action);
         state.accessToken = action.payload.accessToken;
       })
       .addCase(getOneSchoolThunk.rejected, (state, action: any) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      .addCase(getActiveSchoolThunk.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getActiveSchoolThunk.fulfilled, (state, action: any) => {
+        state.isLoading = false;
+        state.activeSchool = action.payload.data.activeSchool;
+        state.accessToken = action.payload.accessToken;
+      })
+      .addCase(getActiveSchoolThunk.rejected, (state, action: any) => {
         state.isLoading = false;
         state.error = action.payload;
       })
@@ -239,4 +285,5 @@ const schoolSlice = createSlice({
   },
 });
 
+export const { toggleShowEditeIcons } = schoolSlice.actions;
 export default schoolSlice.reducer;

@@ -75,7 +75,7 @@ export class ClassRoomService {
 
     if (!updatedClassRoom) throw new NotFoundException('Classroom Not Found');
 
-    return 'classroom updated successfully';
+    return { message: 'classroom updated successfully' };
   }
 
   async delete(classroom_id: string, school_id: string) {

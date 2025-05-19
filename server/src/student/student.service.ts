@@ -4,18 +4,33 @@ import { Model } from 'mongoose';
 import { Student } from './student.schema';
 import { StudentCreateDto } from './dto/student.create.dto';
 import { StudentUpdateDto } from './dto/update.student.dto';
+import { CloudinaryService } from '../common/cloudinary/cloudinary.service';
 
 @Injectable()
 export class StudentService {
   constructor(
     @InjectModel('Student')
     private readonly studentModel: Model<Student>,
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
-  async create(studentCreateDto: StudentCreateDto) {
-    await this.studentModel.create({ ...studentCreateDto });
+  async create(studentCreateDto: StudentCreateDto, file: Express.Multer.File) {
+    if (file) {
+      const student_img = await this.cloudinaryService.uploadImage(
+        file,
+        process.env.CLOUDINARY_STUDENT_FOLDER!,
+      );
+      await this.studentModel.create({
+        ...studentCreateDto,
+        student_img,
+      });
+    } else {
+      await this.studentModel.create({
+        ...studentCreateDto,
+      });
+    }
 
-    return 'Student created successfully';
+    return { message: 'Student Create Successfully' };
   }
   async getAll(school_id: string) {
     return await this.studentModel
@@ -40,18 +55,44 @@ export class StudentService {
     student_id: string,
     school_id: string,
     studentUpdateDto: StudentUpdateDto,
+    file: Express.Multer.File,
   ) {
-    const updatedStudent = await this.studentModel.findOneAndUpdate(
-      {
-        _id: student_id,
-        school_id,
-      },
-      { ...studentUpdateDto },
-    );
+    const student = await this.studentModel.findOne({
+      _id: student_id,
+      school_id,
+    });
 
-    if (!updatedStudent) throw new NotFoundException('Student Not Exist');
+    if (!student) throw new NotFoundException('Student Not Found');
 
-    return 'Student Updated Successfully';
+    if (file) {
+      if (student.student_img) {
+        const publicId = student.student_img.split('/').pop()?.split('.')[0];
+        if (publicId) {
+          await this.cloudinaryService.deleteImage(
+            publicId,
+            process.env.CLOUDINARY_STUDENT_FOLDER!,
+          );
+        }
+        const student_img = await this.cloudinaryService.uploadImage(
+          file,
+          process.env.CLOUDINARY_STUDENT_FOLDER!,
+        );
+        student.set({
+          ...studentUpdateDto,
+          student_img,
+        });
+
+        await student.save();
+      }
+    } else {
+      student.set({
+        ...studentUpdateDto,
+      });
+
+      await student.save();
+    }
+
+    return { message: 'Student Updated Successfully' };
   }
 
   async delete(student_id: string, school_id: string) {
@@ -62,6 +103,19 @@ export class StudentService {
 
     if (!deleted_student) throw new NotFoundException('Student does not exist');
 
-    return 'Student Deleted';
+    if (deleted_student?.student_img) {
+      const publicId = deleted_student.student_img
+        .split('/')
+        .pop()
+        ?.split('.')[0];
+      if (publicId) {
+        await this.cloudinaryService.deleteImage(
+          publicId,
+          process.env.CLOUDINARY_STUDENT_FOLDER!,
+        );
+      }
+    }
+
+    return { message: 'Student Deleted' };
   }
 }

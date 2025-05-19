@@ -1,7 +1,7 @@
-import { IsMongoId, IsOptional } from 'class-validator';
+import { IsMongoId, IsNotEmpty } from 'class-validator';
 
 export class ClassRoomQueryMongoIdDto {
-  @IsOptional()
   @IsMongoId()
+  @IsNotEmpty()
   school_id: string;
 }

@@ -91,6 +91,17 @@ export class SchoolService {
     return school;
   }
 
+  async getActiveSchool(req: ReqUserDto) {
+    const activeSchool = await this.schoolModel.findOne({
+      is_active: true,
+      user_id: req.user.id,
+    });
+
+    if (!activeSchool) throw new NotFoundException('No Active School Found');
+
+    return { activeSchool };
+  }
+
   async update(
     school_id: string,
     schoolUpdateDto: SchoolUpdateDto,

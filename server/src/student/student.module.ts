@@ -4,6 +4,7 @@ import { StudentSchema } from './student.schema';
 import { ClassroomSchema } from '../classRoom/classRoom.schema';
 import { StudentController } from './student.controller';
 import { StudentService } from './student.service';
+import { CloudinaryModule } from '../common/cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { StudentService } from './student.service';
       { name: 'Student', schema: StudentSchema },
       { name: 'Classroom', schema: ClassroomSchema },
     ]),
+    CloudinaryModule,
   ],
   controllers: [StudentController],
   providers: [StudentService],

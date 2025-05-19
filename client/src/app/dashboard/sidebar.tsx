@@ -17,9 +17,9 @@ const menuItems = [
   { name: "Overview", icon: Home, path: "/dashboard" },
   { name: "School", icon: School, path: "/dashboard/school" },
   { name: "Classes", icon: DoorOpen, path: "/dashboard/classroom" },
-  { name: "Students", icon: Users, path: "/dashboard/students" },
-  { name: "Teachers", icon: Briefcase, path: "/dashboard/teachers" },
-  { name: "Subjects", icon: NotebookText, path: "/dashboard/subjects" },
+  { name: "Students", icon: Users, path: "/dashboard/student" },
+  { name: "Teachers", icon: Briefcase, path: "/dashboard/teacher" },
+  { name: "Subjects", icon: NotebookText, path: "/dashboard/subject" },
 ];
 
 const Sidebar = () => {
