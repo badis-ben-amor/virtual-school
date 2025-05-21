@@ -1,7 +1,327 @@
-import React from "react";
+"use client";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { getAllClassroomThunk } from "@/redux/slices/classroomSlice";
+import { getActiveSchoolThunk } from "@/redux/slices/schoolSlice";
+import {
+  createStudentThunk,
+  deleteStudentThunk,
+  getAllStudentsThunk,
+  toggleShowEdietButtons,
+  updateStudentThunk,
+} from "@/redux/slices/studentSlice";
+import { Appdipatch, RootState } from "@/redux/store";
+import { ClassroomType } from "@/types/classroomType";
+import { StudentType } from "@/types/studentType";
+import { Pen, Plus, RotateCcw, RotateCw, Trash2 } from "lucide-react";
+import Image from "next/image";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const Student = () => {
-  return <div></div>;
+  const dispatch = useDispatch<Appdipatch>();
+  const {
+    accessToken,
+    students: studentsData,
+    showEdietButtons,
+  } = useSelector((state: RootState) => state.student);
+
+  const [activeSchoolId, setActiveSchoolId] = useState("");
+  const [students, setStudents] = useState([]);
+  const [editingStudent, setEditingStudent] = useState(false);
+  const [studentForm, setStudentForm] = useState<StudentType>({
+    _id: "",
+    first_name: "",
+    last_name: "",
+    classroom_id: "",
+    school_id: "",
+    student_img: null,
+  });
+  const [classrooms, setClassrooms] = useState<ClassroomType[]>([]);
+  const [openDialog, setOpenDialog] = useState(false);
+
+  useEffect(() => {
+    dispatch(getActiveSchoolThunk(accessToken))
+      .unwrap()
+      .then((res: any) => {
+        dispatch(
+          getAllStudentsThunk({
+            accessToken,
+            school_id: res.res.activeSchool._id,
+          })
+        );
+        setActiveSchoolId(res.res.activeSchool._id);
+        dispatch(
+          getAllClassroomThunk({
+            accessToken,
+            school_id: res.res.activeSchool._id,
+          })
+        )
+          .unwrap()
+          .then((res) => setClassrooms(res.res));
+      });
+  }, []);
+
+  useEffect(() => {
+    setStudents(studentsData);
+  }, [studentsData]);
+
+  const handleOpenDialog = (student?: StudentType) => {
+    if (student) {
+      setEditingStudent(true);
+    }
+
+    setStudentForm(
+      student || {
+        _id: "",
+        first_name: "",
+        last_name: "",
+        classroom_id: "",
+        school_id: "",
+        student_img: null,
+      }
+    );
+    setOpenDialog(true);
+  };
+
+  const handleSubmit = () => {
+    const formData = new FormData();
+
+    formData.append("first_name", studentForm.first_name);
+    formData.append("last_name", studentForm.last_name);
+    formData.append("classroom_id", studentForm.classroom_id);
+    formData.append("school_id", activeSchoolId);
+    if (studentForm.student_img instanceof File) {
+      formData.append("student_img", studentForm.student_img);
+    }
+
+    if (editingStudent) {
+      dispatch(
+        updateStudentThunk({
+          accessToken,
+          studentData: formData,
+          student_id: studentForm._id,
+          school_id: activeSchoolId,
+        })
+      ).then(() =>
+        dispatch(
+          getAllStudentsThunk({ accessToken, school_id: activeSchoolId })
+        )
+      );
+    } else {
+      dispatch(createStudentThunk({ accessToken, studentData: formData })).then(
+        () =>
+          dispatch(
+            getAllStudentsThunk({ accessToken, school_id: activeSchoolId })
+          )
+      );
+    }
+
+    handleCloseDialog();
+  };
+
+  const handleCloseDialog = () => {
+    setTimeout(() => {
+      setEditingStudent(false);
+      setStudentForm({
+        _id: "",
+        first_name: "",
+        last_name: "",
+        classroom_id: "",
+        school_id: "",
+        student_img: null,
+      });
+    }, 150);
+    setOpenDialog(false);
+  };
+
+  const handleDelete = (student_id: string) => {
+    dispatch(
+      deleteStudentThunk({ accessToken, student_id, school_id: activeSchoolId })
+    ).then(() =>
+      dispatch(getAllStudentsThunk({ accessToken, school_id: activeSchoolId }))
+    );
+  };
+
+  return (
+    <div className="p-2">
+      <div className="flex justify-between">
+        <Button
+          className="bg-[#e6edf5] hover:bg-[#d9e9fa] text-darck"
+          onClick={() => handleOpenDialog()}
+        >
+          <Plus /> Add Student
+        </Button>
+        <Button
+          className="bg-[#e6edf5] hover:bg-[#d9e9fa] text-darck"
+          onClick={() => dispatch(toggleShowEdietButtons())}
+        >
+          {showEdietButtons ? (
+            <>
+              <RotateCw /> Cancel Edite
+            </>
+          ) : (
+            <>
+              <Pen /> Edite Student
+            </>
+          )}
+        </Button>
+      </div>
+
+      <h1 className="text-xl font-semibold mb-2">Students</h1>
+
+      <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-4">
+        {students.map((student: StudentType, i) => (
+          <Card key={i} className="">
+            <CardContent className="flex justify-between items-center">
+              <Image
+                src={student.student_img_url || "/male_student_avatar.png"}
+                alt={`${student.first_name}_avatar`}
+                height={70}
+                width={70}
+                className="rounded-full"
+              />
+              {showEdietButtons && (
+                <div className="space-y-6">
+                  <Pen
+                    onClick={() => handleOpenDialog(student)}
+                    className="h-5 w-5 cursor-pointer text-blue-500"
+                  />
+                  <Trash2
+                    onClick={() => handleDelete(student._id)}
+                    className="h-5 w-5 cursor-pointer text-red-500"
+                  />
+                </div>
+              )}
+              <div>
+                <p className="font-semibold">{`${student.first_name} ${student.last_name}`}</p>
+                <p className="text-gray-500 text-sm">class</p>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <Dialog open={openDialog} onOpenChange={handleCloseDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {editingStudent ? "Edite Student" : "Add Student"}
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-2">
+            <div className="space-y-2">
+              <Label htmlFor="first_name">First Name</Label>
+              <Input
+                id="first_name"
+                name="first_name"
+                value={studentForm.first_name}
+                placeholder="Enter Student First Name"
+                onChange={(e) =>
+                  setStudentForm((prev) => ({
+                    ...prev,
+                    first_name: e.target.value,
+                  }))
+                }
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="last_name">last Name</Label>
+              <Input
+                id="last_name"
+                name="last_name"
+                value={studentForm.last_name}
+                placeholder="Enter Student Last Name"
+                onChange={(e) =>
+                  setStudentForm((prev) => {
+                    return { ...prev, last_name: e.target.value };
+                  })
+                }
+              />
+            </div>
+            <div className="flex justify-between gap-2">
+              <div className="space-y-2">
+                <Label>Select Classroom</Label>
+                <Select
+                  onValueChange={(value) =>
+                    setStudentForm((prev) => ({
+                      ...prev,
+                      classroom_id: value,
+                    }))
+                  }
+                  defaultValue={editingStudent ? studentForm.classroom_id : ""}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Student Classroom" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {classrooms.map((classroom) => (
+                      <SelectItem
+                        className="cursor-pointer"
+                        key={classroom._id}
+                        value={classroom._id}
+                      >
+                        {classroom.classroom_name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="student_img">Student Image</Label>
+                <Input
+                  className="cursor-pointer"
+                  type="file"
+                  id="student_img"
+                  name="student_img"
+                  onChange={(e) =>
+                    setStudentForm((prev) => ({
+                      ...prev,
+                      student_img: e.target.files?.[0] || null,
+                    }))
+                  }
+                />
+              </div>
+            </div>
+            {studentForm.student_img && (
+              <div className="text-center space-y-2">
+                <div className="flex justify-center mt-4">
+                  <img
+                    src={URL.createObjectURL(studentForm.student_img)}
+                    alt="student image preview"
+                    className="h-25 rounded-full w-25"
+                  />
+                </div>
+                <p>{studentForm.student_img?.name}</p>
+              </div>
+            )}
+          </div>
+          <DialogFooter>
+            <Button onClick={handleSubmit} className="w-full">
+              {editingStudent ? "Update" : "Add"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
 };
 
 export default Student;

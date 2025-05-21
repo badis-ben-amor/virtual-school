@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { StudentType } from "@/types/studentType";
 import {
   createStudent,
   deleteStudent,
@@ -15,12 +14,12 @@ export const createStudentThunk = createAsyncThunk(
     {
       accessToken,
       studentData,
-    }: { accessToken: string; studentData: StudentType },
+    }: { accessToken: string; studentData: FormData },
     thunkAPI
   ) => {
     try {
       const res = await createStudent(accessToken, studentData);
-      return { data: res.data, accessToken };
+      return { res: res.data, accessToken };
     } catch (error: any) {
       if (error.response.status === 403) {
         try {
@@ -29,7 +28,7 @@ export const createStudentThunk = createAsyncThunk(
           if (newAccessToken) {
             try {
               const res = await createStudent(newAccessToken, studentData);
-              return { data: res.data, accessToken: newAccessToken };
+              return { res: res.data, accessToken: newAccessToken };
             } catch (error: any) {
               return thunkAPI.rejectWithValue(
                 error.response?.data?.message || error.message
@@ -57,16 +56,16 @@ export const getAllStudentsThunk = createAsyncThunk(
   ) => {
     try {
       const res = await getAllStudents(accessToken, school_id);
-      return { data: res.data, accessToken };
+      return { res: res.data, accessToken };
     } catch (error: any) {
-      if (error.response.status === 403) {
+      if (error.response.status === 401) {
         try {
           const res = await refresh();
           const { newAccessToken } = res.data;
           if (newAccessToken) {
             try {
               const res = await getAllStudents(newAccessToken, school_id);
-              return { data: res.data, accessToken: newAccessToken };
+              return { res: res.data, accessToken: newAccessToken };
             } catch (error: any) {
               return thunkAPI.rejectWithValue(
                 error.response?.data?.message || error.message
@@ -98,7 +97,7 @@ export const getOneStudentThunk = createAsyncThunk(
   ) => {
     try {
       const res = await getOneStudent(accessToken, student_id, school_id);
-      return { data: res.data, accessToken };
+      return { res: res.data, accessToken };
     } catch (error: any) {
       if (error.response.status === 403) {
         try {
@@ -111,7 +110,7 @@ export const getOneStudentThunk = createAsyncThunk(
                 student_id,
                 school_id
               );
-              return { data: res.data, accessToken: newAccessToken };
+              return { res: res.data, accessToken: newAccessToken };
             } catch (error: any) {
               return thunkAPI.rejectWithValue(
                 error.response?.data?.message || error.message
@@ -141,7 +140,7 @@ export const updateStudentThunk = createAsyncThunk(
       school_id,
     }: {
       accessToken: string;
-      studentData: StudentType;
+      studentData: FormData;
       student_id: string;
       school_id: string;
     },
@@ -154,7 +153,7 @@ export const updateStudentThunk = createAsyncThunk(
         student_id,
         school_id
       );
-      return { data: res.data, accessToken };
+      return { res: res.data, accessToken };
     } catch (error: any) {
       if (error.response.status === 403) {
         try {
@@ -168,7 +167,7 @@ export const updateStudentThunk = createAsyncThunk(
                 student_id,
                 school_id
               );
-              return { data: res.data, accessToken: newAccessToken };
+              return { res: res.data, accessToken: newAccessToken };
             } catch (error: any) {
               return thunkAPI.rejectWithValue(
                 error.response?.data?.message || error.message
@@ -204,7 +203,7 @@ export const deleteStudentThunk = createAsyncThunk(
   ) => {
     try {
       const res = await deleteStudent(accessToken, student_id, school_id);
-      return { data: res.data, accessToken };
+      return { res: res.data, accessToken };
     } catch (error: any) {
       if (error.response.status === 403) {
         try {
@@ -217,7 +216,7 @@ export const deleteStudentThunk = createAsyncThunk(
                 student_id,
                 school_id
               );
-              return { data: res.data, accessToken: newAccessToken };
+              return { res: res.data, accessToken: newAccessToken };
             } catch (error: any) {
               return thunkAPI.rejectWithValue(
                 error.response?.data?.message || error.message
@@ -245,8 +244,13 @@ const studentSlice = createSlice({
     error: "",
     accessToken: "",
     student: {},
+    showEdietButtons: false,
   },
-  reducers: {},
+  reducers: {
+    toggleShowEdietButtons: (state) => {
+      state.showEdietButtons = !state.showEdietButtons;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(createStudentThunk.pending, (state) => {
@@ -265,7 +269,7 @@ const studentSlice = createSlice({
       })
       .addCase(getAllStudentsThunk.fulfilled, (state, action: any) => {
         state.isLoading = false;
-        state.students = action.payload.data
+        state.students = action.payload.res;
         state.accessToken = action.payload.accessToken;
       })
       .addCase(getAllStudentsThunk.rejected, (state, action: any) => {
@@ -277,7 +281,7 @@ const studentSlice = createSlice({
       })
       .addCase(getOneStudentThunk.fulfilled, (state, action: any) => {
         state.isLoading = false;
-        state.student = action.payload.data
+        state.student = action.payload.res;
         state.accessToken = action.payload.accessToken;
       })
       .addCase(getOneStudentThunk.rejected, (state, action: any) => {
@@ -305,8 +309,9 @@ const studentSlice = createSlice({
       .addCase(deleteStudentThunk.rejected, (state, action: any) => {
         state.isLoading = false;
         state.error = action.payload;
-      })
+      });
   },
 });
 
-export default studentSlice.reducer
+export const { toggleShowEdietButtons } = studentSlice.actions;
+export default studentSlice.reducer;

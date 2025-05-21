@@ -1,10 +1,6 @@
-import { StudentType } from "@/types/studentType";
 import axios from "axios";
 
-export const createStudent = (
-  accessToken: string,
-  studentdata: StudentType
-) => {
+export const createStudent = (accessToken: string, studentdata: FormData) => {
   return axios.post(`${process.env.NEXT_PUBLIC_API_URL}/student`, studentdata, {
     headers: { Authorization: `Bearer ${accessToken}` },
   });
@@ -12,7 +8,7 @@ export const createStudent = (
 
 export const getAllStudents = (accessToken: string, school_id: string) => {
   return axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/student?school_id${school_id}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/student?school_id=${school_id}`,
     { headers: { Authorization: `Bearer ${accessToken}` } }
   );
 };
@@ -32,7 +28,7 @@ export const getOneStudent = (
 
 export const updateStudent = (
   accessToken: string,
-  studentData: StudentType,
+  studentData: FormData,
   student_id: string,
   school_id: string
 ) => {

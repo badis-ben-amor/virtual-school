@@ -27,7 +27,7 @@ export const createSchoolThunk = createAsyncThunk(
           if (newAccessToken) {
             try {
               const res = await createSchool(newAccessToken, schoolData);
-              return { data: res.data, accessToken: newAccessToken };
+              return { res: res.data, accessToken: newAccessToken };
             } catch (error: any) {
               return thunkAPI.rejectWithValue(error.message);
             }
@@ -46,7 +46,7 @@ export const getAllSchoolsThunk = createAsyncThunk(
   async (accessToken: string, thunkAPI) => {
     try {
       const res = await getAllSchools(accessToken);
-      return res.data;
+      return { res: res.data, accessToken };
     } catch (error: any) {
       if (error.response?.status === 403) {
         try {
@@ -55,7 +55,7 @@ export const getAllSchoolsThunk = createAsyncThunk(
           if (newAccessToken) {
             try {
               const res = await getAllSchools(newAccessToken);
-              return res.data;
+              return { res: res.data, accessToken: newAccessToken };
             } catch (error: any) {
               return thunkAPI.rejectWithValue(error.response?.data?.message);
             }
@@ -77,7 +77,7 @@ export const getOneSchoolThunk = createAsyncThunk(
   ) => {
     try {
       const res = await getOneSchool(accessToken, school_id);
-      return { data: res.data, accessToken };
+      return { res: res.data, accessToken };
     } catch (error: any) {
       if (error.response.status === 401) {
         try {
@@ -86,7 +86,7 @@ export const getOneSchoolThunk = createAsyncThunk(
           if (newAccessToken) {
             try {
               const res = await getOneSchool(newAccessToken, school_id);
-              return { data: res.data, accessToken: newAccessToken };
+              return { res: res.data, accessToken: newAccessToken };
             } catch (error: any) {
               return thunkAPI.rejectWithValue(error.message);
             }
@@ -105,7 +105,7 @@ export const getActiveSchoolThunk = createAsyncThunk(
   async (accessToken: string, thunkAPI) => {
     try {
       const res = await getActiveSchool(accessToken);
-      return { data: res.data, accessToken };
+      return { res: res.data, accessToken };
     } catch (error: any) {
       if (error.response.status === 401) {
         try {
@@ -114,7 +114,7 @@ export const getActiveSchoolThunk = createAsyncThunk(
           if (newAccessToken) {
             try {
               const res = await getActiveSchool(newAccessToken);
-              return { data: res.data, accessToken: newAccessToken };
+              return { res: res.data, accessToken: newAccessToken };
             } catch (error: any) {
               return thunkAPI.rejectWithValue(error.message);
             }
@@ -140,7 +140,7 @@ export const updateSchoolThunk = createAsyncThunk(
   ) => {
     try {
       const res = await updateSchool(accessToken, schoolData, school_id);
-      return res.data;
+      return { res: res.data, accessToken };
     } catch (error: any) {
       if (error.response.status === 401) {
         try {
@@ -153,7 +153,7 @@ export const updateSchoolThunk = createAsyncThunk(
                 schoolData,
                 school_id
               );
-              return { data: res.data, accessToken: newAccessToken };
+              return { res: res.data, accessToken: newAccessToken };
             } catch (error: any) {
               return thunkAPI.rejectWithValue(error.message);
             }
@@ -175,7 +175,7 @@ export const deleteSchoolThunk = createAsyncThunk(
   ) => {
     try {
       const res = await deleteSchool(accessToken, school_id);
-      return { data: res.data, accessToken };
+      return { res: res.data, accessToken };
     } catch (error: any) {
       if (error.response.status === 401) {
         try {
@@ -184,7 +184,7 @@ export const deleteSchoolThunk = createAsyncThunk(
           if (newAccessToken) {
             try {
               const res = await deleteSchool(newAccessToken, school_id);
-              return { data: res.data, accessToken: newAccessToken };
+              return { res: res.data, accessToken: newAccessToken };
             } catch (error: any) {
               return thunkAPI.rejectWithValue(error.message);
             }
@@ -221,7 +221,7 @@ const schoolSlice = createSlice({
       })
       .addCase(createSchoolThunk.fulfilled, (state, action: any) => {
         state.isLoading = false;
-        state.accessToken = action.accessToken;
+        state.accessToken = action.payload.accessToken;
       })
       .addCase(createSchoolThunk.rejected, (state, action: any) => {
         state.isLoading = false;
@@ -231,17 +231,19 @@ const schoolSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(getAllSchoolsThunk.fulfilled, (state, action) => {
-        (state.isLoading = false), (state.schools = action.payload);
+        state.isLoading = false;
+        state.schools = action.payload.res;
       })
       .addCase(getAllSchoolsThunk.rejected, (state, action: any) => {
-        (state.isLoading = false), (state.error = action.payload);
+        state.isLoading = false;
+        state.error = action.payload;
       })
       .addCase(getOneSchoolThunk.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(getOneSchoolThunk.fulfilled, (state, action: any) => {
         state.isLoading = false;
-        state.school = action.payload.data;
+        state.school = action.payload.res;
         state.accessToken = action.payload.accessToken;
       })
       .addCase(getOneSchoolThunk.rejected, (state, action: any) => {
@@ -253,7 +255,7 @@ const schoolSlice = createSlice({
       })
       .addCase(getActiveSchoolThunk.fulfilled, (state, action: any) => {
         state.isLoading = false;
-        state.activeSchool = action.payload.data.activeSchool;
+        state.activeSchool = action.payload.res.activeSchool;
         state.accessToken = action.payload.accessToken;
       })
       .addCase(getActiveSchoolThunk.rejected, (state, action: any) => {

@@ -10,11 +10,11 @@ export class Student {
   last_name: string;
 
   @Prop()
-  student_img: string;
+  student_img_url: string;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'ClassRoom',
+    ref: 'Classroom',
   })
   classroom_id: string;
 

@@ -49,11 +49,11 @@ const Classroom = () => {
     dispatch(getActiveSchoolThunk(accessToken))
       .unwrap()
       .then((res) => {
-        setActiveSchoolId(res?.data.activeSchool._id);
+        setActiveSchoolId(res?.res?.activeSchool._id);
         dispatch(
           getAllClassroomThunk({
             accessToken,
-            school_id: res?.data.activeSchool._id,
+            school_id: res?.res?.activeSchool._id,
           })
         );
       });

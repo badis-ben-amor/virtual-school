@@ -27,10 +27,8 @@ import {
   Pen,
   Phone,
   Plus,
-  RotateCcw,
   RotateCw,
   School,
-  Trash,
   Trash2,
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
@@ -374,7 +372,7 @@ const Dashboard = () => {
                       src={URL.createObjectURL(schoolForm.school_img)}
                       alt="school img preview"
                     />
-                    <p className="text-sm">{schoolForm?.school_img?.name}</p>
+                    <p className="text-sm">{schoolForm.school_img.name}</p>
                   </div>
                 )}
               </div>

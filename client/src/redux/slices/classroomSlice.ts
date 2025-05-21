@@ -21,12 +21,12 @@ export const createClassroomThunk = createAsyncThunk(
   ) => {
     try {
       const res = await createClassroom(accessToken, classroomData, school_id);
-      return res.data;
+      return { res: res.data, accessToken };
     } catch (error: any) {
       if (error.response.status === 401)
         try {
           const res = await refresh();
-          const newAccessToken = res.data?.newAccessToken;
+          const newAccessToken = res.data.newAccessToken;
           if (newAccessToken) {
             try {
               const res = await createClassroom(
@@ -34,7 +34,7 @@ export const createClassroomThunk = createAsyncThunk(
                 classroomData,
                 school_id
               );
-              return res.data;
+              return { res: res.data, accessToken: newAccessToken };
             } catch (error: any) {
               return thunkAPI.rejectWithValue(
                 error.response?.data?.message || error.message
@@ -67,16 +67,16 @@ export const getAllClassroomThunk = createAsyncThunk(
   ) => {
     try {
       const res = await getAllClassroom(accessToken, school_id);
-      return res.data;
+      return { res: res.data, accessToken };
     } catch (error: any) {
       if (error.response.status === 401)
         try {
           const res = await refresh();
-          const newAccessToken = res.data?.newAccessToken;
+          const newAccessToken = res.data.newAccessToken;
           if (newAccessToken) {
             try {
               const res = await getAllClassroom(newAccessToken, school_id);
-              return res.data;
+              return { res: res.data, accessToken: newAccessToken };
             } catch (error: any) {
               return thunkAPI.rejectWithValue(
                 error.response?.data?.message || error.message
@@ -111,12 +111,12 @@ export const getOneClassroomThunk = createAsyncThunk(
   ) => {
     try {
       const res = await getOneClassroom(accessToken, classroom_id, school_id);
-      return res.data;
+      return { res: res.data, accessToken };
     } catch (error: any) {
       if (error.response.status === 401)
         try {
           const res = await refresh();
-          const newAccessToken = res.data?.newAccessToken;
+          const newAccessToken = res.data.newAccessToken;
           if (newAccessToken) {
             try {
               const res = await getOneClassroom(
@@ -124,7 +124,7 @@ export const getOneClassroomThunk = createAsyncThunk(
                 classroom_id,
                 school_id
               );
-              return res.data;
+              return { res: res.data, accessToken: newAccessToken };
             } catch (error: any) {
               return thunkAPI.rejectWithValue(
                 error.response?.data?.message || error.message
@@ -163,12 +163,12 @@ export const updateClassroomThunk = createAsyncThunk(
         classroomData,
         classroom_id
       );
-      return res.data;
+      return { res: res.data, accessToken };
     } catch (error: any) {
       if (error.response.status === 401)
         try {
           const res = await refresh();
-          const newAccessToken = res.data?.newAccessToken;
+          const newAccessToken = res.data.newAccessToken;
           if (newAccessToken) {
             try {
               const res = await updateClassroom(
@@ -176,7 +176,7 @@ export const updateClassroomThunk = createAsyncThunk(
                 classroomData,
                 classroom_id
               );
-              return res.data;
+              return { res: res.data, accessToken: newAccessToken };
             } catch (error: any) {
               return thunkAPI.rejectWithValue(
                 error.response?.data?.message || error.message
@@ -211,12 +211,12 @@ export const deleteClassroomThunk = createAsyncThunk(
   ) => {
     try {
       const res = await deleteClassroom(accessToken, classroom_id, school_id);
-      return res.data;
+      return { res: res.data, accessToken };
     } catch (error: any) {
       if (error.response.status === 401)
         try {
           const res = await refresh();
-          const newAccessToken = res.data?.newAccessToken;
+          const newAccessToken = res.data.newAccessToken;
           if (newAccessToken) {
             try {
               const res = await deleteClassroom(
@@ -224,7 +224,7 @@ export const deleteClassroomThunk = createAsyncThunk(
                 classroom_id,
                 school_id
               );
-              return res.data;
+              return { res: res.data, accessToken: newAccessToken };
             } catch (error: any) {
               return thunkAPI.rejectWithValue(
                 error.response?.data?.message || error.message
@@ -263,8 +263,9 @@ const classroomSlice = createSlice({
       .addCase(createClassroomThunk.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(createClassroomThunk.fulfilled, (state) => {
+      .addCase(createClassroomThunk.fulfilled, (state, action) => {
         state.isLoading = false;
+        state.accessToken = action.payload.accessToken;
       })
       .addCase(createClassroomThunk.rejected, (state, action: any) => {
         state.isLoading = false;
@@ -275,7 +276,8 @@ const classroomSlice = createSlice({
       })
       .addCase(getAllClassroomThunk.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.classrooms = action.payload;
+        state.classrooms = action.payload.res;
+        state.accessToken = action.payload.accessToken;
       })
       .addCase(getAllClassroomThunk.rejected, (state, action: any) => {
         state.isLoading = false;
@@ -286,7 +288,8 @@ const classroomSlice = createSlice({
       })
       .addCase(getOneClassroomThunk.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.classroom = action.payload;
+        state.classroom = action.payload.res;
+        state.accessToken = action.payload.accessToken;
       })
       .addCase(getOneClassroomThunk.rejected, (state, action: any) => {
         state.isLoading = false;
@@ -297,6 +300,7 @@ const classroomSlice = createSlice({
       })
       .addCase(updateClassroomThunk.fulfilled, (state, action) => {
         state.isLoading = false;
+        state.accessToken = action.payload.accessToken;
       })
       .addCase(updateClassroomThunk.rejected, (state, action: any) => {
         state.isLoading = false;
@@ -307,6 +311,7 @@ const classroomSlice = createSlice({
       })
       .addCase(deleteClassroomThunk.fulfilled, (state, action) => {
         state.isLoading = false;
+        state.accessToken = action.payload.accessToken;
       })
       .addCase(deleteClassroomThunk.rejected, (state, action: any) => {
         state.isLoading = false;

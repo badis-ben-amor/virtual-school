@@ -16,13 +16,13 @@ export class StudentService {
 
   async create(studentCreateDto: StudentCreateDto, file: Express.Multer.File) {
     if (file) {
-      const student_img = await this.cloudinaryService.uploadImage(
+      const student_img_url = await this.cloudinaryService.uploadImage(
         file,
         process.env.CLOUDINARY_STUDENT_FOLDER!,
       );
       await this.studentModel.create({
         ...studentCreateDto,
-        student_img,
+        student_img_url,
       });
     } else {
       await this.studentModel.create({
@@ -33,9 +33,7 @@ export class StudentService {
     return { message: 'Student Create Successfully' };
   }
   async getAll(school_id: string) {
-    return await this.studentModel
-      .find({ school_id })
-      .select('-__v -_id -school_id');
+    return await this.studentModel.find({ school_id }).select('-__v');
   }
 
   async getOne(student_id: string, school_id: string) {
@@ -63,27 +61,29 @@ export class StudentService {
     });
 
     if (!student) throw new NotFoundException('Student Not Found');
-
     if (file) {
-      if (student.student_img) {
-        const publicId = student.student_img.split('/').pop()?.split('.')[0];
+      if (student.student_img_url) {
+        const publicId = student.student_img_url
+          .split('/')
+          .pop()
+          ?.split('.')[0];
         if (publicId) {
           await this.cloudinaryService.deleteImage(
             publicId,
             process.env.CLOUDINARY_STUDENT_FOLDER!,
           );
         }
-        const student_img = await this.cloudinaryService.uploadImage(
-          file,
-          process.env.CLOUDINARY_STUDENT_FOLDER!,
-        );
-        student.set({
-          ...studentUpdateDto,
-          student_img,
-        });
-
-        await student.save();
       }
+      const student_img_url = await this.cloudinaryService.uploadImage(
+        file,
+        process.env.CLOUDINARY_STUDENT_FOLDER!,
+      );
+      student.set({
+        ...studentUpdateDto,
+        student_img_url,
+      });
+
+      await student.save();
     } else {
       student.set({
         ...studentUpdateDto,
@@ -103,8 +103,8 @@ export class StudentService {
 
     if (!deleted_student) throw new NotFoundException('Student does not exist');
 
-    if (deleted_student?.student_img) {
-      const publicId = deleted_student.student_img
+    if (deleted_student?.student_img_url) {
+      const publicId = deleted_student.student_img_url
         .split('/')
         .pop()
         ?.split('.')[0];
