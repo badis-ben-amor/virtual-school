@@ -84,6 +84,7 @@ const Student = () => {
 
   const handleOpenDialog = (student?: StudentType) => {
     if (student) {
+      student = { ...student, classroom_id: student.classroom_id._id };
       setEditingStudent(true);
     }
 
@@ -211,7 +212,9 @@ const Student = () => {
               )}
               <div>
                 <p className="font-semibold">{`${student.first_name} ${student.last_name}`}</p>
-                <p className="text-gray-500 text-sm">class</p>
+                <p className="text-gray-500 text-sm">
+                  {student.classroom_id.classroom_name} class
+                </p>
               </div>
             </CardContent>
           </Card>
