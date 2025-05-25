@@ -179,7 +179,7 @@ const Student = () => {
             </>
           ) : (
             <>
-              <Pen /> Edite Student
+              <Pen /> Edite Students
             </>
           )}
         </Button>
@@ -312,7 +312,7 @@ const Student = () => {
                     className="h-25 rounded-full w-25"
                   />
                 </div>
-                <p>{studentForm.student_img?.name}</p>
+                <p>{studentForm.student_img.name}</p>
               </div>
             )}
           </div>

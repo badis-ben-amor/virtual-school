@@ -154,7 +154,7 @@ const Classroom = () => {
             </>
           ) : (
             <>
-              <Pen /> Edite Classroom
+              <Pen /> Edite Classrooms
             </>
           )}
         </Button>

@@ -157,7 +157,7 @@ const Dashboard = () => {
             </>
           ) : (
             <>
-              <Pen /> Edite school
+              <Pen /> Edite schools
             </>
           )}
         </Button>
@@ -169,7 +169,7 @@ const Dashboard = () => {
         {schools.map((school, i) => (
           <Card
             key={i}
-            className={`p-2 flex items-center ${
+            className={`pt-2 flex items-center ${
               school.is_active && "bg-[#ebf5e9]"
             }`}
           >

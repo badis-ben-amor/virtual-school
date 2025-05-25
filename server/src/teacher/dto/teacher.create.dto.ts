@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import {
   IsArray,
   IsMongoId,
@@ -18,11 +19,13 @@ export class TeacherCreateDto {
   @IsMongoId({ each: true })
   @IsArray()
   @IsOptional()
+  @Transform(({ value }) => JSON.parse(value))
   subjects: string[];
 
   @IsMongoId({ each: true })
   @IsArray()
   @IsOptional()
+  @Transform(({ value }) => JSON.parse(value))
   classrooms: string[];
 
   @IsMongoId()
