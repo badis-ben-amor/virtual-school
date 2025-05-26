@@ -42,7 +42,7 @@ export class SubjectController {
     );
   }
 
-  @Put(':subvject_id')
+  @Put(':subject_id')
   update(
     @Param() subjectParamsDto: SubjectParamsDto,
     @Query() subjectQueryDto: SubjectQueryDto,

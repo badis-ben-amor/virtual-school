@@ -3,11 +3,12 @@ import axios from "axios";
 
 export const createSubject = (
   accessToken: string,
-  subjectData: SubjectType
+  subjectData: SubjectType,
+  school_id: string
 ) => {
   return axios.post(
     `${process.env.NEXT_PUBLIC_API_URL}/subject`,
-    { ...subjectData },
+    { ...subjectData, school_id },
     { headers: { Authorization: `Bearer ${accessToken}` } }
   );
 };
@@ -51,6 +52,7 @@ export const deleteSubject = (
   school_id: string
 ) => {
   return axios.delete(
-    `${process.env.NEXT_PUBLIC_API_URL}/subject/${subject_id}?school_id=${school_id}`
+    `${process.env.NEXT_PUBLIC_API_URL}/subject/${subject_id}?school_id=${school_id}`,
+    { headers: { Authorization: `Bearer ${accessToken}` } }
   );
 };

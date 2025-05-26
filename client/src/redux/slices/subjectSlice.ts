@@ -16,11 +16,12 @@ export const createSubjectThunk = createAsyncThunk(
     {
       accessToken,
       subjectData,
-    }: { accessToken: string; subjectData: SubjectType },
+      school_id,
+    }: { accessToken: string; subjectData: SubjectType; school_id: string },
     thunkAPI
   ) => {
     try {
-      const res = await createSubject(accessToken, subjectData);
+      const res = await createSubject(accessToken, subjectData, school_id);
       return { data: res.data, accessToken };
     } catch (error: any) {
       if (error.response.status === 401) {
@@ -29,7 +30,11 @@ export const createSubjectThunk = createAsyncThunk(
           const { newAccessToken } = res.data;
           if (newAccessToken) {
             try {
-              const res = await createSubject(newAccessToken, subjectData);
+              const res = await createSubject(
+                newAccessToken,
+                subjectData,
+                school_id
+              );
               return { data: res.data, accessToken: newAccessToken };
             } catch (error: any) {
               return thunkAPI.rejectWithValue(
@@ -160,7 +165,7 @@ export const updateSubjectThunk = createAsyncThunk(
           if (newAccessToken) {
             try {
               const res = await updateSubject(
-                accessToken,
+                newAccessToken,
                 subject_id,
                 school_id,
                 subjectData
@@ -210,7 +215,7 @@ export const deleteSubjectThunk = createAsyncThunk(
           if (newAccessToken) {
             try {
               const res = await deleteSubject(
-                accessToken,
+                newAccessToken,
                 subject_id,
                 school_id
               );

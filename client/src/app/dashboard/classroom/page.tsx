@@ -89,6 +89,7 @@ const Classroom = () => {
           accessToken,
           classroomData: classroomForm,
           classroom_id: classroomForm._id,
+          school_id: classroomForm.school_id,
         })
       ).then(() =>
         dispatch(

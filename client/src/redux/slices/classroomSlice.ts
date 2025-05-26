@@ -150,10 +150,12 @@ export const updateClassroomThunk = createAsyncThunk(
       accessToken,
       classroomData,
       classroom_id,
+      school_id,
     }: {
       accessToken: string;
       classroomData: ClassroomType;
       classroom_id: string;
+      school_id: string;
     },
     thunkAPI
   ) => {
@@ -161,7 +163,8 @@ export const updateClassroomThunk = createAsyncThunk(
       const res = await updateClassroom(
         accessToken,
         classroomData,
-        classroom_id
+        classroom_id,
+        school_id
       );
       return { res: res.data, accessToken };
     } catch (error: any) {
@@ -174,7 +177,8 @@ export const updateClassroomThunk = createAsyncThunk(
               const res = await updateClassroom(
                 newAccessToken,
                 classroomData,
-                classroom_id
+                classroom_id,
+                school_id
               );
               return { res: res.data, accessToken: newAccessToken };
             } catch (error: any) {

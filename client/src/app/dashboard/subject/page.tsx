@@ -1,10 +1,22 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { getActiveSchoolThunk } from "@/redux/slices/schoolSlice";
 import {
+  createSubjectThunk,
+  deleteSubjectThunk,
   getAllSubjectsThunk,
   toggleShowEditeButtons,
+  updateSubjectThunk,
 } from "@/redux/slices/subjectSlice";
 import { Appdipatch, RootState } from "@/redux/store";
 import { SubjectType } from "@/types/subjectType";
@@ -22,6 +34,13 @@ const Subject = () => {
 
   const [activeSchoolId, setActiveSchoolId] = useState("");
   const [subjects, setSubjects] = useState<SubjectType[]>([]);
+  const [editingSubject, setEditingSubject] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [subjectData, setSubjectData] = useState<SubjectType>({
+    _id: "",
+    subject_name: "",
+    school_id: "",
+  });
 
   useEffect(() => {
     dispatch(getActiveSchoolThunk(accessToken))
@@ -41,10 +60,78 @@ const Subject = () => {
     setSubjects(subjectsData);
   }, [subjectsData]);
 
+  const handleOpenDialog = (subject?: SubjectType) => {
+    if (subject) setEditingSubject(true);
+
+    setSubjectData(
+      subject || {
+        _id: "",
+        subject_name: "",
+        school_id: "",
+      }
+    );
+
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setTimeout(() => {
+      setEditingSubject(false);
+      setSubjectData({
+        _id: "",
+        subject_name: "",
+        school_id: "",
+      });
+    }, 150);
+  };
+
+  const handleSubmit = () => {
+    if (editingSubject) {
+      dispatch(
+        updateSubjectThunk({
+          accessToken,
+          subjectData,
+          school_id: subjectData.school_id,
+          subject_id: subjectData._id,
+        })
+      ).then(() =>
+        dispatch(
+          getAllSubjectsThunk({ accessToken, school_id: activeSchoolId })
+        )
+      );
+    } else {
+      dispatch(
+        createSubjectThunk({
+          accessToken,
+          subjectData,
+          school_id: activeSchoolId,
+        })
+      ).then(() =>
+        dispatch(
+          getAllSubjectsThunk({ accessToken, school_id: activeSchoolId })
+        )
+      );
+    }
+
+    handleCloseDialog();
+  };
+
+  const handleDeleteSubject = (subject_id: string) => {
+    dispatch(
+      deleteSubjectThunk({ accessToken, subject_id, school_id: activeSchoolId })
+    ).then(() =>
+      dispatch(getAllSubjectsThunk({ accessToken, school_id: activeSchoolId }))
+    );
+  };
+
   return (
     <div className="p-2">
       <div className="flex justify-between">
-        <Button className="bg-[#e6edf5] hover:bg-[#d9e9fa] text-darck">
+        <Button
+          onClick={() => handleOpenDialog()}
+          className="bg-[#e6edf5] hover:bg-[#d9e9fa] text-darck"
+        >
           <Plus /> Add New Subject
         </Button>
         <Button
@@ -75,8 +162,14 @@ const Subject = () => {
                 </div>
                 {showEditeButtons ? (
                   <div className="flex space-x-4">
-                    <Pen className="h-5 w-5 cursor-pointer text-blue-500" />
-                    <Trash2 className="h-5 w-5 cursor-pointer text-red-500" />
+                    <Pen
+                      onClick={() => handleOpenDialog(subject)}
+                      className="h-5 w-5 cursor-pointer text-blue-500"
+                    />
+                    <Trash2
+                      onClick={() => handleDeleteSubject(subject._id)}
+                      className="h-5 w-5 cursor-pointer text-red-500"
+                    />
                   </div>
                 ) : (
                   <NotebookPen />
@@ -86,6 +179,36 @@ const Subject = () => {
           </Card>
         ))}
       </div>
+      <Dialog open={openDialog} onOpenChange={handleCloseDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {editingSubject ? "Edite Subject" : "Add New Subject"}
+            </DialogTitle>
+          </DialogHeader>
+          <div>
+            <div className="space-y-2">
+              <Label htmlFor="subject_name"></Label>
+              <Input
+                id="subject_name"
+                value={subjectData.subject_name}
+                placeholder="Enter Subject Name"
+                onChange={(e) =>
+                  setSubjectData((prev) => ({
+                    ...prev,
+                    subject_name: e.target.value,
+                  }))
+                }
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button onClick={handleSubmit} className="w-full">
+              {editingSubject ? "Update" : "Add"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

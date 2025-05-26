@@ -37,10 +37,11 @@ export const getOneClassroom = (
 export const updateClassroom = (
   accessToken: string,
   classroomData: ClassroomType,
-  classroom_id: string
+  classroom_id: string,
+  school_id: string
 ) => {
   return axios.put(
-    `${process.env.NEXT_PUBLIC_API_URL}/class-room/${classroom_id}?school_id=${classroomData.school_id}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/class-room/${classroom_id}?school_id=${school_id}`,
     {
       ...classroomData,
     },
