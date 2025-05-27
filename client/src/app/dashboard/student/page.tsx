@@ -11,6 +11,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -55,6 +62,8 @@ const Student = () => {
   });
   const [classrooms, setClassrooms] = useState<ClassroomType[]>([]);
   const [openDialog, setOpenDialog] = useState(false);
+  const [page, setPage] = useState(1);
+  const [limit] = useState(3);
 
   useEffect(() => {
     dispatch(getActiveSchoolThunk(accessToken))
@@ -64,6 +73,8 @@ const Student = () => {
           getAllStudentsThunk({
             accessToken,
             school_id: res.res.activeSchool._id,
+            page,
+            limit,
           })
         );
         setActiveSchoolId(res.res.activeSchool._id);
@@ -81,6 +92,17 @@ const Student = () => {
   useEffect(() => {
     setStudents(studentsData);
   }, [studentsData]);
+
+  useEffect(() => {
+    dispatch(
+      getAllStudentsThunk({
+        accessToken,
+        school_id: activeSchoolId,
+        page,
+        limit,
+      })
+    );
+  }, [page]);
 
   const handleOpenDialog = (student?: StudentType) => {
     if (student) {
@@ -122,14 +144,24 @@ const Student = () => {
         })
       ).then(() =>
         dispatch(
-          getAllStudentsThunk({ accessToken, school_id: activeSchoolId })
+          getAllStudentsThunk({
+            accessToken,
+            school_id: activeSchoolId,
+            page,
+            limit,
+          })
         )
       );
     } else {
       dispatch(createStudentThunk({ accessToken, studentData: formData })).then(
         () =>
           dispatch(
-            getAllStudentsThunk({ accessToken, school_id: activeSchoolId })
+            getAllStudentsThunk({
+              accessToken,
+              school_id: activeSchoolId,
+              page,
+              limit,
+            })
           )
       );
     }
@@ -156,10 +188,16 @@ const Student = () => {
     dispatch(
       deleteStudentThunk({ accessToken, student_id, school_id: activeSchoolId })
     ).then(() =>
-      dispatch(getAllStudentsThunk({ accessToken, school_id: activeSchoolId }))
+      dispatch(
+        getAllStudentsThunk({
+          accessToken,
+          school_id: activeSchoolId,
+          page,
+          limit,
+        })
+      )
     );
   };
-
   return (
     <div className="p-2">
       <div className="flex justify-between">
@@ -220,6 +258,19 @@ const Student = () => {
           </Card>
         ))}
       </div>
+
+      <Pagination>
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              onClick={() => setPage((p) => Math.max(p - 1, 1))}
+            />
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationNext onClick={() => setPage((p) => p + 1)} />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
 
       <Dialog open={openDialog} onOpenChange={handleCloseDialog}>
         <DialogContent>

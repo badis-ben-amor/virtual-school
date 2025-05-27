@@ -43,7 +43,11 @@ export class StudentController {
 
   @Get()
   getAll(@Query() studentQueryDto: StudentQueryDto) {
-    return this.StudentService.getAll(studentQueryDto.school_id);
+    return this.StudentService.getAll(
+      studentQueryDto.school_id,
+      studentQueryDto.page,
+      studentQueryDto.limit,
+    );
   }
 
   @Get(':student_id')

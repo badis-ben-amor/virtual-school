@@ -51,11 +51,16 @@ export const createStudentThunk = createAsyncThunk(
 export const getAllStudentsThunk = createAsyncThunk(
   "student/getAll",
   async (
-    { accessToken, school_id }: { accessToken: string; school_id: string },
+    {
+      accessToken,
+      school_id,
+      page,
+      limit,
+    }: { accessToken: string; school_id: string; page: number; limit: number },
     thunkAPI
   ) => {
     try {
-      const res = await getAllStudents(accessToken, school_id);
+      const res = await getAllStudents(accessToken, school_id, page, limit);
       return { res: res.data, accessToken };
     } catch (error: any) {
       if (error.response.status === 401) {
@@ -64,7 +69,12 @@ export const getAllStudentsThunk = createAsyncThunk(
           const { newAccessToken } = res.data;
           if (newAccessToken) {
             try {
-              const res = await getAllStudents(newAccessToken, school_id);
+              const res = await getAllStudents(
+                newAccessToken,
+                school_id,
+                page,
+                limit
+              );
               return { res: res.data, accessToken: newAccessToken };
             } catch (error: any) {
               return thunkAPI.rejectWithValue(
@@ -262,14 +272,14 @@ const studentSlice = createSlice({
       })
       .addCase(createStudentThunk.rejected, (state, action: any) => {
         state.isLoading = false;
-        state.error = action.payload;
+        state.error = action.payload.data;
       })
       .addCase(getAllStudentsThunk.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(getAllStudentsThunk.fulfilled, (state, action: any) => {
         state.isLoading = false;
-        state.students = action.payload.res;
+        state.students = action.payload.res.data;
         state.accessToken = action.payload.accessToken;
       })
       .addCase(getAllStudentsThunk.rejected, (state, action: any) => {

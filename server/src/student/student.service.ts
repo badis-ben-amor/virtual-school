@@ -32,11 +32,17 @@ export class StudentService {
 
     return { message: 'Student Create Successfully' };
   }
-  async getAll(school_id: string) {
-    return await this.studentModel
-      .find({ school_id })
-      .select('-__v')
-      .populate('classroom_id', '_id classroom_name');
+  async getAll(school_id: string, page: number, limit: number) {
+    const [data, total] = await Promise.all([
+      this.studentModel
+        .find({ school_id })
+        .select('-__v')
+        .populate('classroom_id', '_id classroom_name')
+        .skip((page - 1) * limit)
+        .limit(limit),
+      this.studentModel.countDocuments(),
+    ]);
+    return { data, total, page, pageCount: Math.ceil(total / limit) };
   }
 
   async getOne(student_id: string, school_id: string) {

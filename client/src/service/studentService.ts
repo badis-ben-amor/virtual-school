@@ -6,9 +6,15 @@ export const createStudent = (accessToken: string, studentdata: FormData) => {
   });
 };
 
-export const getAllStudents = (accessToken: string, school_id: string) => {
+export const getAllStudents = (
+  accessToken: string,
+  school_id: string,
+  page: number,
+  limit: number
+) => {
+  console.log(page);
   return axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/student?school_id=${school_id}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/student?school_id=${school_id}&page=${page}&limit=${limit}`,
     { headers: { Authorization: `Bearer ${accessToken}` } }
   );
 };
