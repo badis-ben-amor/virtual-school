@@ -14,6 +14,7 @@ import {
   Pagination,
   PaginationContent,
   PaginationItem,
+  PaginationLink,
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
@@ -47,6 +48,8 @@ const Student = () => {
     accessToken,
     students: studentsData,
     showEdietButtons,
+    pageCount,
+    page: pageData,
   } = useSelector((state: RootState) => state.student);
 
   const [activeSchoolId, setActiveSchoolId] = useState("");
@@ -63,7 +66,7 @@ const Student = () => {
   const [classrooms, setClassrooms] = useState<ClassroomType[]>([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [page, setPage] = useState(1);
-  const [limit] = useState(3);
+  const [limit] = useState(12);
 
   useEffect(() => {
     dispatch(getActiveSchoolThunk(accessToken))
@@ -259,15 +262,30 @@ const Student = () => {
         ))}
       </div>
 
-      <Pagination>
+      <Pagination className="mt-4">
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious
               onClick={() => setPage((p) => Math.max(p - 1, 1))}
             />
           </PaginationItem>
+
+          {Array.from({ length: pageCount }, (_, i) => (
+            <PaginationItem key={i}>
+              <PaginationLink
+                isActive={page === i + 1}
+                onClick={() => setPage(i + 1)}
+                href="#"
+              >
+                {i + 1}
+              </PaginationLink>
+            </PaginationItem>
+          ))}
+
           <PaginationItem>
-            <PaginationNext onClick={() => setPage((p) => p + 1)} />
+            <PaginationNext
+              onClick={() => setPage((p) => Math.min(p + 1, pageCount))}
+            />
           </PaginationItem>
         </PaginationContent>
       </Pagination>

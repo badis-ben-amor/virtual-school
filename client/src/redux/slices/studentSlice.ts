@@ -254,6 +254,9 @@ const studentSlice = createSlice({
     error: "",
     accessToken: "",
     student: {},
+    page: 0,
+    pageCount: 0,
+    total: 0,
     showEdietButtons: false,
   },
   reducers: {
@@ -281,6 +284,9 @@ const studentSlice = createSlice({
         state.isLoading = false;
         state.students = action.payload.res.data;
         state.accessToken = action.payload.accessToken;
+        state.page = action.payload.res.page;
+        state.pageCount = action.payload.res.pageCount;
+        state.total = action.payload.res.total;
       })
       .addCase(getAllStudentsThunk.rejected, (state, action: any) => {
         state.isLoading = false;

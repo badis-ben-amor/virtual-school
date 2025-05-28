@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { Button } from "./ui/button";
-import { Menu } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import logo from "../../public/ChatGPT Image Apr 4, 2025, 07_11_46 PM.png";
 import Image from "next/image";
 import { useState } from "react";
@@ -55,7 +55,7 @@ const Navbar = () => {
           onClick={() => setMenuIsOpen(!menuIsOpen)}
           className="mb-1 bg-[#9ebaa1] hover:bg-[#85ab88]"
         >
-          <Menu />
+          {menuIsOpen ? <X /> : <Menu />}
         </Button>
 
         {menuIsOpen && (
