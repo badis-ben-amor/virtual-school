@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsMongoId, IsNotEmpty } from 'class-validator';
+import { IsMongoId, IsNotEmpty, IsOptional } from 'class-validator';
 
 export class StudentQueryDto {
   @IsMongoId()
@@ -7,10 +7,31 @@ export class StudentQueryDto {
   school_id: string;
 
   @Type(() => Number)
-  @IsNotEmpty()
+  @IsOptional()
   page: number;
 
   @Type(() => Number)
-  @IsNotEmpty()
+  @IsOptional()
   limit: number;
+
+  @IsOptional()
+  search?: string;
 }
+
+// import { IsOptional, IsString } from 'class-validator';
+
+// export class StudentQueryDto {
+//   @IsOptional()
+//   @IsString()
+//   school_id: string;
+
+//   @IsOptional()
+//   page: number;
+
+//   @IsOptional()
+//   limit: number;
+
+//   @IsOptional()
+//   @IsString()
+//   search?: string;
+// }

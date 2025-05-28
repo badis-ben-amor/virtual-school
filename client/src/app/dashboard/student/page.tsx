@@ -1,6 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Command, CommandInput } from "@/components/ui/command";
 import {
   Dialog,
   DialogContent,
@@ -53,7 +54,7 @@ const Student = () => {
   } = useSelector((state: RootState) => state.student);
 
   const [activeSchoolId, setActiveSchoolId] = useState("");
-  const [students, setStudents] = useState([]);
+  const [students, setStudents] = useState<StudentType[]>([]);
   const [editingStudent, setEditingStudent] = useState(false);
   const [studentForm, setStudentForm] = useState<StudentType>({
     _id: "",
@@ -67,6 +68,7 @@ const Student = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [page, setPage] = useState(1);
   const [limit] = useState(12);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     dispatch(getActiveSchoolThunk(accessToken))
@@ -78,6 +80,7 @@ const Student = () => {
             school_id: res.res.activeSchool._id,
             page,
             limit,
+            search,
           })
         );
         setActiveSchoolId(res.res.activeSchool._id);
@@ -103,9 +106,10 @@ const Student = () => {
         school_id: activeSchoolId,
         page,
         limit,
+        search,
       })
     );
-  }, [page]);
+  }, [page, search]);
 
   const handleOpenDialog = (student?: StudentType) => {
     if (student) {
@@ -152,6 +156,7 @@ const Student = () => {
             school_id: activeSchoolId,
             page,
             limit,
+            search,
           })
         )
       );
@@ -164,6 +169,7 @@ const Student = () => {
               school_id: activeSchoolId,
               page,
               limit,
+              search,
             })
           )
       );
@@ -197,6 +203,7 @@ const Student = () => {
           school_id: activeSchoolId,
           page,
           limit,
+          search,
         })
       )
     );
@@ -228,8 +235,21 @@ const Student = () => {
 
       <h1 className="text-xl font-semibold mb-2">Students</h1>
 
+      <div className="flex justify-between mb-3">
+        filters
+        <Command className="bg-[#f5f6f7] w-1/5">
+          <CommandInput
+            placeholder="Search Student..."
+            onValueChange={(value) => {
+              setSearch(value);
+              setPage(1);
+            }}
+          />
+        </Command>
+      </div>
+
       <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-4">
-        {students.map((student: StudentType, i) => (
+        {students.map((student, i) => (
           <Card key={i} className="">
             <CardContent className="flex justify-between items-center">
               <Image
@@ -273,7 +293,7 @@ const Student = () => {
           {Array.from({ length: pageCount }, (_, i) => (
             <PaginationItem key={i}>
               <PaginationLink
-                isActive={page === i + 1}
+                isActive={pageData === i + 1}
                 onClick={() => setPage(i + 1)}
                 href="#"
               >

@@ -47,6 +47,7 @@ export class StudentController {
       studentQueryDto.school_id,
       studentQueryDto.page,
       studentQueryDto.limit,
+      studentQueryDto.search,
     );
   }
 

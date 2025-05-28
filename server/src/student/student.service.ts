@@ -32,15 +32,27 @@ export class StudentService {
 
     return { message: 'Student Create Successfully' };
   }
-  async getAll(school_id: string, page: number, limit: number) {
+  async getAll(
+    school_id: string,
+    page: number,
+    limit: number,
+    search?: string,
+  ) {
+    const filter: any = { school_id };
+    if (search) {
+      filter.$or = [
+        { first_name: { $regex: search, $options: 'i' } },
+        { last_name: { $regex: search, $options: 'i' } },
+      ];
+    }
     const [data, total] = await Promise.all([
       this.studentModel
-        .find({ school_id })
+        .find(filter)
         .select('-__v')
         .populate('classroom_id', '_id classroom_name')
         .skip((page - 1) * limit)
         .limit(limit),
-      this.studentModel.countDocuments(),
+      this.studentModel.countDocuments(filter),
     ]);
     return { data, total, page, pageCount: Math.ceil(total / limit) };
   }

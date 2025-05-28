@@ -10,11 +10,11 @@ export const getAllStudents = (
   accessToken: string,
   school_id: string,
   page: number,
-  limit: number
+  limit: number,
+  search?: string
 ) => {
-  console.log(page);
   return axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/student?school_id=${school_id}&page=${page}&limit=${limit}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/student?school_id=${school_id}&page=${page}&limit=${limit}&search=${search}`,
     { headers: { Authorization: `Bearer ${accessToken}` } }
   );
 };
