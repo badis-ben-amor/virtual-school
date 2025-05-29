@@ -15,7 +15,10 @@ export class StudentQueryDto {
   limit: number;
 
   @IsOptional()
-  search?: string;
+  first_name_search: string;
+
+  @IsOptional()
+  last_name_search: string;
 }
 
 // import { IsOptional, IsString } from 'class-validator';

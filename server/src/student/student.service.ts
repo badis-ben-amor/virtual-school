@@ -36,13 +36,14 @@ export class StudentService {
     school_id: string,
     page: number,
     limit: number,
-    search?: string,
+    first_name_search?: string,
+    last_name_search?: string,
   ) {
     const filter: any = { school_id };
-    if (search) {
-      filter.$or = [
-        { first_name: { $regex: search, $options: 'i' } },
-        { last_name: { $regex: search, $options: 'i' } },
+    if (first_name_search || last_name_search) {
+      filter.$and = [
+        { first_name: { $regex: first_name_search, $options: 'i' } },
+        { last_name: { $regex: last_name_search, $options: 'i' } },
       ];
     }
     const [data, total] = await Promise.all([
@@ -51,7 +52,8 @@ export class StudentService {
         .select('-__v')
         .populate('classroom_id', '_id classroom_name')
         .skip((page - 1) * limit)
-        .limit(limit),
+        .limit(limit)
+        .sort('first_name'),
       this.studentModel.countDocuments(filter),
     ]);
     return { data, total, page, pageCount: Math.ceil(total / limit) };

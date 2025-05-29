@@ -68,7 +68,8 @@ const Student = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [page, setPage] = useState(1);
   const [limit] = useState(12);
-  const [search, setSearch] = useState("");
+  const [first_name_search, setFirst_name_search] = useState("");
+  const [last_name_search, setLast_name_search] = useState("");
 
   useEffect(() => {
     dispatch(getActiveSchoolThunk(accessToken))
@@ -80,7 +81,8 @@ const Student = () => {
             school_id: res.res.activeSchool._id,
             page,
             limit,
-            search,
+            first_name_search,
+            last_name_search,
           })
         );
         setActiveSchoolId(res.res.activeSchool._id);
@@ -106,10 +108,11 @@ const Student = () => {
         school_id: activeSchoolId,
         page,
         limit,
-        search,
+        first_name_search,
+        last_name_search,
       })
     );
-  }, [page, search]);
+  }, [page, first_name_search, last_name_search]);
 
   const handleOpenDialog = (student?: StudentType) => {
     if (student) {
@@ -156,7 +159,8 @@ const Student = () => {
             school_id: activeSchoolId,
             page,
             limit,
-            search,
+            first_name_search,
+            last_name_search,
           })
         )
       );
@@ -169,7 +173,8 @@ const Student = () => {
               school_id: activeSchoolId,
               page,
               limit,
-              search,
+              first_name_search,
+              last_name_search,
             })
           )
       );
@@ -203,10 +208,18 @@ const Student = () => {
           school_id: activeSchoolId,
           page,
           limit,
-          search,
+          first_name_search,
+          last_name_search,
         })
       )
     );
+  };
+
+  const handleSearchValueChange = (value: string) => {
+    const fullName = value.trim().split(" ");
+    setFirst_name_search(fullName[0]);
+    setLast_name_search(fullName.slice(1).join(" "));
+    setPage(1);
   };
   return (
     <div className="p-2">
@@ -240,10 +253,7 @@ const Student = () => {
         <Command className="bg-[#f5f6f7] w-1/5">
           <CommandInput
             placeholder="Search Student..."
-            onValueChange={(value) => {
-              setSearch(value);
-              setPage(1);
-            }}
+            onValueChange={handleSearchValueChange}
           />
         </Command>
       </div>
@@ -284,7 +294,7 @@ const Student = () => {
 
       <Pagination className="mt-4">
         <PaginationContent>
-          <PaginationItem>
+          <PaginationItem aria-disabled>
             <PaginationPrevious
               onClick={() => setPage((p) => Math.max(p - 1, 1))}
             />
