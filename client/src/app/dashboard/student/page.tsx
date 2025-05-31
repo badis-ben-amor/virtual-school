@@ -38,7 +38,16 @@ import {
 import { Appdipatch, RootState } from "@/redux/store";
 import { ClassroomType } from "@/types/classroomType";
 import { StudentType } from "@/types/studentType";
-import { Pen, Plus, RotateCcw, RotateCw, Trash2 } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowUp,
+  Pen,
+  Plug2,
+  Plus,
+  RotateCcw,
+  RotateCw,
+  Trash2,
+} from "lucide-react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -68,8 +77,11 @@ const Student = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [page, setPage] = useState(1);
   const [limit] = useState(12);
+  // filters
   const [first_name_search, setFirst_name_search] = useState("");
   const [last_name_search, setLast_name_search] = useState("");
+  const [sortByDate, setSortByDate] = useState("");
+  const [sortByName, setSortByName] = useState("");
 
   useEffect(() => {
     dispatch(getActiveSchoolThunk(accessToken))
@@ -83,6 +95,7 @@ const Student = () => {
             limit,
             first_name_search,
             last_name_search,
+            sortByDate,
           })
         );
         setActiveSchoolId(res.res.activeSchool._id);
@@ -110,9 +123,10 @@ const Student = () => {
         limit,
         first_name_search,
         last_name_search,
+        sortByDate,
       })
     );
-  }, [page, first_name_search, last_name_search]);
+  }, [page, first_name_search, last_name_search, sortByDate]);
 
   const handleOpenDialog = (student?: StudentType) => {
     if (student) {
@@ -161,6 +175,7 @@ const Student = () => {
             limit,
             first_name_search,
             last_name_search,
+            sortByDate,
           })
         )
       );
@@ -175,6 +190,7 @@ const Student = () => {
               limit,
               first_name_search,
               last_name_search,
+              sortByDate,
             })
           )
       );
@@ -210,6 +226,7 @@ const Student = () => {
           limit,
           first_name_search,
           last_name_search,
+          sortByDate,
         })
       )
     );
@@ -248,14 +265,55 @@ const Student = () => {
 
       <h1 className="text-xl font-semibold mb-2">Students</h1>
 
-      <div className="flex justify-between mb-3">
-        filters
-        <Command className="bg-[#f5f6f7] w-1/5">
+      <div className="flex justify-between">
+        <Command className="bg-[#f5f6f7] w-1/5 mb-2">
           <CommandInput
             placeholder="Search Student..."
             onValueChange={handleSearchValueChange}
           />
         </Command>
+        <Button variant={"outline"}>Reset Filters</Button>
+      </div>
+
+      <div className="flex justify-between mb-3">
+        <div className="grid lg:grid-cols-8 md:grid-cols-5 sm:grid-cols-2 grid-cols-1 lg:gap-x-4 gap-y-2">
+          <div>
+            <Select
+              value={sortByDate}
+              onValueChange={(value) => setSortByDate(value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="filter by date" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="asc">
+                  <ArrowUp /> date
+                </SelectItem>
+                <SelectItem value="desc">
+                  <ArrowDown /> date
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Select
+              value={sortByDate}
+              onValueChange={(value) => setSortByDate(value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="filter by name" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="asc">
+                  <ArrowUp /> name
+                </SelectItem>
+                <SelectItem value="desc">
+                  <ArrowDown /> name
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
       </div>
 
       <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-4">

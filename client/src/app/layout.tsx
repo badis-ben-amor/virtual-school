@@ -16,7 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "School Management",
+  title:
+    "School Management System | Manage Schools, Classrooms & Students - Badis Ben Amor",
   description:
     "Streamline your school operations with an intuitive management system. Manage classrooms, students, teachers, and subjects all in one easy-to-use platform.",
   verification: { google: process.env.GOOGLE_SITE_VERIFICATION },

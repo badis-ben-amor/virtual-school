@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsMongoId, IsNotEmpty, IsOptional } from 'class-validator';
+import { IsMongoId, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class StudentQueryDto {
   @IsMongoId()
@@ -14,27 +14,19 @@ export class StudentQueryDto {
   @IsOptional()
   limit: number;
 
+  @IsString()
   @IsOptional()
   first_name_search: string;
 
+  @IsString()
   @IsOptional()
   last_name_search: string;
+
+  @IsString()
+  @IsOptional()
+  sortByDate: 'asc' | 'desc';
+
+  @IsString()
+  @IsOptional()
+  sortByName: 'asc' | 'desc';
 }
-
-// import { IsOptional, IsString } from 'class-validator';
-
-// export class StudentQueryDto {
-//   @IsOptional()
-//   @IsString()
-//   school_id: string;
-
-//   @IsOptional()
-//   page: number;
-
-//   @IsOptional()
-//   limit: number;
-
-//   @IsOptional()
-//   @IsString()
-//   search?: string;
-// }

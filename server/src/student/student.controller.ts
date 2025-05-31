@@ -49,6 +49,8 @@ export class StudentController {
       studentQueryDto.limit,
       studentQueryDto.first_name_search,
       studentQueryDto.last_name_search,
+      studentQueryDto.sortByDate,
+      studentQueryDto.sortByName,
     );
   }
 

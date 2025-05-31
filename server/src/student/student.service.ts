@@ -34,18 +34,28 @@ export class StudentService {
   }
   async getAll(
     school_id: string,
-    page: number,
-    limit: number,
+    page: number = 1,
+    limit: number = 10,
     first_name_search?: string,
     last_name_search?: string,
+    sortByDate?: 'asc' | 'desc',
+    sortByName?: 'asc' | 'desc',
   ) {
     const filter: any = { school_id };
     if (first_name_search || last_name_search) {
-      filter.$and = [
-        { first_name: { $regex: first_name_search, $options: 'i' } },
-        { last_name: { $regex: last_name_search, $options: 'i' } },
-      ];
+      filter.$and = [];
+      if (typeof first_name_search === 'string') {
+        filter.$and.push({
+          first_name: { $regex: first_name_search, $options: 'i' },
+        });
+      }
+      if (typeof last_name_search === 'string') {
+        filter.$and.push({
+          last_name: { $regex: last_name_search, $options: 'i' },
+        });
+      }
     }
+
     const [data, total] = await Promise.all([
       this.studentModel
         .find(filter)
@@ -53,7 +63,13 @@ export class StudentService {
         .populate('classroom_id', '_id classroom_name')
         .skip((page - 1) * limit)
         .limit(limit)
-        .sort('first_name'),
+        .sort({
+          ...(sortByDate && { createdAt: sortByDate === 'asc' ? 1 : -1 }),
+          ...(sortByName && {
+            first_name: sortByName === 'asc' ? 1 : -1,
+            last_name: sortByName === 'asc' ? 1 : -1,
+          }),
+        }),
       this.studentModel.countDocuments(filter),
     ]);
     return { data, total, page, pageCount: Math.ceil(total / limit) };
