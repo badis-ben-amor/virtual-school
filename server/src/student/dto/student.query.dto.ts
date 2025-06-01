@@ -8,25 +8,28 @@ export class StudentQueryDto {
 
   @Type(() => Number)
   @IsOptional()
-  page: number;
+  page?: number;
 
   @Type(() => Number)
   @IsOptional()
-  limit: number;
+  limit?: number;
 
   @IsString()
   @IsOptional()
-  first_name_search: string;
+  first_name_search?: string;
 
   @IsString()
   @IsOptional()
-  last_name_search: string;
+  last_name_search?: string;
 
   @IsString()
   @IsOptional()
-  sortByDate: 'asc' | 'desc';
+  sortByDate?: 'asc' | 'desc';
 
   @IsString()
   @IsOptional()
-  sortByName: 'asc' | 'desc';
+  sortByName?: 'asc' | 'desc';
+
+  @IsOptional()
+  classroom_id?: string;
 }

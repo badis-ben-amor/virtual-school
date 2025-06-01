@@ -38,16 +38,7 @@ import {
 import { Appdipatch, RootState } from "@/redux/store";
 import { ClassroomType } from "@/types/classroomType";
 import { StudentType } from "@/types/studentType";
-import {
-  ArrowDown,
-  ArrowUp,
-  Pen,
-  Plug2,
-  Plus,
-  RotateCcw,
-  RotateCw,
-  Trash2,
-} from "lucide-react";
+import { ArrowDown, ArrowUp, Pen, Plus, RotateCw, Trash2 } from "lucide-react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -77,11 +68,12 @@ const Student = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [page, setPage] = useState(1);
   const [limit] = useState(12);
-  // filters
   const [first_name_search, setFirst_name_search] = useState("");
   const [last_name_search, setLast_name_search] = useState("");
   const [sortByDate, setSortByDate] = useState("");
   const [sortByName, setSortByName] = useState("");
+  const [classroom_id, setclassroom_id] = useState("");
+  const [searchInputValue, setSearchInputValue] = useState("");
 
   useEffect(() => {
     dispatch(getActiveSchoolThunk(accessToken))
@@ -96,6 +88,8 @@ const Student = () => {
             first_name_search,
             last_name_search,
             sortByDate,
+            sortByName,
+            classroom_id,
           })
         );
         setActiveSchoolId(res.res.activeSchool._id);
@@ -124,9 +118,18 @@ const Student = () => {
         first_name_search,
         last_name_search,
         sortByDate,
+        sortByName,
+        classroom_id,
       })
     );
-  }, [page, first_name_search, last_name_search, sortByDate]);
+  }, [
+    page,
+    first_name_search,
+    last_name_search,
+    sortByDate,
+    sortByName,
+    classroom_id,
+  ]);
 
   const handleOpenDialog = (student?: StudentType) => {
     if (student) {
@@ -176,6 +179,8 @@ const Student = () => {
             first_name_search,
             last_name_search,
             sortByDate,
+            sortByName,
+            classroom_id,
           })
         )
       );
@@ -191,6 +196,8 @@ const Student = () => {
               first_name_search,
               last_name_search,
               sortByDate,
+              sortByName,
+              classroom_id,
             })
           )
       );
@@ -227,17 +234,21 @@ const Student = () => {
           first_name_search,
           last_name_search,
           sortByDate,
+          sortByName,
+          classroom_id,
         })
       )
     );
   };
 
   const handleSearchValueChange = (value: string) => {
+    setSearchInputValue(value);
     const fullName = value.trim().split(" ");
     setFirst_name_search(fullName[0]);
     setLast_name_search(fullName.slice(1).join(" "));
     setPage(1);
   };
+
   return (
     <div className="p-2">
       <div className="flex justify-between">
@@ -265,43 +276,73 @@ const Student = () => {
 
       <h1 className="text-xl font-semibold mb-2">Students</h1>
 
-      <div className="flex justify-between">
-        <Command className="bg-[#f5f6f7] w-1/5 mb-2">
+      <div className="flex justify-between items-center mb-2">
+        <Command className="bg-[#f5f6f7] lg:w-1/5 md:w-1/4 w-1/3">
           <CommandInput
+            value={searchInputValue}
             placeholder="Search Student..."
             onValueChange={handleSearchValueChange}
           />
         </Command>
-        <Button variant={"outline"}>Reset Filters</Button>
+        <RotateCw
+          size={16}
+          className="ml-1 mr-auto cursor-pointer"
+          onClick={() => {
+            setSearchInputValue("");
+            setFirst_name_search("");
+            setLast_name_search("");
+            setPage(1);
+          }}
+        />
+        <Button
+          onClick={() => {
+            setSearchInputValue("");
+            setFirst_name_search("");
+            setLast_name_search("");
+            setclassroom_id("");
+            setSortByName("");
+            setSortByDate("");
+          }}
+          variant={"outline"}
+        >
+          Reset Filters
+        </Button>
       </div>
 
       <div className="flex justify-between mb-3">
-        <div className="grid lg:grid-cols-8 md:grid-cols-5 sm:grid-cols-2 grid-cols-1 lg:gap-x-4 gap-y-2">
-          <div>
+        <div className="grid lg:grid-cols-6 md:grid-cols-5 grid-cols-3 grid-cols-1 lg:gap-x-4 gap-y-2">
+          <div className="flex items-center gap-x-1">
             <Select
-              value={sortByDate}
-              onValueChange={(value) => setSortByDate(value)}
+              value={classroom_id}
+              onValueChange={(value) => setclassroom_id(value)}
             >
               <SelectTrigger>
-                <SelectValue placeholder="filter by date" />
+                <SelectValue placeholder="select class" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="asc">
-                  <ArrowUp /> date
-                </SelectItem>
-                <SelectItem value="desc">
-                  <ArrowDown /> date
-                </SelectItem>
+                {classrooms.map((classroom) => (
+                  <SelectItem key={classroom._id} value={classroom._id}>
+                    {classroom.classroom_name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
+            <RotateCw
+              className="cursor-pointer"
+              size={16}
+              onClick={() => {
+                setclassroom_id("");
+                setPage(1);
+              }}
+            />
           </div>
-          <div>
+          <div className="flex items-center gap-x-1">
             <Select
-              value={sortByDate}
-              onValueChange={(value) => setSortByDate(value)}
+              value={sortByName}
+              onValueChange={(value) => setSortByName(value)}
             >
               <SelectTrigger>
-                <SelectValue placeholder="filter by name" />
+                <SelectValue placeholder="sort by name" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="asc">
@@ -312,6 +353,40 @@ const Student = () => {
                 </SelectItem>
               </SelectContent>
             </Select>
+            <RotateCw
+              className="cursor-pointer"
+              size={16}
+              onClick={() => {
+                setSortByName("");
+                setPage(1);
+              }}
+            />
+          </div>
+          <div className="flex items-center gap-x-1">
+            <Select
+              value={sortByDate}
+              onValueChange={(value) => setSortByDate(value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="sort by date" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="asc">
+                  <ArrowUp /> date
+                </SelectItem>
+                <SelectItem value="desc">
+                  <ArrowDown /> date
+                </SelectItem>
+              </SelectContent>
+            </Select>
+            <RotateCw
+              className="cursor-pointer"
+              size={16}
+              onClick={() => {
+                setSortByDate("");
+                setPage(1);
+              }}
+            />
           </div>
         </div>
       </div>
@@ -342,7 +417,7 @@ const Student = () => {
               <div>
                 <p className="font-semibold">{`${student.first_name} ${student.last_name}`}</p>
                 <p className="text-gray-500 text-sm">
-                  {student.classroom_id.classroom_name} class
+                  class : {student.classroom_id.classroom_name}
                 </p>
               </div>
             </CardContent>

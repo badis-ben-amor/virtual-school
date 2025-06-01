@@ -9,15 +9,16 @@ export const createStudent = (accessToken: string, studentdata: FormData) => {
 export const getAllStudents = (
   accessToken: string,
   school_id: string,
-  page?: number,
-  limit?: number,
-  first_name_search?: string,
-  last_name_search?: string,
-  sortByDate?: string,
-  sortByName?: string
+  page: number,
+  limit: number,
+  first_name_search: string,
+  last_name_search: string,
+  sortByDate: string,
+  sortByName: string,
+  classroom_id: string
 ) => {
   return axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/student?school_id=${school_id}&page=${page}&limit=${limit}&first_name_search=${first_name_search}&last_name_search=${last_name_search}&sortByDate=${sortByDate}&sortByName=${sortByName}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/student?school_id=${school_id}&page=${page}&limit=${limit}&first_name_search=${first_name_search}&last_name_search=${last_name_search}&sortByDate=${sortByDate}&sortByName=${sortByName}&classroom_id=${classroom_id}`,
     { headers: { Authorization: `Bearer ${accessToken}` } }
   );
 };

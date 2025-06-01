@@ -40,20 +40,22 @@ export class StudentService {
     last_name_search?: string,
     sortByDate?: 'asc' | 'desc',
     sortByName?: 'asc' | 'desc',
+    classroom_id?: string,
   ) {
     const filter: any = { school_id };
     if (first_name_search || last_name_search) {
       filter.$and = [];
-      if (typeof first_name_search === 'string') {
+      if (typeof first_name_search === 'string')
         filter.$and.push({
           first_name: { $regex: first_name_search, $options: 'i' },
         });
-      }
-      if (typeof last_name_search === 'string') {
+      if (typeof last_name_search === 'string')
         filter.$and.push({
           last_name: { $regex: last_name_search, $options: 'i' },
         });
-      }
+    }
+    if (classroom_id) {
+      filter.classroom_id = classroom_id;
     }
 
     const [data, total] = await Promise.all([
@@ -64,15 +66,15 @@ export class StudentService {
         .skip((page - 1) * limit)
         .limit(limit)
         .sort({
-          ...(sortByDate && { createdAt: sortByDate === 'asc' ? 1 : -1 }),
           ...(sortByName && {
             first_name: sortByName === 'asc' ? 1 : -1,
             last_name: sortByName === 'asc' ? 1 : -1,
           }),
+          ...(sortByDate && { createdAt: sortByDate === 'asc' ? 1 : -1 }),
         }),
       this.studentModel.countDocuments(filter),
     ]);
-    return { data, total, page, pageCount: Math.ceil(total / limit) };
+    return { data, pageCount: Math.ceil(total / limit), total, page };
   }
 
   async getOne(student_id: string, school_id: string) {

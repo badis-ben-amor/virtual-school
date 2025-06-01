@@ -43,7 +43,15 @@ export class TeacherController {
 
   @Get()
   getAll(@Query() teacherQueryDto: TeacherQueryDto) {
-    return this.teacherService.getAll(teacherQueryDto.school_id);
+    return this.teacherService.getAll(
+      teacherQueryDto.school_id,
+      teacherQueryDto.page,
+      teacherQueryDto.limit,
+      teacherQueryDto.first_name_search,
+      teacherQueryDto.last_name_search,
+      teacherQueryDto.classroom_id,
+      teacherQueryDto.subject_id,
+    );
   }
 
   @Get(':teacher_id')

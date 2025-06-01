@@ -28,8 +28,34 @@ export class TeacherService {
     return { message: 'Teacher Created' };
   }
 
-  async getAll(school_id: string) {
-    return this.teacherModel.find({ school_id });
+  async getAll(
+    school_id: string,
+    page: number,
+    limit: number,
+    first_name_search: string,
+    last_name_search: string,
+    classroom_id: string,
+    subject_id: string,
+  ) {
+    const filter: any = { school_id };
+    if (first_name_search || last_name_search) {
+      filter.$and = [];
+      if (typeof first_name_search === 'string')
+        filter.$and.push({ frst_name: { $regex: first_name_search } });
+      if (typeof last_name_search === 'string')
+        filter.$and.push({ last_name: { $regex: last_name_search } });
+    }
+    if (subject_id) filter.subjects = school_id;
+    if (classroom_id) filter.classroom_id = classroom_id;
+
+    const [data, total] = await Promise.all([
+      this.teacherModel
+        .find(filter)
+        .skip((page - 1) * limit)
+        .limit(limit),
+      this.teacherModel.countDocuments(filter),
+    ]);
+    return { data, pageCount: Math.ceil(total / limit), total, page };
   }
 
   async getOne(teacher_id: string, school_id: string) {

@@ -282,7 +282,7 @@ const teacherSlice = createSlice({
       })
       .addCase(getAllTeachersThunk.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.teachers = action.payload.data;
+        state.teachers = action.payload.data.data;
         state.accessToken = action.payload.accessToken;
       })
       .addCase(getAllTeachersThunk.rejected, (state, action: any) => {

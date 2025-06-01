@@ -60,15 +60,17 @@ export const getAllStudentsThunk = createAsyncThunk(
       last_name_search,
       sortByDate,
       sortByName,
+      classroom_id,
     }: {
       accessToken: string;
       school_id: string;
-      page?: number;
-      limit?: number;
-      first_name_search?: string;
-      last_name_search?: string;
-      sortByDate?: string;
-      sortByName?: string;
+      page: number;
+      limit: number;
+      first_name_search: string;
+      last_name_search: string;
+      sortByDate: string;
+      sortByName: string;
+      classroom_id: string;
     },
     thunkAPI
   ) => {
@@ -81,7 +83,8 @@ export const getAllStudentsThunk = createAsyncThunk(
         first_name_search,
         last_name_search,
         sortByDate,
-        sortByName
+        sortByName,
+        classroom_id
       );
       return { res: res.data, accessToken };
     } catch (error: any) {
@@ -98,7 +101,9 @@ export const getAllStudentsThunk = createAsyncThunk(
                 limit,
                 first_name_search,
                 last_name_search,
-                sortByDate
+                sortByDate,
+                sortByName,
+                classroom_id
               );
               return { res: res.data, accessToken: newAccessToken };
             } catch (error: any) {

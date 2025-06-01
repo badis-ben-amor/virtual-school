@@ -51,6 +51,7 @@ export class StudentController {
       studentQueryDto.last_name_search,
       studentQueryDto.sortByDate,
       studentQueryDto.sortByName,
+      studentQueryDto.classroom_id,
     );
   }
 
