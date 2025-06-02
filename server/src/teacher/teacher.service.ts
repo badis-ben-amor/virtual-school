@@ -41,9 +41,13 @@ export class TeacherService {
     if (first_name_search || last_name_search) {
       filter.$and = [];
       if (typeof first_name_search === 'string')
-        filter.$and.push({ frst_name: { $regex: first_name_search } });
+        filter.$and.push({
+          frst_name: { $regex: first_name_search, $options: 'i' },
+        });
       if (typeof last_name_search === 'string')
-        filter.$and.push({ last_name: { $regex: last_name_search } });
+        filter.$and.push({
+          last_name: { $regex: last_name_search, $options: 'i' },
+        });
     }
     if (subject_id) filter.subjects = school_id;
     if (classroom_id) filter.classroom_id = classroom_id;

@@ -1,6 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Command, CommandInput } from "@/components/ui/command";
 import {
   Dialog,
   DialogContent,
@@ -11,6 +12,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -19,15 +28,21 @@ import {
 } from "@/components/ui/select";
 import { getAllClassroomThunk } from "@/redux/slices/classroomSlice";
 import { getActiveSchoolThunk } from "@/redux/slices/schoolSlice";
+import { getAllSubjectsThunk } from "@/redux/slices/subjectSlice";
 import {
   createTeacherThunk,
   deleteTeacherThunk,
   getAllTeachersThunk,
+  setFirst_name_search,
+  setLast_name_search,
+  setPage,
+  setSearchInputValue,
   toggleShowEditeButtons,
   updateTeacherThunk,
 } from "@/redux/slices/teacherSlice";
 import { Appdipatch, RootState } from "@/redux/store";
 import { ClassroomType } from "@/types/classroomType";
+import { SubjectType } from "@/types/subjectType";
 import { TeacherType } from "@/types/teacherType";
 import { Pen, Plus, RotateCw, Trash2 } from "lucide-react";
 import Image from "next/image";
@@ -40,12 +55,20 @@ const Teacher = () => {
     teachers: teachersData,
     accessToken,
     showEditeButtons,
+    pageCount,
+    pageFromApi,
+    total,
+    page,
+    limit,
+    first_name_search,
+    last_name_search,
+    searchInputValue,
   } = useSelector((state: RootState) => state.teacher);
 
   const [teachers, setTeachers] = useState([]);
   const [activeSchoolId, setActiveSchoolId] = useState("");
   const [classrooms, setClassrooms] = useState<ClassroomType[]>([]);
-  const [subjects, setSubjects] = useState([]);
+  const [subjects, setSubjects] = useState<SubjectType[]>([]);
   const [editingTeacher, setEditingTeacher] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [teacherForm, setTeacherForm] = useState<TeacherType>({
@@ -62,13 +85,17 @@ const Teacher = () => {
     dispatch(getActiveSchoolThunk(accessToken))
       .unwrap()
       .then((res) => {
+        setActiveSchoolId(res?.res.activeSchool._id);
         dispatch(
           getAllTeachersThunk({
             accessToken,
             school_id: res?.res.activeSchool._id,
+            page,
+            limit,
+            first_name_search,
+            last_name_search,
           })
         );
-        setActiveSchoolId(res?.res.activeSchool._id);
         dispatch(
           getAllClassroomThunk({
             accessToken,
@@ -77,12 +104,33 @@ const Teacher = () => {
         )
           .unwrap()
           .then((res) => setClassrooms(res.res));
+        dispatch(
+          getAllSubjectsThunk({
+            accessToken,
+            school_id: res?.res.activeSchool._id,
+          })
+        )
+          .unwrap()
+          .then((res) => setSubjects(res.data));
       });
   }, []);
 
   useEffect(() => {
     setTeachers(teachersData);
   }, [teachersData]);
+
+  useEffect(() => {
+    dispatch(
+      getAllTeachersThunk({
+        accessToken,
+        school_id: activeSchoolId,
+        page,
+        limit,
+        first_name_search,
+        last_name_search,
+      })
+    );
+  }, [page, first_name_search, last_name_search]);
 
   const handleOpenDialog = (teacher?: TeacherType) => {
     if (teacher) {
@@ -118,7 +166,6 @@ const Teacher = () => {
 
   const handleSubmit = () => {
     const formData = new FormData();
-
     formData.append("frst_name", teacherForm.frst_name);
     formData.append("last_name", teacherForm.last_name);
     formData.append("classrooms", JSON.stringify(teacherForm.classrooms));
@@ -126,7 +173,6 @@ const Teacher = () => {
     formData.append("school_id", activeSchoolId);
     if (teacherForm.teacher_img instanceof File)
       formData.append("teacher_img", teacherForm.teacher_img);
-
     if (editingTeacher) {
       dispatch(
         updateTeacherThunk({
@@ -137,14 +183,28 @@ const Teacher = () => {
         })
       ).then(() =>
         dispatch(
-          getAllTeachersThunk({ accessToken, school_id: activeSchoolId })
+          getAllTeachersThunk({
+            accessToken,
+            school_id: activeSchoolId,
+            page,
+            limit,
+            first_name_search,
+            last_name_search,
+          })
         )
       );
     } else {
       dispatch(createTeacherThunk({ accessToken, teacherData: formData })).then(
         () =>
           dispatch(
-            getAllTeachersThunk({ accessToken, school_id: activeSchoolId })
+            getAllTeachersThunk({
+              accessToken,
+              school_id: activeSchoolId,
+              page,
+              limit,
+              first_name_search,
+              last_name_search,
+            })
           )
       );
     }
@@ -155,8 +215,32 @@ const Teacher = () => {
     dispatch(
       deleteTeacherThunk({ accessToken, school_id: activeSchoolId, teacher_id })
     ).then(() =>
-      dispatch(getAllTeachersThunk({ accessToken, school_id: activeSchoolId }))
+      dispatch(
+        getAllTeachersThunk({
+          accessToken,
+          school_id: activeSchoolId,
+          page,
+          limit,
+          first_name_search,
+          last_name_search,
+        })
+      )
     );
+  };
+
+  const handleSearchValueChange = (value: string) => {
+    dispatch(setSearchInputValue(value));
+    const fullName = value.trim().split(" ");
+    dispatch(setFirst_name_search(fullName[0]));
+    dispatch(setLast_name_search(fullName.slice(1).join(" ")));
+    dispatch(setPage(1));
+  };
+
+  const handleResetFilters = () => {
+    dispatch(setSearchInputValue(""));
+    dispatch(setFirst_name_search(""));
+    dispatch(setLast_name_search(""));
+    dispatch(setPage(1));
   };
 
   return (
@@ -185,6 +269,29 @@ const Teacher = () => {
       </div>
 
       <h2 className="text-xl font-semibold mb-2">Teacher</h2>
+
+      <div className="flex justify-between items-center mb-2">
+        <Command className="bg-[#f5f6f7] lg:w-1/5 md:w-1/4 w-1/3">
+          <CommandInput
+            value={searchInputValue}
+            onValueChange={(value) => handleSearchValueChange(value)}
+            placeholder="teacher search"
+          />
+        </Command>
+        <RotateCw
+          onClick={() => {
+            dispatch(setSearchInputValue(""));
+            dispatch(setFirst_name_search(""));
+            dispatch(setLast_name_search(""));
+            dispatch(setPage(1));
+          }}
+          size={16}
+          className="mr-auto ml-1 cursor-pointer"
+        />
+        <Button onClick={handleResetFilters} variant={"outline"}>
+          Reset Filters
+        </Button>
+      </div>
 
       <div className="grid lg:grid-cols-4 md:grid-cols-3 gap-4 grid-cols-2">
         {teachers.map((teacher: TeacherType) => (
@@ -225,6 +332,32 @@ const Teacher = () => {
           </Card>
         ))}
       </div>
+
+      <Pagination className="mt-4">
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              onClick={() => dispatch(setPage(Math.max(page - 1, 1)))}
+            />
+          </PaginationItem>
+          {Array.from({ length: pageCount }, (_, i) => (
+            <PaginationItem key={i}>
+              <PaginationLink
+                isActive={page === i + 1}
+                href="#"
+                onClick={() => dispatch(setPage(i + 1))}
+              >
+                {i + 1}
+              </PaginationLink>
+            </PaginationItem>
+          ))}
+          <PaginationItem>
+            <PaginationNext
+              onClick={() => dispatch(setPage(Math.min(page + 1, pageCount)))}
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
 
       <Dialog open={openDialog} onOpenChange={handleCloseDialog}>
         <DialogContent className="max-h-[80vh] overflow-y-auto">
@@ -282,6 +415,15 @@ const Teacher = () => {
                             <Button
                               variant={"destructive"}
                               className=" h-4 w-4 p-0 m-0 absolute -top-3 -right-2"
+                              onClick={() => {
+                                setTeacherForm((prev) => ({
+                                  ...prev,
+                                  classrooms: prev.classrooms.filter(
+                                    (formClassroom) =>
+                                      formClassroom !== classroom
+                                  ),
+                                }));
+                              }}
                             >
                               x
                             </Button>
@@ -304,7 +446,7 @@ const Teacher = () => {
                   <SelectValue placeholder="Select Teacher Classroom(s)" />
                 </SelectTrigger>
                 <SelectContent>
-                  <Input />
+                  <Input placeholder="search classroom..." />
                   {classrooms.map((classroom) => (
                     <SelectItem key={classroom._id} value={classroom._id}>
                       {classroom.classroom_name}
@@ -315,10 +457,52 @@ const Teacher = () => {
             </div>
             <div className="space-y-2">
               <Label>Select Teacher Subject(s)</Label>
-              <Select>
+              <div className="flex flex-wrap gap-1 w-full">
+                {teacherForm.subjects.map((subject) => (
+                  <div key={subject} className="bg-blue-100 rounded-lg mt-1">
+                    {subjects.map(
+                      (subjectObject) =>
+                        subjectObject._id === subject && (
+                          <div key={subjectObject._id} className="relative">
+                            <Button
+                              variant={"destructive"}
+                              className="h-4 w-4 p-0 m-0 absolute -top-3 -right-2 "
+                              onClick={() => {
+                                setTeacherForm((prev) => ({
+                                  ...prev,
+                                  subjects: prev.subjects.filter(
+                                    (formSubject) => formSubject !== subject
+                                  ),
+                                }));
+                              }}
+                            >
+                              x
+                            </Button>
+                            <p>{subjectObject.subject_name}</p>
+                          </div>
+                        )
+                    )}
+                  </div>
+                ))}
+              </div>
+              <Select
+                onValueChange={(value) =>
+                  setTeacherForm((prev) => ({
+                    ...prev,
+                    subjects: [...prev.subjects, value],
+                  }))
+                }
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Enter Teacher Subject(s)" />
                 </SelectTrigger>
+                <SelectContent>
+                  {subjects.map((subject) => (
+                    <SelectItem key={subject._id} value={subject._id}>
+                      {subject.subject_name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
               </Select>
             </div>
           </div>

@@ -1,18 +1,21 @@
 import axios from "axios";
 
 export const createTeacher = (accessToken: string, teacherData: FormData) => {
-  return axios.post(
-    `${process.env.NEXT_PUBLIC_API_URL}/teacher/`,
-    teacherData,
-    {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    }
-  );
+  return axios.post(`${process.env.NEXT_PUBLIC_API_URL}/teacher`, teacherData, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
 };
 
-export const getAllTeachers = (accessToken: string, school_id: string) => {
+export const getAllTeachers = (
+  accessToken: string,
+  school_id: string,
+  page: number,
+  limit: number,
+  first_name_search: string,
+  last_name_search: string
+) => {
   return axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/teacher?school_id=${school_id}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/teacher?school_id=${school_id}&page=${page}&limit=${limit}&first_name_search=${first_name_search}&last_name_search=${last_name_search}`,
     {
       headers: { Authorization: `Bearer ${accessToken}` },
     }

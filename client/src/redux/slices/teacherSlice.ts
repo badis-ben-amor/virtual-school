@@ -6,7 +6,7 @@ import {
   getOneTeacher,
   updateTeacher,
 } from "@/service/teacherService";
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export const createTeacherThunk = createAsyncThunk(
   "teacher/create",
@@ -57,14 +57,29 @@ export const getAllTeachersThunk = createAsyncThunk(
     {
       accessToken,
       school_id,
+      page,
+      limit,
+      first_name_search,
+      last_name_search,
     }: {
       accessToken: string;
       school_id: string;
+      page: number;
+      limit: number;
+      first_name_search: string;
+      last_name_search: string;
     },
     thunkAPI
   ) => {
     try {
-      const res = await getAllTeachers(accessToken, school_id);
+      const res = await getAllTeachers(
+        accessToken,
+        school_id,
+        page,
+        limit,
+        first_name_search,
+        last_name_search
+      );
       return { data: res.data, accessToken };
     } catch (error: any) {
       if (error.response?.status === 401) {
@@ -73,7 +88,14 @@ export const getAllTeachersThunk = createAsyncThunk(
           const { newAccessToken } = res.data;
           if (newAccessToken) {
             try {
-              const res = await getAllTeachers(newAccessToken, school_id);
+              const res = await getAllTeachers(
+                newAccessToken,
+                school_id,
+                page,
+                limit,
+                first_name_search,
+                last_name_search
+              );
               return { data: res.data, accessToken: newAccessToken };
             } catch (error: any) {
               return thunkAPI.rejectWithValue(
@@ -258,10 +280,30 @@ const teacherSlice = createSlice({
     error: "",
     accessToken: "",
     showEditeButtons: false,
+    pageCount: 0,
+    pageFromApi: 0,
+    total: 0,
+    page: 1,
+    limit: 12,
+    first_name_search: "",
+    last_name_search: "",
+    searchInputValue: "",
   },
   reducers: {
     toggleShowEditeButtons: (state) => {
       state.showEditeButtons = !state.showEditeButtons;
+    },
+    setPage: (state, action) => {
+      state.page = action.payload;
+    },
+    setSearchInputValue: (state, action) => {
+      state.searchInputValue = action.payload;
+    },
+    setFirst_name_search: (state, action) => {
+      state.first_name_search = action.payload;
+    },
+    setLast_name_search: (state, action) => {
+      state.last_name_search = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -284,6 +326,9 @@ const teacherSlice = createSlice({
         state.isLoading = false;
         state.teachers = action.payload.data.data;
         state.accessToken = action.payload.accessToken;
+        state.pageFromApi = action.payload.data.page;
+        state.pageCount = action.payload.data.pageCount;
+        state.total = action.payload.data.total;
       })
       .addCase(getAllTeachersThunk.rejected, (state, action: any) => {
         state.isLoading = false;
@@ -327,4 +372,10 @@ const teacherSlice = createSlice({
 });
 
 export default teacherSlice.reducer;
-export const { toggleShowEditeButtons } = teacherSlice.actions;
+export const {
+  toggleShowEditeButtons,
+  setPage,
+  setSearchInputValue,
+  setFirst_name_search,
+  setLast_name_search,
+} = teacherSlice.actions;

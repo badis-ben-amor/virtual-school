@@ -249,6 +249,16 @@ const Student = () => {
     setPage(1);
   };
 
+  const handleResetFilters = () => {
+    setSearchInputValue("");
+    setFirst_name_search("");
+    setLast_name_search("");
+    setclassroom_id("");
+    setSortByName("");
+    setSortByDate("");
+    setPage(1);
+  };
+
   return (
     <div className="p-2">
       <div className="flex justify-between">
@@ -294,17 +304,7 @@ const Student = () => {
             setPage(1);
           }}
         />
-        <Button
-          onClick={() => {
-            setSearchInputValue("");
-            setFirst_name_search("");
-            setLast_name_search("");
-            setclassroom_id("");
-            setSortByName("");
-            setSortByDate("");
-          }}
-          variant={"outline"}
-        >
+        <Button onClick={handleResetFilters} variant={"outline"}>
           Reset Filters
         </Button>
       </div>
@@ -427,7 +427,7 @@ const Student = () => {
 
       <Pagination className="mt-4">
         <PaginationContent>
-          <PaginationItem aria-disabled>
+          <PaginationItem>
             <PaginationPrevious
               onClick={() => setPage((p) => Math.max(p - 1, 1))}
             />
