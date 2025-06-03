@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 
-@Schema()
+@Schema({ timestamps: true })
 export class Teacher {
   @Prop({ required: true })
   frst_name: string;

@@ -31,5 +31,6 @@ export class StudentQueryDto {
   sortByName?: 'asc' | 'desc';
 
   @IsOptional()
+  @IsString()
   classroom_id?: string;
 }

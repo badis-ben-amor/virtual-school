@@ -12,10 +12,14 @@ export const getAllTeachers = (
   page: number,
   limit: number,
   first_name_search: string,
-  last_name_search: string
+  last_name_search: string,
+  classroom_id: string,
+  subject_id: string,
+  sortByName: string,
+  sortByDate: string
 ) => {
   return axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/teacher?school_id=${school_id}&page=${page}&limit=${limit}&first_name_search=${first_name_search}&last_name_search=${last_name_search}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/teacher?school_id=${school_id}&page=${page}&limit=${limit}&first_name_search=${first_name_search}&last_name_search=${last_name_search}&classroom_id=${classroom_id}&subject_id=${subject_id}&sortByName=${sortByName}&sortByDate=${sortByDate}`,
     {
       headers: { Authorization: `Bearer ${accessToken}` },
     }

@@ -61,6 +61,10 @@ export const getAllTeachersThunk = createAsyncThunk(
       limit,
       first_name_search,
       last_name_search,
+      classroom_id,
+      subject_id,
+      sortByName,
+      sortByDate,
     }: {
       accessToken: string;
       school_id: string;
@@ -68,6 +72,10 @@ export const getAllTeachersThunk = createAsyncThunk(
       limit: number;
       first_name_search: string;
       last_name_search: string;
+      classroom_id: string;
+      subject_id: string;
+      sortByName: string;
+      sortByDate: string;
     },
     thunkAPI
   ) => {
@@ -78,7 +86,11 @@ export const getAllTeachersThunk = createAsyncThunk(
         page,
         limit,
         first_name_search,
-        last_name_search
+        last_name_search,
+        classroom_id,
+        subject_id,
+        sortByName,
+        sortByDate
       );
       return { data: res.data, accessToken };
     } catch (error: any) {
@@ -94,7 +106,11 @@ export const getAllTeachersThunk = createAsyncThunk(
                 page,
                 limit,
                 first_name_search,
-                last_name_search
+                last_name_search,
+                classroom_id,
+                subject_id,
+                sortByName,
+                sortByDate
               );
               return { data: res.data, accessToken: newAccessToken };
             } catch (error: any) {
@@ -288,6 +304,10 @@ const teacherSlice = createSlice({
     first_name_search: "",
     last_name_search: "",
     searchInputValue: "",
+    classroom_id: "",
+    subject_id: "",
+    sortByName: "",
+    sortByDate: "",
   },
   reducers: {
     toggleShowEditeButtons: (state) => {
@@ -304,6 +324,18 @@ const teacherSlice = createSlice({
     },
     setLast_name_search: (state, action) => {
       state.last_name_search = action.payload;
+    },
+    setClassroom_id: (state, action) => {
+      state.classroom_id = action.payload;
+    },
+    setSubject_id: (state, action) => {
+      state.subject_id = action.payload;
+    },
+    setSortByName: (state, action) => {
+      state.sortByName = action.payload;
+    },
+    setSortByDate: (state, action) => {
+      state.sortByDate = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -378,4 +410,8 @@ export const {
   setSearchInputValue,
   setFirst_name_search,
   setLast_name_search,
+  setClassroom_id,
+  setSubject_id,
+  setSortByDate,
+  setSortByName,
 } = teacherSlice.actions;

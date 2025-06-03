@@ -33,10 +33,12 @@ import {
   createTeacherThunk,
   deleteTeacherThunk,
   getAllTeachersThunk,
+  setClassroom_id,
   setFirst_name_search,
   setLast_name_search,
   setPage,
   setSearchInputValue,
+  setSubject_id,
   toggleShowEditeButtons,
   updateTeacherThunk,
 } from "@/redux/slices/teacherSlice";
@@ -56,13 +58,15 @@ const Teacher = () => {
     accessToken,
     showEditeButtons,
     pageCount,
-    pageFromApi,
-    total,
     page,
     limit,
     first_name_search,
     last_name_search,
     searchInputValue,
+    classroom_id,
+    subject_id,
+    sortByName,
+    sortByDate,
   } = useSelector((state: RootState) => state.teacher);
 
   const [teachers, setTeachers] = useState([]);
@@ -94,6 +98,10 @@ const Teacher = () => {
             limit,
             first_name_search,
             last_name_search,
+            classroom_id,
+            subject_id,
+            sortByName,
+            sortByDate,
           })
         );
         dispatch(
@@ -128,9 +136,13 @@ const Teacher = () => {
         limit,
         first_name_search,
         last_name_search,
+        classroom_id,
+        subject_id,
+        sortByName,
+        sortByDate,
       })
     );
-  }, [page, first_name_search, last_name_search]);
+  }, [page, first_name_search, last_name_search, classroom_id, subject_id]);
 
   const handleOpenDialog = (teacher?: TeacherType) => {
     if (teacher) {
@@ -190,6 +202,10 @@ const Teacher = () => {
             limit,
             first_name_search,
             last_name_search,
+            classroom_id,
+            subject_id,
+            sortByName,
+            sortByDate,
           })
         )
       );
@@ -204,6 +220,10 @@ const Teacher = () => {
               limit,
               first_name_search,
               last_name_search,
+              classroom_id,
+              subject_id,
+              sortByName,
+              sortByDate,
             })
           )
       );
@@ -223,6 +243,10 @@ const Teacher = () => {
           limit,
           first_name_search,
           last_name_search,
+          classroom_id,
+          subject_id,
+          sortByName,
+          sortByDate,
         })
       )
     );
@@ -291,6 +315,37 @@ const Teacher = () => {
         <Button onClick={handleResetFilters} variant={"outline"}>
           Reset Filters
         </Button>
+      </div>
+
+      <div className="flex mb-2 gap-4">
+        <div>
+          <Select onValueChange={(value) => dispatch(setClassroom_id(value))}>
+            <SelectTrigger>
+              <SelectValue placeholder="select by class" />
+            </SelectTrigger>
+            <SelectContent>
+              {classrooms.map((classroom) => (
+                <SelectItem key={classroom._id} value={classroom._id}>
+                  {classroom.classroom_name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <Select onValueChange={(v) => dispatch(setSubject_id(v))}>
+            <SelectTrigger>
+              <SelectValue placeholder="select by subject" />
+            </SelectTrigger>
+            <SelectContent>
+              {subjects.map((subject) => (
+                <SelectItem key={subject._id} value={subject._id}>
+                  {subject.subject_name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       <div className="grid lg:grid-cols-4 md:grid-cols-3 gap-4 grid-cols-2">

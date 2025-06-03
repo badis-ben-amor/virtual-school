@@ -309,85 +309,83 @@ const Student = () => {
         </Button>
       </div>
 
-      <div className="flex justify-between mb-3">
-        <div className="grid lg:grid-cols-6 md:grid-cols-5 grid-cols-3 grid-cols-1 lg:gap-x-4 gap-y-2">
-          <div className="flex items-center gap-x-1">
-            <Select
-              value={classroom_id}
-              onValueChange={(value) => setclassroom_id(value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="select class" />
-              </SelectTrigger>
-              <SelectContent>
-                {classrooms.map((classroom) => (
-                  <SelectItem key={classroom._id} value={classroom._id}>
-                    {classroom.classroom_name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <RotateCw
-              className="cursor-pointer"
-              size={16}
-              onClick={() => {
-                setclassroom_id("");
-                setPage(1);
-              }}
-            />
-          </div>
-          <div className="flex items-center gap-x-1">
-            <Select
-              value={sortByName}
-              onValueChange={(value) => setSortByName(value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="sort by name" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="asc">
-                  <ArrowUp /> name
+      <div className="grid lg:grid-cols-6 md:grid-cols-5 grid-cols-3 grid-cols-1 lg:gap-x-4 gap-y-2 mb-2">
+        <div className="flex items-center gap-x-1">
+          <Select
+            value={classroom_id}
+            onValueChange={(value) => setclassroom_id(value)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="select by class" />
+            </SelectTrigger>
+            <SelectContent>
+              {classrooms.map((classroom) => (
+                <SelectItem key={classroom._id} value={classroom._id}>
+                  {classroom.classroom_name}
                 </SelectItem>
-                <SelectItem value="desc">
-                  <ArrowDown /> name
-                </SelectItem>
-              </SelectContent>
-            </Select>
-            <RotateCw
-              className="cursor-pointer"
-              size={16}
-              onClick={() => {
-                setSortByName("");
-                setPage(1);
-              }}
-            />
-          </div>
-          <div className="flex items-center gap-x-1">
-            <Select
-              value={sortByDate}
-              onValueChange={(value) => setSortByDate(value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="sort by date" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="asc">
-                  <ArrowUp /> date
-                </SelectItem>
-                <SelectItem value="desc">
-                  <ArrowDown /> date
-                </SelectItem>
-              </SelectContent>
-            </Select>
-            <RotateCw
-              className="cursor-pointer"
-              size={16}
-              onClick={() => {
-                setSortByDate("");
-                setPage(1);
-              }}
-            />
-          </div>
+              ))}
+            </SelectContent>
+          </Select>
+          <RotateCw
+            className="cursor-pointer"
+            size={16}
+            onClick={() => {
+              setclassroom_id("");
+              setPage(1);
+            }}
+          />
+        </div>
+        <div className="flex items-center gap-x-1">
+          <Select
+            value={sortByName}
+            onValueChange={(value) => setSortByName(value)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="sort by name" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="asc">
+                <ArrowUp /> name
+              </SelectItem>
+              <SelectItem value="desc">
+                <ArrowDown /> name
+              </SelectItem>
+            </SelectContent>
+          </Select>
+          <RotateCw
+            className="cursor-pointer"
+            size={16}
+            onClick={() => {
+              setSortByName("");
+              setPage(1);
+            }}
+          />
+        </div>
+        <div className="flex items-center gap-x-1">
+          <Select
+            value={sortByDate}
+            onValueChange={(value) => setSortByDate(value)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="sort by date" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="asc">
+                <ArrowUp /> date
+              </SelectItem>
+              <SelectItem value="desc">
+                <ArrowDown /> date
+              </SelectItem>
+            </SelectContent>
+          </Select>
+          <RotateCw
+            className="cursor-pointer"
+            size={16}
+            onClick={() => {
+              setSortByDate("");
+              setPage(1);
+            }}
+          />
         </div>
       </div>
 

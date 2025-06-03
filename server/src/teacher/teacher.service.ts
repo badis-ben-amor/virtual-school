@@ -34,6 +34,8 @@ export class TeacherService {
     limit: number,
     first_name_search: string,
     last_name_search: string,
+    sortByName: 'asc' | 'desc',
+    sortByDate: 'asc' | 'desc',
     classroom_id: string,
     subject_id: string,
   ) {
@@ -49,14 +51,23 @@ export class TeacherService {
           last_name: { $regex: last_name_search, $options: 'i' },
         });
     }
-    if (subject_id) filter.subjects = school_id;
-    if (classroom_id) filter.classroom_id = classroom_id;
+    if (subject_id) filter.subjects = subject_id;
+    if (classroom_id) filter.classrooms = classroom_id;
 
     const [data, total] = await Promise.all([
       this.teacherModel
         .find(filter)
         .skip((page - 1) * limit)
-        .limit(limit),
+        .limit(limit)
+        .sort({
+          ...(sortByName && {
+            frst_name: sortByName === 'asc' ? 'asc' : 'desc',
+            last_name: sortByName === 'asc' ? 'asc' : 'desc',
+          }),
+          ...(sortByDate && {
+            createdAt: sortByDate === 'asc' ? 'asc' : 'desc',
+          }),
+        }),
       this.teacherModel.countDocuments(filter),
     ]);
     return { data, pageCount: Math.ceil(total / limit), total, page };

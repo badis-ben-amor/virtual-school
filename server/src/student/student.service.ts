@@ -67,8 +67,8 @@ export class StudentService {
         .limit(limit)
         .sort({
           ...(sortByName && {
-            first_name: sortByName === 'asc' ? 1 : -1,
-            last_name: sortByName === 'asc' ? 1 : -1,
+            first_name: sortByName === 'asc' ? 'asc' : 'desc',
+            last_name: sortByName === 'asc' ? 'asc' : 'desc',
           }),
           ...(sortByDate && { createdAt: sortByDate === 'asc' ? 1 : -1 }),
         }),

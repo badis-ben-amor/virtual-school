@@ -24,6 +24,14 @@ export class TeacherQueryDto {
 
   @IsOptional()
   @IsString()
+  sortByName: 'asc' | 'desc';
+
+  @IsOptional()
+  @IsString()
+  sortByDate: 'asc' | 'desc';
+
+  @IsOptional()
+  @IsString()
   classroom_id: string;
 
   @IsOptional()
