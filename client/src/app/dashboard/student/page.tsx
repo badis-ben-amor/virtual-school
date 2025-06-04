@@ -445,6 +445,10 @@ const Student = () => {
 
           <PaginationItem>
             <PaginationNext
+              className={`${
+                page === pageCount &&
+                "bg-stone-100 text-stone-400 hover:bg-stone-100 hover:text-stone-400"
+              }`}
               onClick={() => setPage((p) => Math.min(p + 1, pageCount))}
             />
           </PaginationItem>

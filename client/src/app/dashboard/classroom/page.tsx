@@ -163,7 +163,7 @@ const Classroom = () => {
 
       <h1 className="text-xl font-semibold mb-2">Classrooms</h1>
 
-      <div className="grid lg grid-cols-4 md:grid-cols-3 sm grid-cols-2 gap-4">
+      <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-4">
         {classrooms.map((classroom, i) => (
           <Card key={i}>
             <CardContent>
