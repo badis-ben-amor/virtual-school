@@ -38,6 +38,8 @@ import {
   setLast_name_search,
   setPage,
   setSearchInputValue,
+  setSortByDate,
+  setSortByName,
   setSubject_id,
   toggleShowEditeButtons,
   updateTeacherThunk,
@@ -46,7 +48,15 @@ import { Appdipatch, RootState } from "@/redux/store";
 import { ClassroomType } from "@/types/classroomType";
 import { SubjectType } from "@/types/subjectType";
 import { TeacherType } from "@/types/teacherType";
-import { Pen, Plus, RotateCw, Trash2 } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowUp,
+  Pen,
+  Plus,
+  RotateCw,
+  Trash2,
+  X,
+} from "lucide-react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -142,7 +152,15 @@ const Teacher = () => {
         sortByDate,
       })
     );
-  }, [page, first_name_search, last_name_search, classroom_id, subject_id]);
+  }, [
+    page,
+    first_name_search,
+    last_name_search,
+    classroom_id,
+    subject_id,
+    sortByName,
+    sortByDate,
+  ]);
 
   const handleOpenDialog = (teacher?: TeacherType) => {
     if (teacher) {
@@ -264,6 +282,10 @@ const Teacher = () => {
     dispatch(setSearchInputValue(""));
     dispatch(setFirst_name_search(""));
     dispatch(setLast_name_search(""));
+    dispatch(setClassroom_id(""));
+    dispatch(setSubject_id(""));
+    dispatch(setSortByName(""));
+    dispatch(setSortByDate(""));
     dispatch(setPage(1));
   };
 
@@ -282,7 +304,7 @@ const Teacher = () => {
         >
           {showEditeButtons ? (
             <>
-              <RotateCw /> Cancel Edite
+              <X /> Cancel Edite
             </>
           ) : (
             <>
@@ -318,8 +340,14 @@ const Teacher = () => {
       </div>
 
       <div className="flex mb-2 gap-4">
-        <div>
-          <Select onValueChange={(value) => dispatch(setClassroom_id(value))}>
+        <div className="flex items-center gap-x-1">
+          <Select
+            value={classroom_id}
+            onValueChange={(value) => {
+              dispatch(setClassroom_id(value));
+              dispatch(setPage(1));
+            }}
+          >
             <SelectTrigger>
               <SelectValue placeholder="select by class" />
             </SelectTrigger>
@@ -331,9 +359,22 @@ const Teacher = () => {
               ))}
             </SelectContent>
           </Select>
+          <RotateCw
+            onClick={() => {
+              dispatch(setClassroom_id(""));
+              dispatch(setPage(1));
+            }}
+            className="h-4 w-4 cursor-pointer"
+          />
         </div>
-        <div>
-          <Select onValueChange={(v) => dispatch(setSubject_id(v))}>
+        <div className="flex items-center gap-x-1">
+          <Select
+            value={subject_id}
+            onValueChange={(v) => {
+              dispatch(setSubject_id(v));
+              dispatch(setPage(1));
+            }}
+          >
             <SelectTrigger>
               <SelectValue placeholder="select by subject" />
             </SelectTrigger>
@@ -345,6 +386,63 @@ const Teacher = () => {
               ))}
             </SelectContent>
           </Select>
+          <RotateCw
+            onClick={() => {
+              dispatch(setSubject_id(""));
+              dispatch(setPage(1));
+            }}
+            className="h-4 w-4 cursor-pointer"
+          />
+        </div>
+        <div className="flex items-center gap-x-1">
+          <Select
+            value={sortByName}
+            onValueChange={(v) => dispatch(setSortByName(v))}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="sort by name" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="asc">
+                name <ArrowUp />
+              </SelectItem>
+              <SelectItem value="desc">
+                name <ArrowDown />
+              </SelectItem>
+            </SelectContent>
+          </Select>
+          <RotateCw
+            onClick={() => {
+              dispatch(setSortByName(""));
+              dispatch(setPage(1));
+            }}
+            className="w-4 h-4 cursor-pointer"
+          />
+        </div>
+        <div className="flex items-center gap-x-1">
+          <Select
+            value={sortByDate}
+            onValueChange={(v) => dispatch(setSortByDate(v))}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="sort by date" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="asc">
+                date <ArrowUp />
+              </SelectItem>
+              <SelectItem value="desc">
+                date <ArrowDown />
+              </SelectItem>
+            </SelectContent>
+          </Select>
+          <RotateCw
+            className="cursor-pointer w-4 h-4"
+            onClick={() => {
+              dispatch(setSortByDate(""));
+              dispatch(setPage(1));
+            }}
+          />
         </div>
       </div>
 
@@ -358,10 +456,13 @@ const Teacher = () => {
                 }`}
               >
                 {showEditeButtons && (
-                  <Pen
+                  <Button
                     onClick={() => handleOpenDialog(teacher)}
-                    className="h-5 w-5  text-blue-500 cursor-pointer"
-                  />
+                    size={"sm"}
+                    variant={"outline"}
+                  >
+                    <Pen className="h-5 w-5  text-blue-500 cursor-pointer" />
+                  </Button>
                 )}
                 <div className="w-15 h-15 relative">
                   <Image
@@ -372,10 +473,13 @@ const Teacher = () => {
                   />
                 </div>
                 {showEditeButtons && (
-                  <Trash2
+                  <Button
                     onClick={() => handleDeleteTeacher(teacher._id)}
-                    className="h-5 w-5 text-red-500 cursor-pointer"
-                  />
+                    size={"sm"}
+                    variant={"outline"}
+                  >
+                    <Trash2 className="h-5 w-5 text-red-500 cursor-pointer" />
+                  </Button>
                 )}
               </div>
               <div className="text-center">
@@ -408,6 +512,10 @@ const Teacher = () => {
           ))}
           <PaginationItem>
             <PaginationNext
+              className={`${
+                page === pageCount &&
+                "bg-stone-100 text-stone-400 hover:bg-stone-100 hover:text-stone-400"
+              }`}
               onClick={() => dispatch(setPage(Math.min(page + 1, pageCount)))}
             />
           </PaginationItem>

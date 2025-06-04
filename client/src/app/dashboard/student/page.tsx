@@ -345,10 +345,10 @@ const Student = () => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="asc">
-                <ArrowUp /> name
+                name <ArrowUp />
               </SelectItem>
               <SelectItem value="desc">
-                <ArrowDown /> name
+                name <ArrowDown />
               </SelectItem>
             </SelectContent>
           </Select>
@@ -371,10 +371,10 @@ const Student = () => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="asc">
-                <ArrowUp /> date
+                date <ArrowUp />
               </SelectItem>
               <SelectItem value="desc">
-                <ArrowDown /> date
+                date <ArrowDown />
               </SelectItem>
             </SelectContent>
           </Select>
