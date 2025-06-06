@@ -28,7 +28,14 @@ export class SubjectController {
 
   @Get()
   getAll(@Query() subjectQueryDto: SubjectQueryDto) {
-    return this.subjectService.getAll(subjectQueryDto.school_id);
+    return this.subjectService.getAll(
+      subjectQueryDto.school_id,
+      subjectQueryDto.page,
+      subjectQueryDto.limit,
+      subjectQueryDto.search_by_subject_name,
+      subjectQueryDto.sortByName,
+      subjectQueryDto.sortByDate,
+    );
   }
 
   @Get(':subject_id')

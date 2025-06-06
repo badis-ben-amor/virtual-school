@@ -129,7 +129,7 @@ const Teacher = () => {
           })
         )
           .unwrap()
-          .then((res) => setSubjects(res.data));
+          .then((res) => setSubjects(res.data.data));
       });
   }, []);
 
@@ -321,7 +321,7 @@ const Teacher = () => {
           <CommandInput
             value={searchInputValue}
             onValueChange={(value) => handleSearchValueChange(value)}
-            placeholder="teacher search"
+            placeholder="search by teacher..."
           />
         </Command>
         <RotateCw
@@ -339,7 +339,7 @@ const Teacher = () => {
         </Button>
       </div>
 
-      <div className="flex mb-2 gap-4">
+      <div className="grid lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-y-2 mb-2">
         <div className="flex items-center gap-x-1">
           <Select
             value={classroom_id}

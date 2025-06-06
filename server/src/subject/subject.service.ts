@@ -17,8 +17,38 @@ export class SubjectService {
     return 'Subject Created Successfully';
   }
 
-  async getAll(school_id: string) {
-    return await this.subjectModel.find({ school_id });
+  async getAll(
+    school_id: string,
+    page: number,
+    limit: number,
+    search_by_subject_name: string,
+    sortByName: 'asc' | 'desc',
+    sortByDate: 'asc' | 'desc',
+  ) {
+    const filter: any = { school_id };
+    if (search_by_subject_name) {
+      filter.subject_name = { $regex: search_by_subject_name, $options: 'i' };
+    }
+    const [data, total] = await Promise.all([
+      await this.subjectModel
+        .find(filter)
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .sort({
+          ...(sortByName && {
+            subject_name: sortByName,
+          }),
+          ...(sortByDate && { createdAt: sortByDate }),
+        }),
+      this.subjectModel.countDocuments(filter),
+    ]);
+
+    return {
+      data,
+      total,
+      pageCount: Math.ceil(total / limit),
+      page,
+    };
   }
 
   async getOne(subject_id: string, school_id: string) {

@@ -13,9 +13,17 @@ export const createSubject = (
   );
 };
 
-export const getAllSubjects = (accessToken: string, school_id: string) => {
+export const getAllSubjects = (
+  accessToken: string,
+  school_id: string,
+  page?: number,
+  limit?: number,
+  search_by_subject_name?: string,
+  sortByName?: string,
+  sortByDate?: string
+) => {
   return axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/subject?school_id=${school_id}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/subject?school_id=${school_id}&page=${page}&limit=${limit}&search_by_subject_name=${search_by_subject_name}&sortByName=${sortByName}&sortByDate=${sortByDate}`,
     { headers: { Authorization: `Bearer ${accessToken}` } }
   );
 };

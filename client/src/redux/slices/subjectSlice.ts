@@ -8,7 +8,6 @@ import {
 } from "@/service/subjectService";
 import { SubjectType } from "@/types/subjectType";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { deflate } from "zlib";
 
 export const createSubjectThunk = createAsyncThunk(
   "subject/create",
@@ -58,11 +57,35 @@ export const createSubjectThunk = createAsyncThunk(
 export const getAllSubjectsThunk = createAsyncThunk(
   "subject/getAll",
   async (
-    { accessToken, school_id }: { accessToken: string; school_id: string },
+    {
+      accessToken,
+      school_id,
+      page,
+      limit,
+      search_by_subject_name,
+      sortByName,
+      sortByDate,
+    }: {
+      accessToken: string;
+      school_id: string;
+      page?: number;
+      limit?: number;
+      search_by_subject_name?: string;
+      sortByName?: string;
+      sortByDate?: string;
+    },
     thunkAPI
   ) => {
     try {
-      const res = await getAllSubjects(accessToken, school_id);
+      const res = await getAllSubjects(
+        accessToken,
+        school_id,
+        page,
+        limit,
+        search_by_subject_name,
+        sortByName,
+        sortByDate
+      );
       return { data: res.data, accessToken };
     } catch (error: any) {
       if (error.response.status === 401) {
@@ -71,7 +94,15 @@ export const getAllSubjectsThunk = createAsyncThunk(
           const { newAccessToken } = res.data;
           if (newAccessToken) {
             try {
-              const res = await getAllSubjects(newAccessToken, school_id);
+              const res = await getAllSubjects(
+                newAccessToken,
+                school_id,
+                page,
+                limit,
+                search_by_subject_name,
+                sortByName,
+                sortByDate
+              );
               return { data: res.data, accessToken: newAccessToken };
             } catch (error: any) {
               return thunkAPI.rejectWithValue(
@@ -112,7 +143,11 @@ export const getOneSubjectThunk = createAsyncThunk(
           const { newAccessToken } = res.data;
           if (newAccessToken) {
             try {
-              const res = await getAllSubjects(newAccessToken, school_id);
+              const res = await getOneSubject(
+                newAccessToken,
+                subject_id,
+                school_id
+              );
               return { data: res.data, accessToken: newAccessToken };
             } catch (error: any) {
               return thunkAPI.rejectWithValue(
@@ -248,10 +283,34 @@ const subjectSlice = createSlice({
     error: "",
     accessToken: "",
     showEditeButtons: false,
+    page: 1,
+    limit: 12,
+    total: 0,
+    pageCount: 0,
+    pageFromApi: 0,
+    search_by_subject_name: "",
+    search_input_value: "",
+    sortByName: "",
+    sortByDate: "",
   },
   reducers: {
     toggleShowEditeButtons: (state) => {
       state.showEditeButtons = !state.showEditeButtons;
+    },
+    setPage: (state, action) => {
+      state.page = action.payload;
+    },
+    setSearch_by_subject_name: (state, action) => {
+      state.search_by_subject_name = action.payload;
+    },
+    setSearch_input_value: (state, action) => {
+      state.search_input_value = action.payload;
+    },
+    setSortByName: (state, action) => {
+      state.sortByName = action.payload;
+    },
+    setSortByDate: (state, action) => {
+      state.sortByDate = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -271,7 +330,9 @@ const subjectSlice = createSlice({
       })
       .addCase(getAllSubjectsThunk.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.subjects = action.payload.data;
+        state.subjects = action.payload.data.data;
+        state.pageCount = action.payload.data.pageCount;
+        state.pageFromApi = action.payload.data.page;
       })
       .addCase(getAllSubjectsThunk.rejected, (state, action: any) => {
         state.isLoading = false;
@@ -312,4 +373,11 @@ const subjectSlice = createSlice({
 });
 
 export default subjectSlice.reducer;
-export const { toggleShowEditeButtons } = subjectSlice.actions;
+export const {
+  toggleShowEditeButtons,
+  setPage,
+  setSearch_by_subject_name,
+  setSearch_input_value,
+  setSortByName,
+  setSortByDate,
+} = subjectSlice.actions;
