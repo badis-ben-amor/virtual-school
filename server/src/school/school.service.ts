@@ -40,44 +40,49 @@ export class SchoolService {
     return { message: 'School create successfully' };
   }
 
-  async getAll(req: ReqUserDto) {
-    const schools = await this.schoolModel.aggregate([
-      { $match: { user_id: new mongoose.Types.ObjectId(req.user.id) } },
-      {
-        $lookup: {
-          from: 'teachers',
-          localField: '_id',
-          foreignField: 'school_id',
-          as: 'students',
+  async getAll(req: ReqUserDto, page: number, limit: number) {
+    const [data, total] = await Promise.all([
+      this.schoolModel.aggregate([
+        { $match: { user_id: new mongoose.Types.ObjectId(req.user.id) } },
+        { $skip: (page - 1) * limit },
+        { $limit: limit },
+        {
+          $lookup: {
+            from: 'teachers',
+            localField: '_id',
+            foreignField: 'school_id',
+            as: 'students',
+          },
         },
-      },
-      {
-        $lookup: {
-          from: 'classrooms',
-          localField: '_id',
-          foreignField: 'school_id',
-          as: 'classrooms',
+        {
+          $lookup: {
+            from: 'classrooms',
+            localField: '_id',
+            foreignField: 'school_id',
+            as: 'classrooms',
+          },
         },
-      },
-      {
-        $addFields: {
-          studentsLength: { $size: '$students' },
-          cassroomsLength: { $size: '$classrooms' },
+        {
+          $addFields: {
+            studentsLength: { $size: '$students' },
+            cassroomsLength: { $size: '$classrooms' },
+          },
         },
-      },
-      {
-        $project: {
-          user_id: 0,
-          createdAt: 0,
-          updatedAt: 0,
-          __v: 0,
-          students: 0,
-          classrooms: 0,
+        {
+          $project: {
+            user_id: 0,
+            createdAt: 0,
+            updatedAt: 0,
+            __v: 0,
+            students: 0,
+            classrooms: 0,
+          },
         },
-      },
+      ]),
+      this.schoolModel.countDocuments({ user_id: req.user.id }),
     ]);
 
-    return schools;
+    return { data, total, pageCount: Math.ceil(total / limit), page };
   }
 
   async getOne(school_id: string, req: ReqUserDto) {

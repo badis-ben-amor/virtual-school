@@ -10,18 +10,28 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import {
   createSchoolThunk,
   deleteSchoolThunk,
   getAllSchoolsThunk,
+  setPage,
   toggleShowEditeIcons,
   updateSchoolThunk,
 } from "@/redux/slices/schoolSlice";
 import { Appdipatch, RootState } from "@/redux/store";
 import { SchoolType } from "@/types/schoolType";
 import {
+  Loader2,
   Mail,
   MapPin,
   Pen,
@@ -36,11 +46,15 @@ import { useDispatch, useSelector } from "react-redux";
 
 const Dashboard = () => {
   const dispatch = useDispatch<Appdipatch>();
-  const { schools: schoolsData, showEditeIcons } = useSelector(
-    (state: RootState) => state.school
-  );
+  const {
+    schools: schoolsData,
+    showEditeIcons,
+    page,
+    limit,
+    pageCount,
+    pageFromApi,
+  } = useSelector((state: RootState) => state.school);
   const { accessToken } = useSelector((state: RootState) => state.user);
-
   const [schools, setSchools] = useState<SchoolType[]>([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [editingSchool, setEditingSchool] = useState(false);
@@ -56,14 +70,26 @@ const Dashboard = () => {
     website_url: "",
     school_img: null,
   });
+  const [spin, setSpin] = useState(false);
 
   useEffect(() => {
-    dispatch(getAllSchoolsThunk(accessToken));
+    dispatch(getAllSchoolsThunk({ accessToken, limit, page }));
   }, []);
 
   useEffect(() => {
     setSchools(schoolsData);
   }, [schoolsData]);
+
+  useEffect(() => {
+    dispatch(getAllSchoolsThunk({ accessToken, limit, page }));
+  }, [page]);
+
+  const handleLoading = () => {
+    if (!showEditeIcons) {
+      setSpin(true);
+      setTimeout(() => setSpin(false), 1000);
+    }
+  };
 
   const handleOpenDialog = (school?: SchoolType) => {
     if (school) setEditingSchool(true);
@@ -104,10 +130,10 @@ const Dashboard = () => {
           school_id: schoolForm._id,
           schoolData: formData,
         })
-      ).then(() => dispatch(getAllSchoolsThunk(accessToken)));
+      ).then(() => dispatch(getAllSchoolsThunk({ accessToken, limit, page })));
     } else {
       dispatch(createSchoolThunk({ accessToken, schoolData: formData })).then(
-        () => dispatch(getAllSchoolsThunk(accessToken))
+        () => dispatch(getAllSchoolsThunk({ accessToken, limit, page }))
       );
     }
 
@@ -135,9 +161,10 @@ const Dashboard = () => {
 
   const handleDeleteSchool = (school_id: string) => {
     dispatch(deleteSchoolThunk({ accessToken, school_id })).then(() =>
-      dispatch(getAllSchoolsThunk(accessToken))
+      dispatch(getAllSchoolsThunk({ accessToken, limit, page }))
     );
   };
+
   return (
     <div className="p-2">
       <div className="flex justify-between">
@@ -148,7 +175,10 @@ const Dashboard = () => {
           <Plus size={16} color="black" /> Add School
         </Button>
         <Button
-          onClick={() => dispatch(toggleShowEditeIcons())}
+          onClick={() => {
+            dispatch(toggleShowEditeIcons());
+            handleLoading();
+          }}
           className="bg-[#e6edf5] hover:bg-[#d9e9fa] text-darck"
         >
           {showEditeIcons ? (
@@ -178,7 +208,9 @@ const Dashboard = () => {
                 <div>
                   {showEditeIcons && (
                     <Pen
-                      className="h-5 w-5 cursor-pointer text-blue-500"
+                      className={`h-5 w-5 cursor-pointer text-blue-500 ${
+                        spin ? "animate-spin" : ""
+                      }`}
                       onClick={() => handleOpenDialog(school)}
                     />
                   )}
@@ -193,7 +225,9 @@ const Dashboard = () => {
                 <div>
                   {showEditeIcons && (
                     <Trash2
-                      className="h-5 w-5 cursor-pointer text-red-500"
+                      className={`h-5 w-5 cursor-pointer text-red-500 ${
+                        spin ? "animate-spin" : ""
+                      }`}
                       onClick={() => handleDeleteSchool(school._id)}
                     />
                   )}
@@ -222,6 +256,24 @@ const Dashboard = () => {
           </Card>
         ))}
       </div>
+
+      <Pagination>
+        <PaginationContent>
+          <PaginationPrevious
+            onClick={() => dispatch(setPage(Math.max(page - 1, 1)))}
+          />
+          {Array.from({ length: pageCount }, (_, i) => (
+            <PaginationItem key={i} onClick={() => dispatch(setPage(i + 1))}>
+              <PaginationLink isActive={i + 1 === pageFromApi} href="#">
+                {i + 1}
+              </PaginationLink>
+            </PaginationItem>
+          ))}
+          <PaginationNext
+            onClick={() => dispatch(setPage(Math.min(page + 1, pageCount)))}
+          />
+        </PaginationContent>
+      </Pagination>
 
       <Dialog open={openDialog} onOpenChange={handleCloseDialog}>
         <DialogContent className="overflow-y-auto max-h-[90vh]">

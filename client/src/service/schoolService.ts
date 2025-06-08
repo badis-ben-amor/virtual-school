@@ -1,4 +1,3 @@
-import { SchoolType } from "@/types/schoolType";
 import axios from "axios";
 
 export function createSchool(accessToken: string, schoolData: FormData) {
@@ -7,12 +6,19 @@ export function createSchool(accessToken: string, schoolData: FormData) {
   });
 }
 
-export function getAllSchools(accessToken: string) {
-  return axios.get(`${process.env.NEXT_PUBLIC_API_URL}/school`, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
+export function getAllSchools(
+  accessToken: string,
+  page: number,
+  limit: number
+) {
+  return axios.get(
+    `${process.env.NEXT_PUBLIC_API_URL}/school?page=${page}&limit=${limit}`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
 }
 
 export function getOneSchool(accessToken: string, school_id: string) {

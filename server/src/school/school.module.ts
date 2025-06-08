@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { SchoolController } from './schoo.controller';
+import { SchoolController } from './school.controller';
 import { SchoolService } from './school.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { SchoolSchema } from './school.schema';
