@@ -348,35 +348,37 @@ const Subject = () => {
         ))}
       </div>
 
-      <Pagination className="mt-4">
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious
-              onClick={() => dispatch(setPage(Math.max(1, page - 1)))}
-            />
-          </PaginationItem>
-          {Array.from({ length: pageCount }, (_, i) => (
-            <PaginationItem key={i}>
-              <PaginationLink
-                href="#"
-                isActive={i + 1 === pageFromApi}
-                onClick={() => dispatch(setPage(i + 1))}
-              >
-                {i + 1}
-              </PaginationLink>
+      {subjects.length > 0 && (
+        <Pagination className="mt-4">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                onClick={() => dispatch(setPage(Math.max(1, page - 1)))}
+              />
             </PaginationItem>
-          ))}
-          <PaginationItem>
-            <PaginationNext
-              className={`${
-                page === pageCount &&
-                "bg-stone-100 text-stone-400 hover:bg-stone-100 hover:text-stone-400"
-              }`}
-              onClick={() => dispatch(setPage(Math.min(pageCount, page + 1)))}
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+            {Array.from({ length: pageCount }, (_, i) => (
+              <PaginationItem key={i}>
+                <PaginationLink
+                  href="#"
+                  isActive={i + 1 === pageFromApi}
+                  onClick={() => dispatch(setPage(i + 1))}
+                >
+                  {i + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+            <PaginationItem>
+              <PaginationNext
+                className={`${
+                  page === pageCount &&
+                  "bg-stone-100 text-stone-400 hover:bg-stone-100 hover:text-stone-400"
+                }`}
+                onClick={() => dispatch(setPage(Math.min(pageCount, page + 1)))}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
 
       <Dialog open={openDialog} onOpenChange={handleCloseDialog}>
         <DialogContent>

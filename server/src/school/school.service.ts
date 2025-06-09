@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
 import { School } from './school.schema';
@@ -20,6 +24,15 @@ export class SchoolService {
     req: ReqUserDto,
     file?: Express.Multer.File,
   ) {
+    if (schoolCreateDto.is_active) {
+      const isActiveExist = await this.schoolModel.findOne({
+        user_id: req.user.id,
+        is_active: true,
+      });
+
+      if (isActiveExist)
+        throw new BadRequestException('active school must be just one');
+    }
     if (file) {
       const logo_url = await this.cloudinaryService.uploadImage(
         file,
@@ -40,10 +53,18 @@ export class SchoolService {
     return { message: 'School create successfully' };
   }
 
-  async getAll(req: ReqUserDto, page: number, limit: number) {
+  async getAll(
+    req: ReqUserDto,
+    page: number = 1,
+    limit: number = 10,
+    search_by_name: string,
+  ) {
+    const filter: any = { user_id: new mongoose.Types.ObjectId(req.user.id) };
+    if (search_by_name)
+      filter.school_name = { $regex: search_by_name, $options: 'i' };
     const [data, total] = await Promise.all([
       this.schoolModel.aggregate([
-        { $match: { user_id: new mongoose.Types.ObjectId(req.user.id) } },
+        { $match: filter },
         { $skip: (page - 1) * limit },
         { $limit: limit },
         {
@@ -79,7 +100,7 @@ export class SchoolService {
           },
         },
       ]),
-      this.schoolModel.countDocuments({ user_id: req.user.id }),
+      this.schoolModel.countDocuments(filter),
     ]);
 
     return { data, total, pageCount: Math.ceil(total / limit), page };

@@ -492,35 +492,37 @@ const Teacher = () => {
         ))}
       </div>
 
-      <Pagination className="mt-4">
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious
-              onClick={() => dispatch(setPage(Math.max(page - 1, 1)))}
-            />
-          </PaginationItem>
-          {Array.from({ length: pageCount }, (_, i) => (
-            <PaginationItem key={i}>
-              <PaginationLink
-                isActive={page === i + 1}
-                href="#"
-                onClick={() => dispatch(setPage(i + 1))}
-              >
-                {i + 1}
-              </PaginationLink>
+      {teachers.length > 0 && (
+        <Pagination className="mt-4">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                onClick={() => dispatch(setPage(Math.max(page - 1, 1)))}
+              />
             </PaginationItem>
-          ))}
-          <PaginationItem>
-            <PaginationNext
-              className={`${
-                page === pageCount &&
-                "bg-stone-100 text-stone-400 hover:bg-stone-100 hover:text-stone-400"
-              }`}
-              onClick={() => dispatch(setPage(Math.min(page + 1, pageCount)))}
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+            {Array.from({ length: pageCount }, (_, i) => (
+              <PaginationItem key={i}>
+                <PaginationLink
+                  isActive={page === i + 1}
+                  href="#"
+                  onClick={() => dispatch(setPage(i + 1))}
+                >
+                  {i + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+            <PaginationItem>
+              <PaginationNext
+                className={`${
+                  page === pageCount &&
+                  "bg-stone-100 text-stone-400 hover:bg-stone-100 hover:text-stone-400"
+                }`}
+                onClick={() => dispatch(setPage(Math.min(page + 1, pageCount)))}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
 
       <Dialog open={openDialog} onOpenChange={handleCloseDialog}>
         <DialogContent className="max-h-[80vh] overflow-y-auto">

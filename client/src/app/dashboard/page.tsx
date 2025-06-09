@@ -257,23 +257,25 @@ const Dashboard = () => {
         ))}
       </div>
 
-      <Pagination>
-        <PaginationContent>
-          <PaginationPrevious
-            onClick={() => dispatch(setPage(Math.max(page - 1, 1)))}
-          />
-          {Array.from({ length: pageCount }, (_, i) => (
-            <PaginationItem key={i} onClick={() => dispatch(setPage(i + 1))}>
-              <PaginationLink isActive={i + 1 === pageFromApi} href="#">
-                {i + 1}
-              </PaginationLink>
-            </PaginationItem>
-          ))}
-          <PaginationNext
-            onClick={() => dispatch(setPage(Math.min(page + 1, pageCount)))}
-          />
-        </PaginationContent>
-      </Pagination>
+      {schools.length > 0 && (
+        <Pagination>
+          <PaginationContent>
+            <PaginationPrevious
+              onClick={() => dispatch(setPage(Math.max(page - 1, 1)))}
+            />
+            {Array.from({ length: pageCount }, (_, i) => (
+              <PaginationItem key={i} onClick={() => dispatch(setPage(i + 1))}>
+                <PaginationLink isActive={i + 1 === pageFromApi} href="#">
+                  {i + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+            <PaginationNext
+              onClick={() => dispatch(setPage(Math.min(page + 1, pageCount)))}
+            />
+          </PaginationContent>
+        </Pagination>
+      )}
 
       <Dialog open={openDialog} onOpenChange={handleCloseDialog}>
         <DialogContent className="overflow-y-auto max-h-[90vh]">

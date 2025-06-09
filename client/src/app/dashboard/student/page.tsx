@@ -423,37 +423,39 @@ const Student = () => {
         ))}
       </div>
 
-      <Pagination className="mt-4">
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious
-              onClick={() => setPage((p) => Math.max(p - 1, 1))}
-            />
-          </PaginationItem>
-
-          {Array.from({ length: pageCount }, (_, i) => (
-            <PaginationItem key={i}>
-              <PaginationLink
-                isActive={pageData === i + 1}
-                onClick={() => setPage(i + 1)}
-                href="#"
-              >
-                {i + 1}
-              </PaginationLink>
+      {students.length > 0 && (
+        <Pagination className="mt-4">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                onClick={() => setPage((p) => Math.max(p - 1, 1))}
+              />
             </PaginationItem>
-          ))}
 
-          <PaginationItem>
-            <PaginationNext
-              className={`${
-                page === pageCount &&
-                "bg-stone-100 text-stone-400 hover:bg-stone-100 hover:text-stone-400"
-              }`}
-              onClick={() => setPage((p) => Math.min(p + 1, pageCount))}
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+            {Array.from({ length: pageCount }, (_, i) => (
+              <PaginationItem key={i}>
+                <PaginationLink
+                  isActive={pageData === i + 1}
+                  onClick={() => setPage(i + 1)}
+                  href="#"
+                >
+                  {i + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+
+            <PaginationItem>
+              <PaginationNext
+                className={`${
+                  page === pageCount &&
+                  "bg-stone-100 text-stone-400 hover:bg-stone-100 hover:text-stone-400"
+                }`}
+                onClick={() => setPage((p) => Math.min(p + 1, pageCount))}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
 
       <Dialog open={openDialog} onOpenChange={handleCloseDialog}>
         <DialogContent>

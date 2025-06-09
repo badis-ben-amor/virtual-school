@@ -28,14 +28,20 @@ export const createSchoolThunk = createAsyncThunk(
               const res = await createSchool(newAccessToken, schoolData);
               return { res: res.data, accessToken: newAccessToken };
             } catch (error: any) {
-              return thunkAPI.rejectWithValue(error.message);
+              return thunkAPI.rejectWithValue(
+                error.response?.data?.message || error.message
+              );
             }
           }
         } catch (error: any) {
-          return thunkAPI.rejectWithValue(error.message);
+          return thunkAPI.rejectWithValue(
+            error.response?.data?.message || error.message
+          );
         }
-        return thunkAPI.rejectWithValue(error.message);
       }
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || error.message
+      );
     }
   }
 );

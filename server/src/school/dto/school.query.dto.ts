@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsOptional } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class SchoolQueryDto {
   @IsOptional()
@@ -9,4 +9,8 @@ export class SchoolQueryDto {
   @IsOptional()
   @Type(() => Number)
   limit: number;
+
+  @IsOptional()
+  @IsString()
+  search_by_name: string;
 }

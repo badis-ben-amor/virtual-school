@@ -53,6 +53,7 @@ export class SchoolController {
       req,
       schoolQueryDto.page,
       schoolQueryDto.limit,
+      schoolQueryDto.search_by_name,
     );
   }
 
