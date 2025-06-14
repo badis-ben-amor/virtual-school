@@ -12,8 +12,8 @@ import {
 import { ClassRoomService } from './classRoom.service';
 import { AuthGuard } from '../common/guards/auth.guard';
 import { ClassRoomCreateDto } from './dto/classRoom.Create.dto';
-import { ClassRoomQueryMongoIdDto } from './dto/classRoom.query.mongoId.dto';
-import { ClassRoomParamsMongoIdDto } from './dto/classRoom.params.mongoId.dto';
+import { ClassRoomQueryDto } from './dto/classRoom.query.dto';
+import { ClassRoomParamsDto } from './dto/classRoom.params.dto';
 import { ClassRoomUpdateDto } from './dto/classRoom.update.dto';
 
 @UseGuards(AuthGuard)
@@ -27,47 +27,46 @@ export class ClassRoomController {
   }
 
   @Get()
-  getAll(@Query() classRoomQueryMongoIdDto: ClassRoomQueryMongoIdDto) {
-    const school_id = classRoomQueryMongoIdDto.school_id;
-
-    return this.classRoomService.getAll(school_id);
+  getAll(@Query() classRoomQueryDto: ClassRoomQueryDto) {
+    return this.classRoomService.getAll(
+      classRoomQueryDto.school_id,
+      classRoomQueryDto.page,
+      classRoomQueryDto.limit,
+    );
   }
 
   @Get(':classroom_id')
   getOne(
-    @Param() classRoomParamsMongoIdDto: ClassRoomParamsMongoIdDto,
-    @Query() classRoomQueryMongoIdDto: ClassRoomQueryMongoIdDto,
+    @Param() classRoomParamsDto: ClassRoomParamsDto,
+    @Query() classRoomQueryDto: ClassRoomQueryDto,
   ) {
-    const classroom_id = classRoomParamsMongoIdDto.classroom_id,
-      school_id = classRoomQueryMongoIdDto.school_id;
-
-    return this.classRoomService.getOne(classroom_id, school_id);
+    return this.classRoomService.getOne(
+      classRoomParamsDto.classroom_id,
+      classRoomQueryDto.school_id,
+    );
   }
 
   @Put(':classroom_id')
   update(
-    @Param() classRoomParamsMongoIdDto: ClassRoomParamsMongoIdDto,
-    @Query() classRoomQueryMongoIdDto: ClassRoomQueryMongoIdDto,
+    @Param() classRoomParamsDto: ClassRoomParamsDto,
+    @Query() classRoomQueryDto: ClassRoomQueryDto,
     @Body() classRoomUpdateDto: ClassRoomUpdateDto,
   ) {
-    const classroom_id = classRoomParamsMongoIdDto.classroom_id,
-      school_id = classRoomQueryMongoIdDto.school_id;
-
     return this.classRoomService.update(
-      classroom_id,
-      school_id,
+      classRoomParamsDto.classroom_id,
+      classRoomQueryDto.school_id,
       classRoomUpdateDto,
     );
   }
 
   @Delete(':classroom_id')
   delete(
-    @Param() classRoomParamsMongoIdDto: ClassRoomParamsMongoIdDto,
-    @Query() classRoomQueryMongoIdDto: ClassRoomQueryMongoIdDto,
+    @Param() classRoomParamsDto: ClassRoomParamsDto,
+    @Query() classRoomQueryDto: ClassRoomQueryDto,
   ) {
-    const classroom_id = classRoomParamsMongoIdDto.classroom_id,
-      school_id = classRoomQueryMongoIdDto.school_id;
-
-    return this.classRoomService.delete(classroom_id, school_id);
+    return this.classRoomService.delete(
+      classRoomParamsDto.classroom_id,
+      classRoomQueryDto.school_id,
+    );
   }
 }

@@ -10,11 +10,20 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import { Textarea } from "@/components/ui/textarea";
 import {
   createClassroomThunk,
   deleteClassroomThunk,
   getAllClassroomThunk,
+  setPage,
   toggleShowEditeIcons,
   updateClassroomThunk,
 } from "@/redux/slices/classroomSlice";
@@ -27,9 +36,14 @@ import { useDispatch, useSelector } from "react-redux";
 
 const Classroom = () => {
   const dispatch = useDispatch<Appdipatch>();
-  const { classrooms: classroomsData, showEditeIcons } = useSelector(
-    (state: RootState) => state.classroom
-  );
+  const {
+    classrooms: classroomsData,
+    showEditeIcons,
+    page,
+    limit,
+    pages,
+    pageFromApi,
+  } = useSelector((state: RootState) => state.classroom);
   const { accessToken } = useSelector((state: RootState) => state.auth);
 
   const [classrooms, setClassrooms] = useState<ClassroomType[]>([]);
@@ -54,6 +68,8 @@ const Classroom = () => {
           getAllClassroomThunk({
             accessToken,
             school_id: res?.res?.activeSchool._id,
+            limit,
+            page,
           })
         );
       });
@@ -62,6 +78,17 @@ const Classroom = () => {
   useEffect(() => {
     setClassrooms(classroomsData);
   }, [classroomsData]);
+
+  useEffect(() => {
+    dispatch(
+      getAllClassroomThunk({
+        accessToken,
+        school_id: activeSchoolId,
+        limit,
+        page,
+      })
+    );
+  }, [page]);
 
   const handleOpenDialog = (classroom?: ClassroomType) => {
     if (classroom) {
@@ -93,7 +120,12 @@ const Classroom = () => {
         })
       ).then(() =>
         dispatch(
-          getAllClassroomThunk({ accessToken, school_id: activeSchoolId })
+          getAllClassroomThunk({
+            accessToken,
+            school_id: activeSchoolId,
+            limit,
+            page,
+          })
         )
       );
     } else {
@@ -105,7 +137,12 @@ const Classroom = () => {
         })
       ).then(() =>
         dispatch(
-          getAllClassroomThunk({ accessToken, school_id: activeSchoolId })
+          getAllClassroomThunk({
+            accessToken,
+            school_id: activeSchoolId,
+            limit,
+            page,
+          })
         )
       );
     }
@@ -132,7 +169,14 @@ const Classroom = () => {
         school_id: activeSchoolId,
       })
     ).then(() =>
-      dispatch(getAllClassroomThunk({ accessToken, school_id: activeSchoolId }))
+      dispatch(
+        getAllClassroomThunk({
+          accessToken,
+          school_id: activeSchoolId,
+          limit,
+          page,
+        })
+      )
     );
   };
 
@@ -197,6 +241,38 @@ const Classroom = () => {
           </Card>
         ))}
       </div>
+
+      {classrooms.length > 0 && (
+        <Pagination className="mt-4">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                onClick={() => dispatch(setPage(Math.max(page - 1, 1)))}
+              />
+            </PaginationItem>
+            {Array.from({ length: pages }, (_, i) => (
+              <PaginationItem key={i}>
+                <PaginationLink
+                  onClick={() => dispatch(setPage(i + 1))}
+                  isActive={i + 1 === pageFromApi}
+                  href="#"
+                >
+                  {i + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+            <PaginationItem>
+              <PaginationNext
+                className={`${
+                  page === pages &&
+                  "bg-stone-100 text-stone-400 hover:bg-stone-100 hover:text-stone-400"
+                }`}
+                onClick={() => dispatch(setPage(Math.min(page + 1, pages)))}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
 
       <Dialog open={openDialog} onOpenChange={() => setOpenDialog(false)}>
         <DialogContent>

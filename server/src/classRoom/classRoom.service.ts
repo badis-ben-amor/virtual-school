@@ -25,31 +25,39 @@ export class ClassRoomService {
     return 'Classroom created successfully';
   }
 
-  async getAll(school_id: string) {
-    return await this.classRoomModel.aggregate([
-      { $match: { school_id: new mongoose.Types.ObjectId(school_id) } },
-      {
-        $lookup: {
-          from: 'students',
-          localField: '_id',
-          foreignField: 'classroom_id',
-          as: 'students',
+  async getAll(school_id: string, page: number = 1, limit: number = 3) {
+    const filter: any = { school_id: new mongoose.Types.ObjectId(school_id) };
+    const [data, total] = await Promise.all([
+      this.classRoomModel.aggregate([
+        { $match: filter },
+        { $skip: (page - 1) * limit },
+        { $limit: limit },
+        {
+          $lookup: {
+            from: 'students',
+            localField: '_id',
+            foreignField: 'classroom_id',
+            as: 'students',
+          },
         },
-      },
-      {
-        $addFields: {
-          studentsLength: { $size: '$students' },
+        {
+          $addFields: {
+            studentsLength: { $size: '$students' },
+          },
         },
-      },
-      {
-        $project: {
-          students: 0,
-          createdAt: 0,
-          updatedAt: 0,
-          __v: 0,
+        {
+          $project: {
+            students: 0,
+            createdAt: 0,
+            updatedAt: 0,
+            __v: 0,
+          },
         },
-      },
+      ]),
+      this.classRoomModel.countDocuments(filter),
     ]);
+
+    return { data, page, total, pages: Math.ceil(total / limit) };
   }
 
   async getOne(classroom_id: string, school_id: string) {

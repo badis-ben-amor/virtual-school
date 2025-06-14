@@ -59,14 +59,18 @@ export const getAllClassroomThunk = createAsyncThunk(
     {
       accessToken,
       school_id,
+      page,
+      limit,
     }: {
       accessToken: string;
       school_id: string;
+      page?: number;
+      limit?: number;
     },
     thunkAPI
   ) => {
     try {
-      const res = await getAllClassroom(accessToken, school_id);
+      const res = await getAllClassroom(accessToken, school_id, page, limit);
       return { res: res.data, accessToken };
     } catch (error: any) {
       if (error.response.status === 401)
@@ -75,7 +79,12 @@ export const getAllClassroomThunk = createAsyncThunk(
           const newAccessToken = res.data.newAccessToken;
           if (newAccessToken) {
             try {
-              const res = await getAllClassroom(newAccessToken, school_id);
+              const res = await getAllClassroom(
+                newAccessToken,
+                school_id,
+                page,
+                limit
+              );
               return { res: res.data, accessToken: newAccessToken };
             } catch (error: any) {
               return thunkAPI.rejectWithValue(
@@ -256,10 +265,17 @@ const classroomSlice = createSlice({
     error: "",
     accessToken: "",
     showEditeIcons: false,
+    pages: 0,
+    pageFromApi: 0,
+    page: 1,
+    limit: 2,
   },
   reducers: {
     toggleShowEditeIcons: (state) => {
       state.showEditeIcons = !state.showEditeIcons;
+    },
+    setPage: (state, action) => {
+      state.page = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -280,8 +296,10 @@ const classroomSlice = createSlice({
       })
       .addCase(getAllClassroomThunk.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.classrooms = action.payload.res;
+        state.classrooms = action.payload.res.data;
         state.accessToken = action.payload.accessToken;
+        state.pageFromApi = action.payload.res.page;
+        state.pages = action.payload.res.pages;
       })
       .addCase(getAllClassroomThunk.rejected, (state, action: any) => {
         state.isLoading = false;
@@ -324,5 +342,5 @@ const classroomSlice = createSlice({
   },
 });
 
-export const { toggleShowEditeIcons } = classroomSlice.actions;
 export default classroomSlice.reducer;
+export const { toggleShowEditeIcons, setPage } = classroomSlice.actions;

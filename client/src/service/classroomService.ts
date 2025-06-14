@@ -16,9 +16,14 @@ export const createClassroom = (
   );
 };
 
-export const getAllClassroom = (accessToken: string, school_id: string) => {
+export const getAllClassroom = (
+  accessToken: string,
+  school_id: string,
+  page?: number,
+  limit?: number
+) => {
   return axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/class-room?school_id=${school_id}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/class-room?school_id=${school_id}&page=${page}&limit=${limit}`,
     { headers: { Authorization: `Bearer ${accessToken}` } }
   );
 };
