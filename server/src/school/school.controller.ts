@@ -54,6 +54,8 @@ export class SchoolController {
       schoolQueryDto.page,
       schoolQueryDto.limit,
       schoolQueryDto.search_by_name,
+      schoolQueryDto.sort_by_name,
+      schoolQueryDto.sort_by_date,
     );
   }
 

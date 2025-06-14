@@ -48,15 +48,7 @@ import { Appdipatch, RootState } from "@/redux/store";
 import { ClassroomType } from "@/types/classroomType";
 import { SubjectType } from "@/types/subjectType";
 import { TeacherType } from "@/types/teacherType";
-import {
-  ArrowDown,
-  ArrowUp,
-  Pen,
-  Plus,
-  RotateCw,
-  Trash2,
-  X,
-} from "lucide-react";
+import { ArrowDown, ArrowUp, Pen, Plus, X, Trash2 } from "lucide-react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -314,7 +306,7 @@ const Teacher = () => {
         </Button>
       </div>
 
-      <h2 className="text-xl font-semibold mb-2">Teacher</h2>
+      <h2 className="text-xl font-semibold mb-2">Teachers</h2>
 
       <div className="flex justify-between items-center mb-2">
         <Command className="bg-[#f5f6f7] lg:w-1/5 md:w-1/4 w-1/3">
@@ -324,7 +316,7 @@ const Teacher = () => {
             placeholder="search by teacher..."
           />
         </Command>
-        <RotateCw
+        <X
           onClick={() => {
             dispatch(setSearchInputValue(""));
             dispatch(setFirst_name_search(""));
@@ -359,7 +351,7 @@ const Teacher = () => {
               ))}
             </SelectContent>
           </Select>
-          <RotateCw
+          <X
             onClick={() => {
               dispatch(setClassroom_id(""));
               dispatch(setPage(1));
@@ -386,7 +378,7 @@ const Teacher = () => {
               ))}
             </SelectContent>
           </Select>
-          <RotateCw
+          <X
             onClick={() => {
               dispatch(setSubject_id(""));
               dispatch(setPage(1));
@@ -411,7 +403,7 @@ const Teacher = () => {
               </SelectItem>
             </SelectContent>
           </Select>
-          <RotateCw
+          <X
             onClick={() => {
               dispatch(setSortByName(""));
               dispatch(setPage(1));
@@ -436,7 +428,7 @@ const Teacher = () => {
               </SelectItem>
             </SelectContent>
           </Select>
-          <RotateCw
+          <X
             className="cursor-pointer w-4 h-4"
             onClick={() => {
               dispatch(setSortByDate(""));

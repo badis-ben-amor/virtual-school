@@ -353,8 +353,7 @@ const Student = () => {
             </SelectContent>
           </Select>
           <RotateCw
-            className="cursor-pointer"
-            size={16}
+            className="cursor-pointer w-4 h-4"
             onClick={() => {
               setSortByName("");
               setPage(1);

@@ -53,11 +53,28 @@ export const getAllSchoolsThunk = createAsyncThunk(
       accessToken,
       page,
       limit,
-    }: { accessToken: string; page: number; limit: number },
+      search_by_name,
+      sort_by_name,
+      sort_by_date,
+    }: {
+      accessToken: string;
+      page: number;
+      limit: number;
+      search_by_name?: string;
+      sort_by_name?: string;
+      sort_by_date: string;
+    },
     thunkAPI
   ) => {
     try {
-      const res = await getAllSchools(accessToken, page, limit);
+      const res = await getAllSchools(
+        accessToken,
+        page,
+        limit,
+        search_by_name,
+        sort_by_name,
+        sort_by_date
+      );
       return { res: res.data, accessToken };
     } catch (error: any) {
       if (error.response?.status === 403) {
@@ -66,7 +83,14 @@ export const getAllSchoolsThunk = createAsyncThunk(
           const newAccessToken = res.data.newAccessToken;
           if (newAccessToken) {
             try {
-              const res = await getAllSchools(newAccessToken, page, limit);
+              const res = await getAllSchools(
+                newAccessToken,
+                page,
+                limit,
+                search_by_name,
+                sort_by_name,
+                sort_by_date
+              );
               return { res: res.data, accessToken: newAccessToken };
             } catch (error: any) {
               return thunkAPI.rejectWithValue(error.response?.data?.message);
@@ -106,8 +130,8 @@ export const getOneSchoolThunk = createAsyncThunk(
         } catch (error: any) {
           return thunkAPI.rejectWithValue(error.message);
         }
-        return thunkAPI.rejectWithValue(error.message);
       }
+      return thunkAPI.rejectWithValue(error.message);
     }
   }
 );
@@ -134,8 +158,8 @@ export const getActiveSchoolThunk = createAsyncThunk(
         } catch (error: any) {
           return thunkAPI.rejectWithValue(error.message);
         }
-        return thunkAPI.rejectWithValue(error.message);
       }
+      return thunkAPI.rejectWithValue(error.message);
     }
   }
 );
@@ -204,8 +228,8 @@ export const deleteSchoolThunk = createAsyncThunk(
         } catch (error: any) {
           thunkAPI.rejectWithValue(error.message);
         }
-        return thunkAPI.rejectWithValue(error.message);
       }
+      return thunkAPI.rejectWithValue(error.message);
     }
   }
 );
@@ -221,10 +245,14 @@ const schoolSlice = createSlice({
     accessToken: "",
     showEditeIcons: false,
     page: 1,
-    limit: 4,
+    limit: 6,
     pageCount: 0,
     total: 0,
     pageFromApi: 0,
+    search_by_name: "",
+    search_input_value: "",
+    sort_by_name: "",
+    sort_by_date: "",
   },
   reducers: {
     toggleShowEditeIcons: (state) => {
@@ -232,6 +260,18 @@ const schoolSlice = createSlice({
     },
     setPage: (state, action) => {
       state.page = action.payload;
+    },
+    setSearch_by_name: (state, action) => {
+      state.search_by_name = action.payload;
+    },
+    setSearch_input_value: (state, action) => {
+      state.search_input_value = action.payload;
+    },
+    setSort_by_name: (state, action) => {
+      state.sort_by_name = action.payload;
+    },
+    setSort_by_date: (state, action) => {
+      state.sort_by_date = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -290,4 +330,11 @@ const schoolSlice = createSlice({
 });
 
 export default schoolSlice.reducer;
-export const { toggleShowEditeIcons, setPage } = schoolSlice.actions;
+export const {
+  toggleShowEditeIcons,
+  setPage,
+  setSearch_by_name,
+  setSearch_input_value,
+  setSort_by_name,
+  setSort_by_date,
+} = schoolSlice.actions;

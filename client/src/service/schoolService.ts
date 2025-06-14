@@ -9,10 +9,13 @@ export function createSchool(accessToken: string, schoolData: FormData) {
 export function getAllSchools(
   accessToken: string,
   page: number,
-  limit: number
+  limit: number,
+  search_by_name?: string,
+  sort_by_name?: string,
+  sort_by_date?: string
 ) {
   return axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/school?page=${page}&limit=${limit}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/school?page=${page}&limit=${limit}&search_by_name=${search_by_name}&sort_by_name=${sort_by_name}&sort_by_date=${sort_by_date}`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
