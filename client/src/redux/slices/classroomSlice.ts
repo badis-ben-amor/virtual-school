@@ -61,16 +61,27 @@ export const getAllClassroomThunk = createAsyncThunk(
       school_id,
       page,
       limit,
+      search_by_name,
+      sort_by_name,
     }: {
       accessToken: string;
       school_id: string;
       page?: number;
       limit?: number;
+      search_by_name?: string;
+      sort_by_name?: string;
     },
     thunkAPI
   ) => {
     try {
-      const res = await getAllClassroom(accessToken, school_id, page, limit);
+      const res = await getAllClassroom(
+        accessToken,
+        school_id,
+        page,
+        limit,
+        search_by_name,
+        sort_by_name
+      );
       return { res: res.data, accessToken };
     } catch (error: any) {
       if (error.response.status === 401)
@@ -83,7 +94,9 @@ export const getAllClassroomThunk = createAsyncThunk(
                 newAccessToken,
                 school_id,
                 page,
-                limit
+                limit,
+                search_by_name,
+                sort_by_name
               );
               return { res: res.data, accessToken: newAccessToken };
             } catch (error: any) {
@@ -268,7 +281,10 @@ const classroomSlice = createSlice({
     pages: 0,
     pageFromApi: 0,
     page: 1,
-    limit: 2,
+    limit: 8,
+    search_by_name: "",
+    search_input_value: "",
+    sort_by_name: "",
   },
   reducers: {
     toggleShowEditeIcons: (state) => {
@@ -276,6 +292,15 @@ const classroomSlice = createSlice({
     },
     setPage: (state, action) => {
       state.page = action.payload;
+    },
+    setSearchByName: (state, action) => {
+      state.search_by_name = action.payload;
+    },
+    setSearchInputValue: (state, action) => {
+      state.search_input_value = action.payload;
+    },
+    setSortByName: (state, action) => {
+      state.sort_by_name = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -343,4 +368,10 @@ const classroomSlice = createSlice({
 });
 
 export default classroomSlice.reducer;
-export const { toggleShowEditeIcons, setPage } = classroomSlice.actions;
+export const {
+  toggleShowEditeIcons,
+  setPage,
+  setSearchByName,
+  setSearchInputValue,
+  setSortByName,
+} = classroomSlice.actions;

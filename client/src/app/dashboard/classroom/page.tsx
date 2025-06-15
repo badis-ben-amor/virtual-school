@@ -1,6 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Command, CommandInput } from "@/components/ui/command";
 import {
   Dialog,
   DialogContent,
@@ -18,19 +19,37 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import {
   createClassroomThunk,
   deleteClassroomThunk,
   getAllClassroomThunk,
   setPage,
+  setSearchByName,
+  setSearchInputValue,
+  setSortByName,
   toggleShowEditeIcons,
   updateClassroomThunk,
 } from "@/redux/slices/classroomSlice";
 import { getActiveSchoolThunk } from "@/redux/slices/schoolSlice";
 import { Appdipatch, RootState } from "@/redux/store";
 import { ClassroomType } from "@/types/classroomType";
-import { DoorOpen, Pen, Plus, RotateCw, Trash, Trash2 } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowUp,
+  DoorOpen,
+  Pen,
+  Plus,
+  RotateCw,
+  Trash2,
+} from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -43,6 +62,9 @@ const Classroom = () => {
     limit,
     pages,
     pageFromApi,
+    search_by_name,
+    search_input_value,
+    sort_by_name,
   } = useSelector((state: RootState) => state.classroom);
   const { accessToken } = useSelector((state: RootState) => state.auth);
 
@@ -70,6 +92,8 @@ const Classroom = () => {
             school_id: res?.res?.activeSchool._id,
             limit,
             page,
+            search_by_name,
+            sort_by_name,
           })
         );
       });
@@ -86,9 +110,11 @@ const Classroom = () => {
         school_id: activeSchoolId,
         limit,
         page,
+        search_by_name,
+        sort_by_name,
       })
     );
-  }, [page]);
+  }, [page, search_by_name, sort_by_name]);
 
   const handleOpenDialog = (classroom?: ClassroomType) => {
     if (classroom) {
@@ -125,6 +151,8 @@ const Classroom = () => {
             school_id: activeSchoolId,
             limit,
             page,
+            search_by_name,
+            sort_by_name,
           })
         )
       );
@@ -142,6 +170,8 @@ const Classroom = () => {
             school_id: activeSchoolId,
             limit,
             page,
+            search_by_name,
+            sort_by_name,
           })
         )
       );
@@ -175,9 +205,18 @@ const Classroom = () => {
           school_id: activeSchoolId,
           limit,
           page,
+          search_by_name,
+          sort_by_name,
         })
       )
     );
+  };
+
+  const handleResetFilters = () => {
+    dispatch(setSearchByName(""));
+    dispatch(setSearchInputValue(""));
+    dispatch(setSortByName(""));
+    dispatch(setPage(1));
   };
 
   return (
@@ -206,6 +245,63 @@ const Classroom = () => {
       </div>
 
       <h1 className="text-xl font-semibold mb-2">Classrooms</h1>
+
+      <div className="flex items-center mb-2">
+        <Command
+          className={`${
+            search_by_name ? "bg-red-200" : "bg-[#f5f6f7]"
+          } lg:w-1/5 md:w-1/4 w-1/3`}
+        >
+          <CommandInput
+            placeholder="search by name..."
+            value={search_input_value}
+            onValueChange={(v) => {
+              dispatch(setSearchByName(v));
+              dispatch(setSearchInputValue(v));
+              dispatch(setPage(1));
+            }}
+          />
+        </Command>
+        <RotateCw
+          className="w-4 h-4 mr-auto ml-1 cursor-pointer"
+          onClick={() => {
+            dispatch(setSearchByName(""));
+            dispatch(setSearchInputValue(""));
+            dispatch(setPage(1));
+          }}
+        />
+        <Button variant={"outline"}>Reset Filters</Button>
+      </div>
+      <div className="flex mb-2">
+        <div className="flex items-center gap-1">
+          <Select
+            value={sort_by_name}
+            onValueChange={(v) => {
+              dispatch(setSortByName(v));
+              dispatch(setPage(1));
+            }}
+          >
+            <SelectTrigger className={`${sort_by_name && "bg-red-200"}`}>
+              <SelectValue placeholder="sort by name" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="asc">
+                name <ArrowUp />
+              </SelectItem>
+              <SelectItem value="desc">
+                name <ArrowDown />
+              </SelectItem>
+            </SelectContent>
+          </Select>
+          <RotateCw
+            onClick={() => {
+              dispatch(setSortByName(""));
+              dispatch(setPage(1));
+            }}
+            className="h-4 w-4 cursor-pointer"
+          />
+        </div>
+      </div>
 
       <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-4">
         {classrooms.map((classroom, i) => (

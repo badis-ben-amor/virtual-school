@@ -62,21 +62,15 @@ export class SchoolService {
     sort_by_date: 'asc' | 'desc',
   ) {
     const filter: any = { user_id: new mongoose.Types.ObjectId(req.user.id) };
-    const pipeline: any = [
-      { $match: filter },
-      { $skip: (page - 1) * limit },
-      { $limit: limit },
-    ];
     const sort: any = {};
+    const pipeline: any = [{ $match: filter }];
     if (search_by_name)
       filter.school_name = { $regex: search_by_name, $options: 'i' };
     if (sort_by_name) sort.school_name = sort_by_name === 'asc' ? 1 : -1;
     if (sort_by_date) sort.createdAt = sort_by_date === 'asc' ? 1 : -1;
+    if (sort_by_name || sort_by_date) pipeline.push({ $sort: sort });
+    pipeline.push({ $skip: (page - 1) * limit }, { $limit: limit });
 
-    if (sort_by_name || sort_by_date)
-      pipeline.push({
-        $sort: { ...sort },
-      });
     const [data, total] = await Promise.all([
       this.schoolModel.aggregate([
         ...pipeline,

@@ -286,7 +286,7 @@ const Dashboard = () => {
             value={sort_by_name}
             onValueChange={(v) => dispatch(setSort_by_name(v))}
           >
-            <SelectTrigger>
+            <SelectTrigger className={`${sort_by_name && "bg-red-200"}`}>
               <SelectValue placeholder="sort by name" />
             </SelectTrigger>
             <SelectContent>
@@ -313,7 +313,7 @@ const Dashboard = () => {
               dispatch(setSort_by_date(v));
             }}
           >
-            <SelectTrigger>
+            <SelectTrigger className={`${sort_by_date && "bg-red-200"}`}>
               <SelectValue placeholder="sort by date" />
             </SelectTrigger>
             <SelectContent>

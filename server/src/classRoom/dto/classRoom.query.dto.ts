@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsMongoId, IsNotEmpty, IsOptional } from 'class-validator';
+import { IsMongoId, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class ClassRoomQueryDto {
   @IsMongoId()
@@ -13,4 +13,12 @@ export class ClassRoomQueryDto {
   @IsOptional()
   @Type(() => Number)
   limit: number;
+
+  @IsOptional()
+  @IsString()
+  search_by_name: string;
+
+  @IsOptional()
+  @IsString()
+  sort_by_name: 'asc' | 'desc';
 }

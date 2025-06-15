@@ -295,8 +295,7 @@ const Student = () => {
           />
         </Command>
         <RotateCw
-          size={16}
-          className="ml-1 mr-auto cursor-pointer"
+          className="ml-1 mr-auto cursor-pointer h-4 w-4"
           onClick={() => {
             setSearchInputValue("");
             setFirst_name_search("");

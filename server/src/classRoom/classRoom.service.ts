@@ -25,13 +25,25 @@ export class ClassRoomService {
     return 'Classroom created successfully';
   }
 
-  async getAll(school_id: string, page: number = 1, limit: number = 3) {
+  async getAll(
+    school_id: string,
+    page: number = 1,
+    limit: number = 10,
+    search_by_name?: string,
+    sort_by_name?: 'asc' | 'desc',
+  ) {
     const filter: any = { school_id: new mongoose.Types.ObjectId(school_id) };
+    const sort: any = {};
+    const pipeline: any = [{ $match: filter }];
+    if (search_by_name)
+      filter.classroom_name = { $regex: search_by_name, $options: 'i' };
+    if (sort_by_name) sort.classroom_name = sort_by_name === 'asc' ? 1 : -1;
+    if (sort_by_name) pipeline.push({ $sort: sort });
+    pipeline.push({ $skip: (page - 1) * limit }, { $limit: limit });
+
     const [data, total] = await Promise.all([
       this.classRoomModel.aggregate([
-        { $match: filter },
-        { $skip: (page - 1) * limit },
-        { $limit: limit },
+        ...pipeline,
         {
           $lookup: {
             from: 'students',

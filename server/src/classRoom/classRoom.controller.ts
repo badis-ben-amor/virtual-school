@@ -32,6 +32,8 @@ export class ClassRoomController {
       classRoomQueryDto.school_id,
       classRoomQueryDto.page,
       classRoomQueryDto.limit,
+      classRoomQueryDto.search_by_name,
+      classRoomQueryDto.sort_by_name,
     );
   }
 
