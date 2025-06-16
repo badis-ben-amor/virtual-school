@@ -2,11 +2,11 @@
 import { Button } from "@/components/ui/button";
 import {
   Briefcase,
+  ChartNoAxesCombined,
   DoorOpen,
   Home,
   Menu,
   NotebookText,
-  School,
   Users,
   X,
 } from "lucide-react";
@@ -14,12 +14,12 @@ import Link from "next/link";
 import React, { useState } from "react";
 
 const menuItems = [
-  { name: "Overview", icon: Home, path: "/dashboard" },
-  { name: "School", icon: School, path: "/dashboard/school" },
+  { name: "Schools", icon: Home, path: "/dashboard" },
   { name: "Classes", icon: DoorOpen, path: "/dashboard/classroom" },
+  { name: "Subjects", icon: NotebookText, path: "/dashboard/subject" },
   { name: "Students", icon: Users, path: "/dashboard/student" },
   { name: "Teachers", icon: Briefcase, path: "/dashboard/teacher" },
-  { name: "Subjects", icon: NotebookText, path: "/dashboard/subject" },
+  { name: "Charts", icon: ChartNoAxesCombined, path: "/dashboard/overview" },
 ];
 
 const Sidebar = () => {

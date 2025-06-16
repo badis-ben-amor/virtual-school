@@ -21,4 +21,8 @@ export class ClassRoomQueryDto {
   @IsOptional()
   @IsString()
   sort_by_name: 'asc' | 'desc';
+
+  @IsOptional()
+  @IsString()
+  sort_by_date: 'asc' | 'desc';
 }

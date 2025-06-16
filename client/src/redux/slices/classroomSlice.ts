@@ -63,6 +63,7 @@ export const getAllClassroomThunk = createAsyncThunk(
       limit,
       search_by_name,
       sort_by_name,
+      sort_by_date,
     }: {
       accessToken: string;
       school_id: string;
@@ -70,6 +71,7 @@ export const getAllClassroomThunk = createAsyncThunk(
       limit?: number;
       search_by_name?: string;
       sort_by_name?: string;
+      sort_by_date?: string;
     },
     thunkAPI
   ) => {
@@ -80,7 +82,8 @@ export const getAllClassroomThunk = createAsyncThunk(
         page,
         limit,
         search_by_name,
-        sort_by_name
+        sort_by_name,
+        sort_by_date
       );
       return { res: res.data, accessToken };
     } catch (error: any) {
@@ -96,7 +99,8 @@ export const getAllClassroomThunk = createAsyncThunk(
                 page,
                 limit,
                 search_by_name,
-                sort_by_name
+                sort_by_name,
+                sort_by_date
               );
               return { res: res.data, accessToken: newAccessToken };
             } catch (error: any) {
@@ -285,6 +289,7 @@ const classroomSlice = createSlice({
     search_by_name: "",
     search_input_value: "",
     sort_by_name: "",
+    sort_by_date: "",
   },
   reducers: {
     toggleShowEditeIcons: (state) => {
@@ -301,6 +306,9 @@ const classroomSlice = createSlice({
     },
     setSortByName: (state, action) => {
       state.sort_by_name = action.payload;
+    },
+    setSortByDate: (state, action) => {
+      state.sort_by_date = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -374,4 +382,5 @@ export const {
   setSearchByName,
   setSearchInputValue,
   setSortByName,
+  setSortByDate,
 } = classroomSlice.actions;

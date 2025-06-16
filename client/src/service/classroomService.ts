@@ -22,10 +22,11 @@ export const getAllClassroom = (
   page?: number,
   limit?: number,
   search_by_name?: string,
-  sort_by_name?: string
+  sort_by_name?: string,
+  sort_by_date?: string
 ) => {
   return axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/class-room?school_id=${school_id}&page=${page}&limit=${limit}&search_by_name=${search_by_name}&sort_by_name=${sort_by_name}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/class-room?school_id=${school_id}&page=${page}&limit=${limit}&search_by_name=${search_by_name}&sort_by_name=${sort_by_name}&sort_by_date=${sort_by_date}`,
     { headers: { Authorization: `Bearer ${accessToken}` } }
   );
 };

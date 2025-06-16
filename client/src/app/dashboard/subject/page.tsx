@@ -267,7 +267,7 @@ const Subject = () => {
         </Button>
       </div>
 
-      <div className="grid lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-y-2 mb-2">
+      <div className="grid lg:grid-cols-5 md:grid-cols-3 grid-cols-2 gap-y-2 mb-2">
         <div className="flex items-center gap-1">
           <Select
             onValueChange={(v) => dispatch(setSortByName(v))}

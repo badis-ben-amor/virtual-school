@@ -34,6 +34,7 @@ export class ClassRoomController {
       classRoomQueryDto.limit,
       classRoomQueryDto.search_by_name,
       classRoomQueryDto.sort_by_name,
+      classRoomQueryDto.sort_by_date,
     );
   }
 

@@ -31,6 +31,7 @@ export class ClassRoomService {
     limit: number = 10,
     search_by_name?: string,
     sort_by_name?: 'asc' | 'desc',
+    sort_by_date?: 'asc' | 'desc',
   ) {
     const filter: any = { school_id: new mongoose.Types.ObjectId(school_id) };
     const sort: any = {};
@@ -38,7 +39,8 @@ export class ClassRoomService {
     if (search_by_name)
       filter.classroom_name = { $regex: search_by_name, $options: 'i' };
     if (sort_by_name) sort.classroom_name = sort_by_name === 'asc' ? 1 : -1;
-    if (sort_by_name) pipeline.push({ $sort: sort });
+    if (sort_by_date) sort.createdAt = sort_by_date === 'asc' ? 1 : -1;
+    if (sort_by_name || sort_by_date) pipeline.push({ $sort: sort });
     pipeline.push({ $skip: (page - 1) * limit }, { $limit: limit });
 
     const [data, total] = await Promise.all([

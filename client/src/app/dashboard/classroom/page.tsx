@@ -34,6 +34,7 @@ import {
   setPage,
   setSearchByName,
   setSearchInputValue,
+  setSortByDate,
   setSortByName,
   toggleShowEditeIcons,
   updateClassroomThunk,
@@ -65,6 +66,7 @@ const Classroom = () => {
     search_by_name,
     search_input_value,
     sort_by_name,
+    sort_by_date,
   } = useSelector((state: RootState) => state.classroom);
   const { accessToken } = useSelector((state: RootState) => state.auth);
 
@@ -94,6 +96,7 @@ const Classroom = () => {
             page,
             search_by_name,
             sort_by_name,
+            sort_by_date,
           })
         );
       });
@@ -112,9 +115,10 @@ const Classroom = () => {
         page,
         search_by_name,
         sort_by_name,
+        sort_by_date,
       })
     );
-  }, [page, search_by_name, sort_by_name]);
+  }, [page, search_by_name, sort_by_name, sort_by_date]);
 
   const handleOpenDialog = (classroom?: ClassroomType) => {
     if (classroom) {
@@ -153,6 +157,7 @@ const Classroom = () => {
             page,
             search_by_name,
             sort_by_name,
+            sort_by_date,
           })
         )
       );
@@ -172,6 +177,7 @@ const Classroom = () => {
             page,
             search_by_name,
             sort_by_name,
+            sort_by_date,
           })
         )
       );
@@ -207,6 +213,7 @@ const Classroom = () => {
           page,
           search_by_name,
           sort_by_name,
+          sort_by_date,
         })
       )
     );
@@ -216,6 +223,7 @@ const Classroom = () => {
     dispatch(setSearchByName(""));
     dispatch(setSearchInputValue(""));
     dispatch(setSortByName(""));
+    dispatch(setSortByDate(""));
     dispatch(setPage(1));
   };
 
@@ -270,9 +278,11 @@ const Classroom = () => {
             dispatch(setPage(1));
           }}
         />
-        <Button variant={"outline"}>Reset Filters</Button>
+        <Button onClick={handleResetFilters} variant={"outline"}>
+          Reset Filters
+        </Button>
       </div>
-      <div className="flex mb-2">
+      <div className="grid lg:grid-cols-5 md:grid-cols-3 grid-cols-2 gap-y-2 mb-2">
         <div className="flex items-center gap-1">
           <Select
             value={sort_by_name}
@@ -296,6 +306,34 @@ const Classroom = () => {
           <RotateCw
             onClick={() => {
               dispatch(setSortByName(""));
+              dispatch(setPage(1));
+            }}
+            className="h-4 w-4 cursor-pointer"
+          />
+        </div>
+        <div className="flex items-center gap-1">
+          <Select
+            value={sort_by_date}
+            onValueChange={(v) => {
+              dispatch(setSortByDate(v));
+              dispatch(setPage(1));
+            }}
+          >
+            <SelectTrigger className={`${sort_by_date && "bg-red-200"}`}>
+              <SelectValue placeholder="sort by date" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="asc">
+                date <ArrowUp />
+              </SelectItem>
+              <SelectItem value="desc">
+                date <ArrowDown />
+              </SelectItem>
+            </SelectContent>
+          </Select>
+          <RotateCw
+            onClick={() => {
+              dispatch(setSortByDate(""));
               dispatch(setPage(1));
             }}
             className="h-4 w-4 cursor-pointer"
