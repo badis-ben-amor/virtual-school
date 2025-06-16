@@ -100,7 +100,7 @@ const Student = () => {
           })
         )
           .unwrap()
-          .then((res) => setClassrooms(res.res));
+          .then((res) => setClassrooms(res.res.data));
       });
   }, []);
 

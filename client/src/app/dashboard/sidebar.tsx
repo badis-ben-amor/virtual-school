@@ -19,7 +19,7 @@ const menuItems = [
   { name: "Subjects", icon: NotebookText, path: "/dashboard/subject" },
   { name: "Students", icon: Users, path: "/dashboard/student" },
   { name: "Teachers", icon: Briefcase, path: "/dashboard/teacher" },
-  { name: "Charts", icon: ChartNoAxesCombined, path: "/dashboard/overview" },
+  { name: "Charts", icon: ChartNoAxesCombined, path: "/dashboard/chart" },
 ];
 
 const Sidebar = () => {
