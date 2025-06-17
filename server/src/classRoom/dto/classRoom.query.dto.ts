@@ -7,12 +7,12 @@ export class ClassRoomQueryDto {
   school_id: string;
 
   @IsOptional()
-  @Transform(({ value }) => (value ? Number(value) : undefined))
+  @Transform(({ value }) => (value ? value : undefined))
   @Type(() => Number)
   page: number;
 
   @IsOptional()
-  @Transform(({ value }) => (value ? Math.min(Number(value), 100) : undefined))
+  @Transform(({ value }) => (value ? Math.min(value, 100) : undefined))
   @Type(() => Number)
   limit: number;
 

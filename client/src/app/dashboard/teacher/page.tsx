@@ -74,7 +74,15 @@ const Teacher = () => {
   const [teachers, setTeachers] = useState([]);
   const [activeSchoolId, setActiveSchoolId] = useState("");
   const [classrooms, setClassrooms] = useState<ClassroomType[]>([]);
+  const [classroomsInDialog, setClassroomsInDialog] = useState<ClassroomType[]>(
+    []
+  );
+  const [searchValueClassroomsInDialog, setSearchInputClassroomsInDialog] =
+    useState("");
   const [subjects, setSubjects] = useState<SubjectType[]>([]);
+  const [subjectsInDialog, setSubjectsInDialog] = useState<SubjectType[]>([]);
+  const [searchValueSubjectsInDialog, setSearchValueSubjectsInDialog] =
+    useState("");
   const [editingTeacher, setEditingTeacher] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [teacherForm, setTeacherForm] = useState<TeacherType>({
@@ -113,7 +121,10 @@ const Teacher = () => {
           })
         )
           .unwrap()
-          .then((res) => setClassrooms(res.res));
+          .then((res) => {
+            setClassrooms(res.res.data);
+            setClassroomsInDialog(res.res.data);
+          });
         dispatch(
           getAllSubjectsThunk({
             accessToken,
@@ -121,7 +132,10 @@ const Teacher = () => {
           })
         )
           .unwrap()
-          .then((res) => setSubjects(res.data.data));
+          .then((res) => {
+            setSubjects(res.data.data);
+            setSubjectsInDialog(res.data.data);
+          });
       });
   }, []);
 
@@ -184,6 +198,8 @@ const Teacher = () => {
       teacher_img: null,
     });
     setOpenDialog(false);
+    handleSearchClassroomsInDialog("");
+    handleSearchSubjetsInDialog("");
   };
 
   const handleSubmit = () => {
@@ -279,6 +295,32 @@ const Teacher = () => {
     dispatch(setSortByName(""));
     dispatch(setSortByDate(""));
     dispatch(setPage(1));
+  };
+
+  const handleSearchClassroomsInDialog = (v: string) => {
+    setSearchInputClassroomsInDialog(v);
+    dispatch(
+      getAllClassroomThunk({
+        accessToken,
+        school_id: activeSchoolId,
+        search_by_name: v,
+      })
+    )
+      .unwrap()
+      .then((res) => setClassroomsInDialog(res.res.data));
+  };
+
+  const handleSearchSubjetsInDialog = (v: string) => {
+    setSearchValueSubjectsInDialog(v);
+    dispatch(
+      getAllSubjectsThunk({
+        accessToken,
+        school_id: activeSchoolId,
+        search_by_subject_name: v,
+      })
+    )
+      .unwrap()
+      .then((res) => setSubjectsInDialog(res.data.data));
   };
 
   return (
@@ -603,8 +645,15 @@ const Teacher = () => {
                   <SelectValue placeholder="Select Teacher Classroom(s)" />
                 </SelectTrigger>
                 <SelectContent>
-                  <Input placeholder="search classroom..." />
-                  {classrooms.map((classroom) => (
+                  <Input
+                    className="mb-2 shadow-lg"
+                    value={searchValueClassroomsInDialog}
+                    onChange={(e) =>
+                      handleSearchClassroomsInDialog(e.target.value)
+                    }
+                    placeholder="search by classroom..."
+                  />
+                  {classroomsInDialog.map((classroom) => (
                     <SelectItem key={classroom._id} value={classroom._id}>
                       {classroom.classroom_name}
                     </SelectItem>
@@ -654,7 +703,15 @@ const Teacher = () => {
                   <SelectValue placeholder="Enter Teacher Subject(s)" />
                 </SelectTrigger>
                 <SelectContent>
-                  {subjects.map((subject) => (
+                  <Input
+                    onChange={(e) =>
+                      handleSearchSubjetsInDialog(e.target.value)
+                    }
+                    value={searchValueSubjectsInDialog}
+                    className="mb-2 shadow-lg"
+                    placeholder="search by subject..."
+                  />
+                  {subjectsInDialog.map((subject) => (
                     <SelectItem key={subject._id} value={subject._id}>
                       {subject.subject_name}
                     </SelectItem>

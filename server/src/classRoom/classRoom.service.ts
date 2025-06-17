@@ -27,8 +27,8 @@ export class ClassRoomService {
 
   async getAll(
     school_id: string,
-    page: number = 1,
-    limit: number = 10,
+    page: number,
+    limit: number,
     search_by_name?: string,
     sort_by_name?: 'asc' | 'desc',
     sort_by_date?: 'asc' | 'desc',
@@ -41,7 +41,8 @@ export class ClassRoomService {
     if (sort_by_name) sort.classroom_name = sort_by_name === 'asc' ? 1 : -1;
     if (sort_by_date) sort.createdAt = sort_by_date === 'asc' ? 1 : -1;
     if (sort_by_name || sort_by_date) pipeline.push({ $sort: sort });
-    pipeline.push({ $skip: (page - 1) * limit }, { $limit: limit });
+    if (page && limit)
+      pipeline.push({ $skip: (page - 1) * limit }, { $limit: limit });
     const [data, total] = await Promise.all([
       this.classRoomModel.aggregate([
         ...pipeline,
@@ -69,6 +70,7 @@ export class ClassRoomService {
       ]),
       this.classRoomModel.countDocuments(filter),
     ]);
+
     return { data, page, total, pages: Math.ceil(total / limit) };
   }
 
