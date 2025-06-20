@@ -1,20 +1,36 @@
 "use client";
 import Link from "next/link";
 import { Button } from "./ui/button";
-import { Menu, X } from "lucide-react";
+import { LogOut, Menu, User, X } from "lucide-react";
 import logo from "../../public/ChatGPT Image Apr 4, 2025, 07_11_46 PM.png";
 import Image from "next/image";
 import { useState } from "react";
-import { RootState } from "@/redux/store";
-import { useSelector } from "react-redux";
+import { Appdipatch, RootState } from "@/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import { logoutThunk } from "@/redux/slices/authSlice";
+import { getUserThunk } from "@/redux/slices/userSlice";
 
 const Navbar = () => {
+  const dispatch = useDispatch<Appdipatch>();
   const { user }: { user: any } = useSelector((state: RootState) => state.user);
 
   const [menuIsOpen, setMenuIsOpen] = useState(false);
 
   const handleMenuClose = () => {
     setMenuIsOpen(false);
+  };
+
+  const handleLogout = () => {
+    dispatch(logoutThunk())
+      .unwrap()
+      .then(() => dispatch(getUserThunk("")));
   };
   return (
     <div className="bg-[#edf2df] flex justify-between px-5 py-1 font-bold top-0 sm:sticky z-50">
@@ -43,9 +59,21 @@ const Navbar = () => {
             </Link>
           </>
         ) : (
-          <p className="flex flex-col justify-center bg-[#88b5f7] text-white rounded-lg px-0.5 font-bold">
-            Hello {user.username}
-          </p>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button className="bg-[#8a98a1] hover:bg-[#5aacdb] text-white font-bold">
+                <User />
+                <span>{user.username}</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Account</DropdownMenuLabel>
+              <DropdownMenuItem onClick={handleLogout}>
+                <LogOut className="mr-2" />
+                Logout
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         )}
       </div>
 
@@ -77,7 +105,7 @@ const Navbar = () => {
             </div>
 
             <div className="space-y-2">
-              {!user?.name ? (
+              {!user?.username ? (
                 <>
                   <Link
                     onClick={handleMenuClose}
@@ -99,9 +127,21 @@ const Navbar = () => {
                   </Link>
                 </>
               ) : (
-                <p className="bg-[#88b5f7] text-white rounded-lg px-0.5 font-bold">
-                  Hello {user.name}
-                </p>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button className="bg-[#8a98a1] hover:bg-[#5aacdb] text-white font-bold">
+                      <User />
+                      <span>{user.username}</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>Account</DropdownMenuLabel>
+                    <DropdownMenuItem onClick={handleLogout}>
+                      <LogOut className="mr-2" />
+                      Logout
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               )}
             </div>
           </>

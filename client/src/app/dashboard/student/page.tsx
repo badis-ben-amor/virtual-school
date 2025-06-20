@@ -65,6 +65,13 @@ const Student = () => {
     student_img: null,
   });
   const [classrooms, setClassrooms] = useState<ClassroomType[]>([]);
+  const [classroomsInDialog, setClassroomsInDialog] = useState<ClassroomType[]>(
+    []
+  );
+  const [
+    searchInputClassrommsInDialogValue,
+    setSearchInputClassrommsInDialogValue,
+  ] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const [page, setPage] = useState(1);
   const [limit] = useState(12);
@@ -100,7 +107,10 @@ const Student = () => {
           })
         )
           .unwrap()
-          .then((res) => setClassrooms(res.res.data));
+          .then((res) => {
+            setClassrooms(res.res.data);
+            setClassroomsInDialog(res.res.data);
+          });
       });
   }, []);
 
@@ -219,6 +229,7 @@ const Student = () => {
       });
     }, 150);
     setOpenDialog(false);
+    handleSearchInputClassroomsInDialogChange("");
   };
 
   const handleDelete = (student_id: string) => {
@@ -257,6 +268,19 @@ const Student = () => {
     setSortByName("");
     setSortByDate("");
     setPage(1);
+  };
+
+  const handleSearchInputClassroomsInDialogChange = (v: string) => {
+    setSearchInputClassrommsInDialogValue(v);
+    dispatch(
+      getAllClassroomThunk({
+        accessToken,
+        school_id: activeSchoolId,
+        search_by_name: v,
+      })
+    )
+      .unwrap()
+      .then((res) => setClassroomsInDialog(res.res.data));
   };
 
   return (
@@ -509,7 +533,17 @@ const Student = () => {
                     <SelectValue placeholder="Select Student Classroom" />
                   </SelectTrigger>
                   <SelectContent>
-                    {classrooms.map((classroom) => (
+                    <Input
+                      value={searchInputClassrommsInDialogValue}
+                      className="mb-2 shadow-lg"
+                      onChange={(e) =>
+                        handleSearchInputClassroomsInDialogChange(
+                          e.target.value
+                        )
+                      }
+                      placeholder="search by classroom..."
+                    />
+                    {classroomsInDialog.map((classroom) => (
                       <SelectItem
                         className="cursor-pointer"
                         key={classroom._id}

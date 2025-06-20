@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { registerThunk } from "@/redux/slices/authSlice";
+import { getUserThunk } from "@/redux/slices/userSlice";
 import { Appdipatch } from "@/redux/store";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -12,7 +13,7 @@ const Register = () => {
   const dispatch = useDispatch<Appdipatch>();
   const router = useRouter();
 
-  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -20,9 +21,12 @@ const Register = () => {
   const handleRegister = (e: any) => {
     e.preventDefault();
 
-    dispatch(registerThunk({ name, email, password }))
+    dispatch(registerThunk({ username, email, password }))
       .unwrap()
-      .then(() => router.push("/dashboard"))
+      .then(() => {
+        dispatch(getUserThunk(""));
+        router.push("/dashboard");
+      })
       .catch((err) => setError(err.message || err));
   };
   return (
@@ -34,15 +38,15 @@ const Register = () => {
           </div>
         )}
         <div className="mb-2">
-          <Label htmlFor="name" className="text-base">
-            Name
+          <Label htmlFor="username" className="text-base">
+            Username
           </Label>
           <Input
             type="text"
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Enter your name"
+            id="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Enter your username"
             required
             style={{ fontSize: "15px" }}
           />

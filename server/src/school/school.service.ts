@@ -145,8 +145,15 @@ export class SchoolService {
       _id: school_id,
       user_id: req.user.id,
     });
-
     if (!school) throw new NotFoundException('School does not exist');
+
+    if (schoolUpdateDto.is_active) {
+      const is_active_school = await this.schoolModel.findOne({
+        is_active: true,
+      });
+      if (is_active_school && String(is_active_school._id) !== school_id)
+        throw new BadRequestException('active school must be just one');
+    }
 
     if (file) {
       if (school.logo_url) {

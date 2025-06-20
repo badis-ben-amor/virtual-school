@@ -68,7 +68,7 @@ const Classroom = () => {
     sort_by_name,
     sort_by_date,
   } = useSelector((state: RootState) => state.classroom);
-  const { accessToken } = useSelector((state: RootState) => state.auth);
+  const { accessToken } = useSelector((state: RootState) => state.user);
 
   const [classrooms, setClassrooms] = useState<ClassroomType[]>([]);
   const [editingClassroom, setEditeClassroom] = useState(false);

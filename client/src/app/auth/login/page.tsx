@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { loginThunk } from "@/redux/slices/authSlice";
+import { getUserThunk } from "@/redux/slices/userSlice";
 import { Appdipatch } from "@/redux/store";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -21,7 +22,10 @@ const Login = () => {
 
     dispatch(loginThunk({ email, password }))
       .unwrap()
-      .then(() => router.push("/dashboard"))
+      .then(() => {
+        dispatch(getUserThunk(""));
+        router.push("/dashboard");
+      })
       .catch((err) => setError(err.message || err));
   };
 

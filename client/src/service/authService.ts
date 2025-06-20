@@ -1,14 +1,14 @@
 import axios from "axios";
 
 export const register = async (
-  name: string,
+  username: string,
   email: string,
   password: string
 ) => {
   const res = await axios.post(
     `${process.env.NEXT_PUBLIC_API_URL}/register`,
     {
-      name,
+      username,
       email,
       password,
     },
@@ -30,10 +30,9 @@ export const login = async (email: string, password: string) => {
 };
 
 export const refresh = async () => {
-  const refreshToken = localStorage.getItem("refreshToken");
   const res = await axios.post(
     `${process.env.NEXT_PUBLIC_API_URL}/refresh`,
-    { refreshToken },
+    {},
     { withCredentials: true }
   );
   return res;

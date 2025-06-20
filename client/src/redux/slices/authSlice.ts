@@ -5,14 +5,14 @@ export const registerThunk = createAsyncThunk(
   "auth/register",
   async (
     {
-      name,
+      username,
       email,
       password,
-    }: { name: string; email: string; password: string },
+    }: { username: string; email: string; password: string },
     thunkAPI
   ) => {
     try {
-      const res = await register(name, email, password);
+      const res = await register(username, email, password);
       return res.data;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(
@@ -56,7 +56,6 @@ const authSlice = createSlice({
   initialState: {
     isLoading: false,
     error: null,
-    accessToken: "",
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -66,8 +65,6 @@ const authSlice = createSlice({
       })
       .addCase(registerThunk.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.accessToken = action.payload.accessToken;
-        localStorage.setItem("refreshToken", action.payload.refreshToken);
       })
       .addCase(registerThunk.rejected, (state, action: any) => {
         state.isLoading = false;
@@ -79,8 +76,6 @@ const authSlice = createSlice({
       })
       .addCase(loginThunk.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.accessToken = action.payload.accessToken;
-        localStorage.setItem("refreshToken", action.payload.refreshToken);
       })
       .addCase(loginThunk.rejected, (state, action: any) => {
         state.isLoading = false;
