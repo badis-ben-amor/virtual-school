@@ -8,8 +8,8 @@ export function createSchool(accessToken: string, schoolData: FormData) {
 
 export function getAllSchools(
   accessToken: string,
-  page: number,
-  limit: number,
+  page?: number,
+  limit?: number,
   search_by_name?: string,
   sort_by_name?: string,
   sort_by_date?: string

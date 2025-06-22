@@ -16,8 +16,10 @@ import {
 } from "./ui/dropdown-menu";
 import { logoutThunk } from "@/redux/slices/authSlice";
 import { getUserThunk } from "@/redux/slices/userSlice";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
+  const router = useRouter();
   const dispatch = useDispatch<Appdipatch>();
   const { user }: { user: any } = useSelector((state: RootState) => state.user);
 
@@ -30,7 +32,10 @@ const Navbar = () => {
   const handleLogout = () => {
     dispatch(logoutThunk())
       .unwrap()
-      .then(() => dispatch(getUserThunk("")));
+      .then(() => {
+        router.push("auth/login");
+        dispatch(getUserThunk(""));
+      });
   };
   return (
     <div className="bg-[#edf2df] flex justify-between px-5 py-1 font-bold top-0 sm:sticky z-50">

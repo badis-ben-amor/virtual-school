@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import {
   GraduationCap,
@@ -7,8 +8,77 @@ import {
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+// chart
+import { Bar, Pie } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  // Bar
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Tooltip,
+  Legend,
+  // Pie
+  ArcElement,
+} from "chart.js";
+ChartJS.register(
+  // Bar
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Tooltip,
+  Legend,
+  // Pie
+  ArcElement
+);
+import { useDispatch, useSelector } from "react-redux";
+import { Appdipatch, RootState } from "@/redux/store";
+import { useEffect } from "react";
+import { getAllSchoolsThunk } from "@/redux/slices/schoolSlice";
 
 const School = () => {
+  const dispatch = useDispatch<Appdipatch>();
+  const { accessToken } = useSelector((state: RootState) => state.user);
+  const { schools } = useSelector((state: RootState) => state.school);
+
+  useEffect(() => {
+    dispatch(getAllSchoolsThunk({ accessToken }));
+  }, []);
+
+  console.log(schools);
+
+  const studentsDataBar = {
+    labels: schools.map((s: any) => s.school_name),
+    datasets: [
+      {
+        label: "Students By School",
+        data: schools.map((s: any) => s.studentsLength),
+        backgroundColor: "#4f46e5", // Tailwind indigo-600
+      },
+    ],
+  };
+
+  const classroomsDataPie = {
+    labels: schools.map((s: any) => s.school_name),
+    datasets: [
+      {
+        data: schools.map((s: any) => s.cassroomsLength),
+        backgroundColor: ["red", "blue", "yellow"],
+      },
+    ],
+  };
+
+  // const options = {
+  //   responsive: true,
+  //   plugins: {
+  //     legend: {
+  //       position: "top" as const,
+  //     },
+  //   },
+  // };
+
+  // end charts
+
   const stats = [
     {
       title: "Students",
@@ -67,6 +137,15 @@ const School = () => {
               {link.label}
             </Button>
           ))}
+        </div>
+      </div>
+
+      <div className="grid lg:grid-cols-2 gap-4 ">
+        <div className="bg-white shadow-md p-4 rounded-xl">
+          <Bar data={studentsDataBar} />
+        </div>
+        <div className="bg-white shadow-md p-4 rounded-xl">
+          <Pie data={classroomsDataPie} />
         </div>
       </div>
     </div>

@@ -6,7 +6,7 @@ import { loginThunk } from "@/redux/slices/authSlice";
 import { getUserThunk } from "@/redux/slices/userSlice";
 import { Appdipatch } from "@/redux/store";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 const Login = () => {
@@ -15,12 +15,23 @@ const Login = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState([]);
 
-  const handleLogin = (e: any) => {
-    e.preventDefault();
-
+  const handleLogin = (e?: any) => {
+    if (e) e.preventDefault();
     dispatch(loginThunk({ email, password }))
+      .unwrap()
+      .then(() => {
+        dispatch(getUserThunk(""));
+        router.push("/dashboard");
+      })
+      .catch((err) => setError(err.message || err));
+  };
+
+  const handleLoginAsUser = () => {
+    setEmail("user@gmail.com");
+    setPassword("user");
+    dispatch(loginThunk({ email: "user@gmail.com", password: "user" }))
       .unwrap()
       .then(() => {
         dispatch(getUserThunk(""));
@@ -34,7 +45,11 @@ const Login = () => {
       <form onSubmit={handleLogin}>
         {error && (
           <div className="text-center">
-            <p className="text-red-600">{error}</p>
+            {error.map((err, i) => (
+              <p key={i} className="text-red-600">
+                {err}
+              </p>
+            ))}
           </div>
         )}
         <div className="mb-2">
@@ -69,6 +84,12 @@ const Login = () => {
           Login
         </Button>
       </form>
+      <div>
+        <Button onClick={handleLoginAsUser} className="mt-2">
+          Login As User
+        </Button>
+      </div>
+      <div>{/* <Button className="mt-2 w-1/4">Login As Admin</Button> */}</div>
     </div>
   );
 };

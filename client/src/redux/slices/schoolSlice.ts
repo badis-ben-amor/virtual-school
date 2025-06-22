@@ -58,11 +58,11 @@ export const getAllSchoolsThunk = createAsyncThunk(
       sort_by_date,
     }: {
       accessToken: string;
-      page: number;
-      limit: number;
+      page?: number;
+      limit?: number;
       search_by_name?: string;
       sort_by_name?: string;
-      sort_by_date: string;
+      sort_by_date?: string;
     },
     thunkAPI
   ) => {
@@ -77,7 +77,7 @@ export const getAllSchoolsThunk = createAsyncThunk(
       );
       return { res: res.data, accessToken };
     } catch (error: any) {
-      if (error.response?.status === 403) {
+      if (error.response?.status === 401) {
         try {
           const res = await refresh();
           const newAccessToken = res.data.newAccessToken;

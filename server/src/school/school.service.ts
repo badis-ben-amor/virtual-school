@@ -55,8 +55,8 @@ export class SchoolService {
 
   async getAll(
     req: ReqUserDto,
-    page: number = 1,
-    limit: number = 10,
+    page: number,
+    limit: number,
     search_by_name: string,
     sort_by_name: 'asc' | 'desc',
     sort_by_date: 'asc' | 'desc',
@@ -69,14 +69,15 @@ export class SchoolService {
     if (sort_by_name) sort.school_name = sort_by_name === 'asc' ? 1 : -1;
     if (sort_by_date) sort.createdAt = sort_by_date === 'asc' ? 1 : -1;
     if (sort_by_name || sort_by_date) pipeline.push({ $sort: sort });
-    pipeline.push({ $skip: (page - 1) * limit }, { $limit: limit });
+    if (page && limit)
+      pipeline.push({ $skip: (page - 1) * limit }, { $limit: limit });
 
     const [data, total] = await Promise.all([
       this.schoolModel.aggregate([
         ...pipeline,
         {
           $lookup: {
-            from: 'teachers',
+            from: 'students',
             localField: '_id',
             foreignField: 'school_id',
             as: 'students',
@@ -91,9 +92,27 @@ export class SchoolService {
           },
         },
         {
+          $lookup: {
+            from: 'teachers',
+            localField: '_id',
+            foreignField: 'school_id',
+            as: 'teachers',
+          },
+        },
+        {
+          $lookup: {
+            from: 'subjects',
+            localField: '_id',
+            foreignField: 'school_id',
+            as: 'subjects',
+          },
+        },
+        {
           $addFields: {
             studentsLength: { $size: '$students' },
             cassroomsLength: { $size: '$classrooms' },
+            teachersLength: { $size: '$teachers' },
+            subjectsLength: { $size: '$subjects' },
           },
         },
         {
@@ -104,6 +123,8 @@ export class SchoolService {
             __v: 0,
             students: 0,
             classrooms: 0,
+            teachers: 0,
+            subjects: 0,
           },
         },
       ]),

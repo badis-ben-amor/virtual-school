@@ -52,6 +52,7 @@ const userSlice = createSlice({
       .addCase(getUserThunk.rejected, (state, action: any) => {
         state.isLoading = false;
         state.error = action.payload;
+        state.user = {};
       });
   },
 });

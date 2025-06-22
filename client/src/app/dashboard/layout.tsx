@@ -1,14 +1,25 @@
 "use client";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import Sidebar from "./sidebar";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
-import NotAuthUser from "@/components/notAuth/notAuthUser";
+import { useDispatch, useSelector } from "react-redux";
+import { Appdipatch, RootState } from "@/redux/store";
+import { useRouter } from "next/navigation";
+import { getUserThunk } from "@/redux/slices/userSlice";
 
 export default function Layout({ children }: { children: ReactNode }) {
-  const { user }: { user: any } = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch<Appdipatch>();
+  const router = useRouter();
+  const { user, isLoading }: { user: any; isLoading: any } = useSelector(
+    (state: RootState) => state.user
+  );
 
-  if (!user?.username) return <NotAuthUser />;
+  useEffect(() => {
+    dispatch(getUserThunk("")).then((res: any) => {
+      if (!res.payload?.data?.username) router.push("/auth/login");
+    });
+  }, []);
+
+  if (!user?.username) return null;
   return (
     <div>
       <Sidebar />

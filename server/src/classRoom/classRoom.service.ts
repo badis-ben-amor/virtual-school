@@ -43,6 +43,7 @@ export class ClassRoomService {
     if (sort_by_name || sort_by_date) pipeline.push({ $sort: sort });
     if (page && limit)
       pipeline.push({ $skip: (page - 1) * limit }, { $limit: limit });
+
     const [data, total] = await Promise.all([
       this.classRoomModel.aggregate([
         ...pipeline,
