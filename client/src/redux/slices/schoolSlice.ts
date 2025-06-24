@@ -93,14 +93,20 @@ export const getAllSchoolsThunk = createAsyncThunk(
               );
               return { res: res.data, accessToken: newAccessToken };
             } catch (error: any) {
-              return thunkAPI.rejectWithValue(error.response?.data?.message);
+              return thunkAPI.rejectWithValue(
+                error.response?.data?.message || error.message
+              );
             }
           }
         } catch (error: any) {
-          return error.response?.data?.message;
+          return thunkAPI.rejectWithValue(
+            error.response?.data?.message || error.message
+          );
         }
       }
-      return thunkAPI.rejectWithValue(error.response?.data?.message);
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || error.message
+      );
     }
   }
 );
@@ -124,14 +130,20 @@ export const getOneSchoolThunk = createAsyncThunk(
               const res = await getOneSchool(newAccessToken, school_id);
               return { res: res.data, accessToken: newAccessToken };
             } catch (error: any) {
-              return thunkAPI.rejectWithValue(error.message);
+              return thunkAPI.rejectWithValue(
+                error.response?.data?.message || error.message
+              );
             }
           }
         } catch (error: any) {
-          return thunkAPI.rejectWithValue(error.message);
+          return thunkAPI.rejectWithValue(
+            error.response?.data?.message || error.message
+          );
         }
       }
-      return thunkAPI.rejectWithValue(error.message);
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || error.message
+      );
     }
   }
 );
@@ -152,14 +164,20 @@ export const getActiveSchoolThunk = createAsyncThunk(
               const res = await getActiveSchool(newAccessToken);
               return { res: res.data, accessToken: newAccessToken };
             } catch (error: any) {
-              return thunkAPI.rejectWithValue(error.message);
+              return thunkAPI.rejectWithValue(
+                error.response?.data?.message || error.message
+              );
             }
           }
         } catch (error: any) {
-          return thunkAPI.rejectWithValue(error.message);
+          return thunkAPI.rejectWithValue(
+            error.response?.data?.message || error.message
+          );
         }
       }
-      return thunkAPI.rejectWithValue(error.message);
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || error.message
+      );
     }
   }
 );
@@ -191,14 +209,20 @@ export const updateSchoolThunk = createAsyncThunk(
               );
               return { res: res.data, accessToken: newAccessToken };
             } catch (error: any) {
-              return thunkAPI.rejectWithValue(error.message);
+              return thunkAPI.rejectWithValue(
+                error.response?.data?.message || error.message
+              );
             }
           }
         } catch (error: any) {
-          return thunkAPI.rejectWithValue(error.message);
+          return thunkAPI.rejectWithValue(
+            error.response?.data?.message || error.message
+          );
         }
       }
-      return thunkAPI.rejectWithValue(error.message);
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || error.message
+      );
     }
   }
 );
@@ -222,14 +246,20 @@ export const deleteSchoolThunk = createAsyncThunk(
               const res = await deleteSchool(newAccessToken, school_id);
               return { res: res.data, accessToken: newAccessToken };
             } catch (error: any) {
-              return thunkAPI.rejectWithValue(error.message);
+              return thunkAPI.rejectWithValue(
+                error.response?.data?.message || error.message
+              );
             }
           }
         } catch (error: any) {
-          thunkAPI.rejectWithValue(error.message);
+          thunkAPI.rejectWithValue(
+            error.response?.data?.message || error.message
+          );
         }
       }
-      return thunkAPI.rejectWithValue(error.message);
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || error.message
+      );
     }
   }
 );

@@ -1,4 +1,13 @@
 "use client";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Command, CommandInput } from "@/components/ui/command";
@@ -71,6 +80,9 @@ const Classroom = () => {
   const { accessToken } = useSelector((state: RootState) => state.user);
 
   const [classrooms, setClassrooms] = useState<ClassroomType[]>([]);
+  const [getActiveSchoolError, setGetActiveSchoolError] = useState("");
+  const [getActiveSchoolErrorAlert, setGetActiveSchoolErrorAlert] =
+    useState(false);
   const [editingClassroom, setEditeClassroom] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [classroomForm, setClassroomForm] = useState<ClassroomType>({
@@ -99,6 +111,10 @@ const Classroom = () => {
             sort_by_date,
           })
         );
+      })
+      .catch((err) => {
+        setGetActiveSchoolError(err);
+        setGetActiveSchoolErrorAlert(true);
       });
   }, []);
 
@@ -461,6 +477,25 @@ const Classroom = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <AlertDialog
+        open={getActiveSchoolErrorAlert}
+        onOpenChange={setGetActiveSchoolErrorAlert}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              <span className="text-red-900">Warning</span>
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              <span className="text-red-500">{getActiveSchoolError}</span>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="">Ok</AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

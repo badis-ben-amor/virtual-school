@@ -33,7 +33,7 @@ const Navbar = () => {
     dispatch(logoutThunk())
       .unwrap()
       .then(() => {
-        router.push("auth/login");
+        router.push("/auth/login");
         dispatch(getUserThunk(""));
       });
   };

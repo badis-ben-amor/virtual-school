@@ -41,13 +41,15 @@ export default function Home() {
 
       {/* About Section */}
       <section className="px-6 py-8">
-        <h2 className="text-2xl font-semibold mb-2">About Evergreen Academy</h2>
+        <h2 className="text-2xl font-semibold mb-2">
+          About School Management Systeme
+        </h2>
         <p className="text-gray-700 max-w-4xl">
-          At Evergreen Academy, we are committed to providing a transformative
-          educational experience that fosters intellectual curiosity, personal
-          growth, and social responsibility. Our dedicated faculty and
-          state-of-the-art facilities create a vibrant learning community where
-          students thrive.
+          At School Management Systeme, we are committed to providing a
+          transformative educational experience that fosters intellectual
+          curiosity, personal growth, and social responsibility. Our dedicated
+          faculty and state-of-the-art facilities create a vibrant learning
+          community where students thrive.
         </p>
       </section>
 
@@ -95,7 +97,7 @@ export default function Home() {
             />
             <CardContent className="p-4">
               <h3 className="font-bold">Varsity Basketball Championship</h3>
-              <p className="text-sm text-blue-600">Victory celebration</p>
+              <p className="text-sm text-gray-600">Victory celebration</p>
             </CardContent>
           </Card>
         </div>
@@ -139,9 +141,9 @@ export default function Home() {
               <p className="text-sm text-gray-500">June 10, 2024</p>
               <div className="text-blue-500 mb-2">★★★★★</div>
               <p>
-                Evergreen Academy has been an incredible journey for me. The
-                teachers are supportive, and the curriculum is challenging yet
-                rewarding. I've grown so much academically and personally.
+                This school management system has completely transformed the way
+                we handle our daily operations, everything is now centralized
+                and efficient. It’s a real time-saver.
               </p>
               <div className="flex space-x-4 mt-2 text-gray-500 text-sm">
                 <div className="flex items-center gap-1">
@@ -159,9 +161,10 @@ export default function Home() {
               <p className="text-sm text-gray-500">May 22, 2024</p>
               <div className="text-blue-500 mb-2">★★★★☆</div>
               <p>
-                I've enjoyed my time at Evergreen. The campus is beautiful, and
-                there are many extracurricular activities to get involved in.
-                The community is welcoming and inclusive.
+                Since we started using this system, administrative tasks have
+                become much smoother. We’ve cut down hours spent on attendance,
+                grading, and communication. It’s become an essential tool for
+                our school.
               </p>
               <div className="flex space-x-4 mt-2 text-gray-500 text-sm">
                 <div className="flex items-center gap-1">

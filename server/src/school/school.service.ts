@@ -110,7 +110,7 @@ export class SchoolService {
         {
           $addFields: {
             studentsLength: { $size: '$students' },
-            cassroomsLength: { $size: '$classrooms' },
+            classroomsLength: { $size: '$classrooms' },
             teachersLength: { $size: '$teachers' },
             subjectsLength: { $size: '$subjects' },
           },
@@ -171,6 +171,7 @@ export class SchoolService {
     if (schoolUpdateDto.is_active) {
       const is_active_school = await this.schoolModel.findOne({
         is_active: true,
+        user_id: req.user.id,
       });
       if (is_active_school && String(is_active_school._id) !== school_id)
         throw new BadRequestException('active school must be just one');

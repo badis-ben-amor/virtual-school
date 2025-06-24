@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { registerThunk } from "@/redux/slices/authSlice";
+import { createSchoolThunk } from "@/redux/slices/schoolSlice";
 import { getUserThunk } from "@/redux/slices/userSlice";
 import { Appdipatch } from "@/redux/store";
 import { useRouter } from "next/navigation";
@@ -24,7 +25,12 @@ const Register = () => {
     dispatch(registerThunk({ username, email, password }))
       .unwrap()
       .then(() => {
+        const formData = new FormData();
+
+        formData.append("school_name", "My School");
+        formData.append("is_active", String("true"));
         dispatch(getUserThunk(""));
+        dispatch(createSchoolThunk({ accessToken: "", schoolData: formData }));
         router.push("/dashboard");
       })
       .catch((err) => setError(err.message || err));
