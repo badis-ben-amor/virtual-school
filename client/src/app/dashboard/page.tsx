@@ -389,7 +389,7 @@ const Dashboard = () => {
               </div>
               <div className="flex gap-1 text-sm text-muted-foreground mb-1 justify-center">
                 <Phone className="h-4 w-4 text-indigo-600" />
-                <span>{school.contact_phone || "No"}</span>
+                <span>{school.contact_phone === "undefined" && "No"}</span>
               </div>
 
               <div className="flex gap-1 text-sm text-muted-foreground mb-1 justify-center">

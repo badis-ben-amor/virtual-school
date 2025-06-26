@@ -47,7 +47,7 @@ import { useEffect } from "react";
 import { getAllSchoolsThunk } from "@/redux/slices/schoolSlice";
 import Link from "next/link";
 
-const School = () => {
+const Chart = () => {
   const dispatch = useDispatch<Appdipatch>();
   const { accessToken } = useSelector((state: RootState) => state.user);
   const { schools } = useSelector((state: RootState) => state.school);
@@ -273,4 +273,4 @@ const School = () => {
   );
 };
 
-export default School;
+export default Chart;

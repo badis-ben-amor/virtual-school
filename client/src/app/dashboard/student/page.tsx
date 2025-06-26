@@ -1,4 +1,13 @@
 "use client";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Command, CommandInput } from "@/components/ui/command";
@@ -54,6 +63,8 @@ const Student = () => {
   } = useSelector((state: RootState) => state.student);
 
   const [activeSchoolId, setActiveSchoolId] = useState("");
+  const [GetActiveSchoolIdError, setGetActiveSchoolIdError] = useState("");
+  const [GetActiveSchoolIdAlert, setGetActiveSchoolIdAlert] = useState(false);
   const [students, setStudents] = useState<StudentType[]>([]);
   const [editingStudent, setEditingStudent] = useState(false);
   const [studentForm, setStudentForm] = useState<StudentType>({
@@ -111,6 +122,10 @@ const Student = () => {
             setClassrooms(res.res.data);
             setClassroomsInDialog(res.res.data);
           });
+      })
+      .catch((err) => {
+        setGetActiveSchoolIdError(err);
+        setGetActiveSchoolIdAlert(true);
       });
   }, []);
 
@@ -591,6 +606,25 @@ const Student = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <AlertDialog
+        open={GetActiveSchoolIdAlert}
+        onOpenChange={setGetActiveSchoolIdAlert}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              <span className="text-red-900">Warning</span>
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              <span className="text-red-500">{GetActiveSchoolIdError}</span>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Ok</AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

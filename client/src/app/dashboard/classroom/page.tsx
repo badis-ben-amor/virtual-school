@@ -80,6 +80,7 @@ const Classroom = () => {
   const { accessToken } = useSelector((state: RootState) => state.user);
 
   const [classrooms, setClassrooms] = useState<ClassroomType[]>([]);
+  const [activeSchoolId, setActiveSchoolId] = useState("");
   const [getActiveSchoolError, setGetActiveSchoolError] = useState("");
   const [getActiveSchoolErrorAlert, setGetActiveSchoolErrorAlert] =
     useState(false);
@@ -93,7 +94,6 @@ const Classroom = () => {
     description: "",
     studentsLength: 0,
   });
-  const [activeSchoolId, setActiveSchoolId] = useState("");
 
   useEffect(() => {
     dispatch(getActiveSchoolThunk(accessToken))
@@ -492,7 +492,7 @@ const Classroom = () => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="">Ok</AlertDialogCancel>
+            <AlertDialogCancel>Ok</AlertDialogCancel>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

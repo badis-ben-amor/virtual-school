@@ -518,8 +518,42 @@ const Teacher = () => {
               </div>
               <div className="text-center">
                 <p>{`Mr/Ms: ${teacher.frst_name} ${teacher.last_name}`}</p>
-                <p>Class: </p>
-                <p>Subject: </p>
+                <div className="flex gap-2">
+                  Classes:
+                  {teacher.classrooms.map((classroomInTeacherObj) => (
+                    <div
+                      className="bg-[#faf9f7] shadow-sm text-[#04738f] rounded-sm px-1"
+                      key={classroomInTeacherObj}
+                    >
+                      {classrooms.map(
+                        (classroom) =>
+                          classroomInTeacherObj === classroom._id && (
+                            <div key={classroom._id}>
+                              <p>{classroom.classroom_name}</p>
+                            </div>
+                          )
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <div className="flex gap-2 my-2">
+                  subjects:
+                  {teacher.subjects.map((subjectInTeacherObj) => (
+                    <div
+                      className="bg-[#faf9f7] shadow-sm text-[#04738f] rounded-sm px-1"
+                      key={subjectInTeacherObj}
+                    >
+                      {subjects.map(
+                        (subject) =>
+                          subjectInTeacherObj === subject._id && (
+                            <div key={subject._id}>
+                              <p>{subject.subject_name}</p>
+                            </div>
+                          )
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
             </CardContent>
           </Card>
