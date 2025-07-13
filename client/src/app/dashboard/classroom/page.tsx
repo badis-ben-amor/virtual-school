@@ -60,6 +60,7 @@ import {
   RotateCw,
   Trash2,
 } from "lucide-react";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -81,9 +82,8 @@ const Classroom = () => {
 
   const [classrooms, setClassrooms] = useState<ClassroomType[]>([]);
   const [activeSchoolId, setActiveSchoolId] = useState("");
-  const [getActiveSchoolError, setGetActiveSchoolError] = useState("");
-  const [getActiveSchoolErrorAlert, setGetActiveSchoolErrorAlert] =
-    useState(false);
+  const [activeSchoolError, setActiveSchoolError] = useState("");
+  const [activeSchoolErrorAlert, setActiveSchoolErrorAlert] = useState(false);
   const [editingClassroom, setEditeClassroom] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [classroomForm, setClassroomForm] = useState<ClassroomType>({
@@ -113,8 +113,8 @@ const Classroom = () => {
         );
       })
       .catch((err) => {
-        setGetActiveSchoolError(err);
-        setGetActiveSchoolErrorAlert(true);
+        setActiveSchoolError(err);
+        setActiveSchoolErrorAlert(true);
       });
   }, []);
 
@@ -479,16 +479,17 @@ const Classroom = () => {
       </Dialog>
 
       <AlertDialog
-        open={getActiveSchoolErrorAlert}
-        onOpenChange={setGetActiveSchoolErrorAlert}
+        open={activeSchoolErrorAlert}
+        onOpenChange={setActiveSchoolErrorAlert}
       >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              <span className="text-red-900">Warning</span>
+              <span className="text-red-900">Error</span>
             </AlertDialogTitle>
-            <AlertDialogDescription>
-              <span className="text-red-500">{getActiveSchoolError}</span>
+            <AlertDialogDescription className="flex flex-col gap-y-3">
+              <span className="text-red-500">{activeSchoolError}</span>
+              <Link href="/dashboard">Create One</Link>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

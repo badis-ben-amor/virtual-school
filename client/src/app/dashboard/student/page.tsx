@@ -47,8 +47,17 @@ import {
 import { Appdipatch, RootState } from "@/redux/store";
 import { ClassroomType } from "@/types/classroomType";
 import { StudentType } from "@/types/studentType";
-import { ArrowDown, ArrowUp, Pen, Plus, RotateCw, Trash2 } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowUp,
+  Pen,
+  Plus,
+  RotateCw,
+  Trash2,
+  X,
+} from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -63,8 +72,8 @@ const Student = () => {
   } = useSelector((state: RootState) => state.student);
 
   const [activeSchoolId, setActiveSchoolId] = useState("");
-  const [GetActiveSchoolIdError, setGetActiveSchoolIdError] = useState("");
-  const [GetActiveSchoolIdAlert, setGetActiveSchoolIdAlert] = useState(false);
+  const [activeSchoolError, setActiveSchoolError] = useState("");
+  const [activeSchoolErrorAlert, setActiveSchoolErrorAlert] = useState(false);
   const [students, setStudents] = useState<StudentType[]>([]);
   const [editingStudent, setEditingStudent] = useState(false);
   const [studentForm, setStudentForm] = useState<StudentType>({
@@ -124,8 +133,8 @@ const Student = () => {
           });
       })
       .catch((err) => {
-        setGetActiveSchoolIdError(err);
-        setGetActiveSchoolIdAlert(true);
+        setActiveSchoolError(err);
+        setActiveSchoolErrorAlert(true);
       });
   }, []);
 
@@ -313,7 +322,7 @@ const Student = () => {
         >
           {showEdietButtons ? (
             <>
-              <RotateCw /> Cancel Edite
+              <X /> Cancel Edite
             </>
           ) : (
             <>
@@ -608,16 +617,17 @@ const Student = () => {
       </Dialog>
 
       <AlertDialog
-        open={GetActiveSchoolIdAlert}
-        onOpenChange={setGetActiveSchoolIdAlert}
+        open={activeSchoolErrorAlert}
+        onOpenChange={setActiveSchoolErrorAlert}
       >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              <span className="text-red-900">Warning</span>
+              <span className="text-red-900">Error</span>
             </AlertDialogTitle>
-            <AlertDialogDescription>
-              <span className="text-red-500">{GetActiveSchoolIdError}</span>
+            <AlertDialogDescription className="flex flex-col gap-y-3">
+              <span className="text-red-500">{activeSchoolError}</span>
+              <Link href="/dashboard">Create One</Link>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

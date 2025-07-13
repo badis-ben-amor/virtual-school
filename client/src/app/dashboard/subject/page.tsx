@@ -1,4 +1,13 @@
 "use client";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Command, CommandInput } from "@/components/ui/command";
@@ -51,6 +60,7 @@ import {
   Trash2,
   X,
 } from "lucide-react";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -71,6 +81,8 @@ const Subject = () => {
   } = useSelector((state: RootState) => state.subject);
 
   const [activeSchoolId, setActiveSchoolId] = useState("");
+  const [activeSchoolError, setActiveSchoolError] = useState("");
+  const [activeSchoolErrorAlert, setActiveSchoolErrorAlert] = useState(false);
   const [subjects, setSubjects] = useState<SubjectType[]>([]);
   const [editingSubject, setEditingSubject] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
@@ -96,6 +108,10 @@ const Subject = () => {
             sortByDate,
           })
         );
+      })
+      .catch((err) => {
+        setActiveSchoolError(err);
+        setActiveSchoolErrorAlert(true);
       });
   }, []);
 
@@ -410,6 +426,26 @@ const Subject = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <AlertDialog
+        open={activeSchoolErrorAlert}
+        onOpenChange={setActiveSchoolErrorAlert}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              <span className="text-red-900">Error</span>
+            </AlertDialogTitle>
+            <AlertDialogDescription className="flex flex-col gap-y-3">
+              <span className="text-red-500">{activeSchoolError}</span>
+              <Link href="/dashboard">Create One</Link>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>OK</AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

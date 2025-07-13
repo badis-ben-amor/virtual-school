@@ -3,7 +3,6 @@ import {
   Injectable,
   ExecutionContext,
   UnauthorizedException,
-  InternalServerErrorException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
@@ -30,7 +29,7 @@ export class AuthGuard implements CanActivate {
       request.user = decoded;
       return true;
     } catch (error) {
-      throw new InternalServerErrorException('Invalid or expire token');
+      throw new UnauthorizedException('Invalid or expire token');
     }
   }
 }

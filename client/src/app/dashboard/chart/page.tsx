@@ -56,9 +56,6 @@ const Chart = () => {
     dispatch(getAllSchoolsThunk({ accessToken }));
   }, []);
 
-  console.log(schools);
-  console.log(schools.map((s: any) => s.studentsLength));
-
   // students
   const studentsDataBar = {
     labels: schools.map((s: any) => s.school_name),

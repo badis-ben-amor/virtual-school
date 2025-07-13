@@ -64,7 +64,7 @@ export class AuthService {
         1000,
     });
 
-    return res.status(HttpStatus.CREATED).json({ accessToken });
+    return res.status(HttpStatus.CREATED).json({ accessToken, refreshToken });
   }
 
   async login({
@@ -110,12 +110,15 @@ export class AuthService {
         1000,
     });
 
-    return res.status(HttpStatus.OK).json({ accessToken });
+    return res.status(HttpStatus.OK).json({ accessToken, refreshToken });
   }
 
   async refresh(req: Request, res: Response): Promise<Response> {
-    const { refreshToken } = req.cookies;
-    if (!refreshToken) throw new UnauthorizedException('Not token provided');
+    const refreshToken = req.cookies.refreshToken || req.body.refreshToken;
+
+    if (!refreshToken) {
+      throw new UnauthorizedException('Not token provided');
+    }
 
     try {
       const payload = this.jwtService.verify(refreshToken, {

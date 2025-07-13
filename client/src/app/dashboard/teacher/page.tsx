@@ -1,4 +1,13 @@
 "use client";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Command, CommandInput } from "@/components/ui/command";
@@ -48,8 +57,17 @@ import { Appdipatch, RootState } from "@/redux/store";
 import { ClassroomType } from "@/types/classroomType";
 import { SubjectType } from "@/types/subjectType";
 import { TeacherType } from "@/types/teacherType";
-import { ArrowDown, ArrowUp, Pen, Plus, X, Trash2 } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowUp,
+  Pen,
+  Plus,
+  X,
+  Trash2,
+  RotateCw,
+} from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -73,6 +91,8 @@ const Teacher = () => {
 
   const [teachers, setTeachers] = useState([]);
   const [activeSchoolId, setActiveSchoolId] = useState("");
+  const [activeSchoolError, setActiveSchoolError] = useState("");
+  const [activeSchoolErrorAlert, setActiveSchoolErrorAlert] = useState(false);
   const [classrooms, setClassrooms] = useState<ClassroomType[]>([]);
   const [classroomsInDialog, setClassroomsInDialog] = useState<ClassroomType[]>(
     []
@@ -136,6 +156,10 @@ const Teacher = () => {
             setSubjects(res.data.data);
             setSubjectsInDialog(res.data.data);
           });
+      })
+      .catch((err) => {
+        setActiveSchoolError(err);
+        setActiveSchoolErrorAlert(true);
       });
   }, []);
 
@@ -358,7 +382,7 @@ const Teacher = () => {
             placeholder="search by teacher..."
           />
         </Command>
-        <X
+        <RotateCw
           onClick={() => {
             dispatch(setSearchInputValue(""));
             dispatch(setFirst_name_search(""));
@@ -393,7 +417,7 @@ const Teacher = () => {
               ))}
             </SelectContent>
           </Select>
-          <X
+          <RotateCw
             onClick={() => {
               dispatch(setClassroom_id(""));
               dispatch(setPage(1));
@@ -420,7 +444,7 @@ const Teacher = () => {
               ))}
             </SelectContent>
           </Select>
-          <X
+          <RotateCw
             onClick={() => {
               dispatch(setSubject_id(""));
               dispatch(setPage(1));
@@ -445,7 +469,7 @@ const Teacher = () => {
               </SelectItem>
             </SelectContent>
           </Select>
-          <X
+          <RotateCw
             onClick={() => {
               dispatch(setSortByName(""));
               dispatch(setPage(1));
@@ -470,7 +494,7 @@ const Teacher = () => {
               </SelectItem>
             </SelectContent>
           </Select>
-          <X
+          <RotateCw
             className="cursor-pointer w-4 h-4"
             onClick={() => {
               dispatch(setSortByDate(""));
@@ -787,6 +811,26 @@ const Teacher = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <AlertDialog
+        open={activeSchoolErrorAlert}
+        onOpenChange={setActiveSchoolErrorAlert}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              <span className="text-red-900">Error</span>
+            </AlertDialogTitle>
+            <AlertDialogDescription className="flex flex-col gap-y-3">
+              <span className="text-red-500">{activeSchoolError}</span>
+              <Link href="/dashboard">Create One</Link>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>OK</AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

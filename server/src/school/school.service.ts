@@ -61,7 +61,9 @@ export class SchoolService {
     sort_by_name: 'asc' | 'desc',
     sort_by_date: 'asc' | 'desc',
   ) {
-    const filter: any = { user_id: new mongoose.Types.ObjectId(req.user.id) };
+    const filter: any = {
+      user_id: new mongoose.Types.ObjectId(req.user.id),
+    };
     const sort: any = {};
     const pipeline: any = [{ $match: filter }];
     if (search_by_name)

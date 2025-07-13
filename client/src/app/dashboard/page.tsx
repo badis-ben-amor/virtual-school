@@ -336,14 +336,14 @@ const Dashboard = () => {
       </div>
 
       <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-4">
-        {schools.map((school, i) => (
+        {schools.map((school) => (
           <Card
-            key={i}
+            key={school._id}
             className={`pt-2 flex items-center ${
               school.is_active && "bg-[#ebf5e9]"
             }`}
           >
-            <CardContent className={`w-full`}>
+            <CardContent className="w-full">
               <div className="flex justify-between">
                 <div>
                   {showEditeIcons && (
@@ -389,7 +389,7 @@ const Dashboard = () => {
               </div>
               <div className="flex gap-1 text-sm text-muted-foreground mb-1 justify-center">
                 <Phone className="h-4 w-4 text-indigo-600" />
-                <span>{school.contact_phone === "undefined" && "No"}</span>
+                <span>{school.contact_phone || "No"}</span>
               </div>
 
               <div className="flex gap-1 text-sm text-muted-foreground mb-1 justify-center">
