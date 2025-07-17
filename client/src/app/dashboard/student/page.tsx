@@ -335,7 +335,13 @@ const Student = () => {
       <h1 className="text-xl font-semibold mb-2">Students</h1>
 
       <div className="flex justify-between items-center mb-2">
-        <Command className="bg-[#f5f6f7] lg:w-1/5 md:w-1/4 w-1/3">
+        <Command
+          className={`${
+            first_name_search || last_name_search
+              ? "bg-red-200"
+              : "bg-[#f5f6f7]"
+          } lg:w-1/5 md:w-1/4 w-1/3`}
+        >
           <CommandInput
             value={searchInputValue}
             placeholder="Search Student..."
@@ -362,7 +368,7 @@ const Student = () => {
             value={classroom_id}
             onValueChange={(value) => setclassroom_id(value)}
           >
-            <SelectTrigger>
+            <SelectTrigger className={`${classroom_id && "bg-red-200"}`}>
               <SelectValue placeholder="select by class" />
             </SelectTrigger>
             <SelectContent>
@@ -387,7 +393,7 @@ const Student = () => {
             value={sortByName}
             onValueChange={(value) => setSortByName(value)}
           >
-            <SelectTrigger>
+            <SelectTrigger className={`${sortByName && "bg-red-200"}`}>
               <SelectValue placeholder="sort by name" />
             </SelectTrigger>
             <SelectContent>
@@ -412,7 +418,7 @@ const Student = () => {
             value={sortByDate}
             onValueChange={(value) => setSortByDate(value)}
           >
-            <SelectTrigger>
+            <SelectTrigger className={`${sortByDate && "bg-red-200"}`}>
               <SelectValue placeholder="sort by date" />
             </SelectTrigger>
             <SelectContent>

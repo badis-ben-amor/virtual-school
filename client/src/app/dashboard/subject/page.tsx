@@ -260,7 +260,11 @@ const Subject = () => {
       <h1 className="text-xl font-semibold mb-2">Subjects</h1>
 
       <div className="flex justify-between items-center mb-2">
-        <Command className="bg-[#f5f6f7] lg:w-1/5 md:w-1/4 w-1/3">
+        <Command
+          className={`${
+            search_by_subject_name ? "bg-red-200" : "bg-[#f5f6f7]"
+          } lg:w-1/5 md:w-1/4 w-1/3`}
+        >
           <CommandInput
             value={search_input_value}
             onValueChange={(v) => {
@@ -289,7 +293,7 @@ const Subject = () => {
             onValueChange={(v) => dispatch(setSortByName(v))}
             value={sortByName}
           >
-            <SelectTrigger>
+            <SelectTrigger className={`${sortByName && "bg-red-200"}`}>
               <SelectValue placeholder="sort by name" />
             </SelectTrigger>
             <SelectContent>
@@ -314,7 +318,7 @@ const Subject = () => {
             value={sortByDate}
             onValueChange={(v) => dispatch(setSortByDate(v))}
           >
-            <SelectTrigger>
+            <SelectTrigger className={`${sortByDate && "bg-red-200"}`}>
               <SelectValue placeholder="sort by date" />
             </SelectTrigger>
             <SelectContent>

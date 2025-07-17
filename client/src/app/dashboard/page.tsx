@@ -256,7 +256,11 @@ const Dashboard = () => {
       <h2 className="text-xl font-semibold mb-2">Schools</h2>
 
       <div className="flex justify-between items-center mb-2">
-        <Command className="bg-[#f5f6f7] lg:w-1/5 md:w-1/4 w-1/3">
+        <Command
+          className={`${
+            search_by_name ? "bg-red-200" : "bg-[#f5f6f7]"
+          } lg:w-1/5 md:w-1/4 w-1/3`}
+        >
           <CommandInput
             value={search_input_value}
             onValueChange={(v) => {

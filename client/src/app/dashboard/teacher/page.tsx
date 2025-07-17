@@ -375,7 +375,13 @@ const Teacher = () => {
       <h2 className="text-xl font-semibold mb-2">Teachers</h2>
 
       <div className="flex justify-between items-center mb-2">
-        <Command className="bg-[#f5f6f7] lg:w-1/5 md:w-1/4 w-1/3">
+        <Command
+          className={`${
+            first_name_search || last_name_search
+              ? "bg-red-200"
+              : "bg-[#f5f6f7]"
+          } lg:w-1/5 md:w-1/4 w-1/3`}
+        >
           <CommandInput
             value={searchInputValue}
             onValueChange={(value) => handleSearchValueChange(value)}
@@ -406,7 +412,7 @@ const Teacher = () => {
               dispatch(setPage(1));
             }}
           >
-            <SelectTrigger>
+            <SelectTrigger className={`${classroom_id && "bg-red-200"}`}>
               <SelectValue placeholder="select by class" />
             </SelectTrigger>
             <SelectContent>
@@ -433,7 +439,7 @@ const Teacher = () => {
               dispatch(setPage(1));
             }}
           >
-            <SelectTrigger>
+            <SelectTrigger className={`${subject_id && "bg-red-200"}`}>
               <SelectValue placeholder="select by subject" />
             </SelectTrigger>
             <SelectContent>
@@ -457,7 +463,7 @@ const Teacher = () => {
             value={sortByName}
             onValueChange={(v) => dispatch(setSortByName(v))}
           >
-            <SelectTrigger>
+            <SelectTrigger className={`${sortByName && "bg-red-200"}`}>
               <SelectValue placeholder="sort by name" />
             </SelectTrigger>
             <SelectContent>
@@ -482,7 +488,7 @@ const Teacher = () => {
             value={sortByDate}
             onValueChange={(v) => dispatch(setSortByDate(v))}
           >
-            <SelectTrigger>
+            <SelectTrigger className={`${sortByDate && "bg-red-200"}`}>
               <SelectValue placeholder="sort by date" />
             </SelectTrigger>
             <SelectContent>
