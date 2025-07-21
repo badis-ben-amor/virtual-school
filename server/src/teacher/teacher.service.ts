@@ -67,7 +67,9 @@ export class TeacherService {
           ...(sortByDate && {
             createdAt: sortByDate === 'asc' ? 'asc' : 'desc',
           }),
-        }),
+        })
+        .populate('classrooms')
+        .populate('subjects'),
       this.teacherModel.countDocuments(filter),
     ]);
     return { data, pageCount: Math.ceil(total / limit), total, page };

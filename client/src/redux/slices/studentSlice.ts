@@ -21,7 +21,7 @@ export const createStudentThunk = createAsyncThunk(
       const res = await createStudent(accessToken, studentData);
       return { res: res.data, accessToken };
     } catch (error: any) {
-      if (error.response.status === 403) {
+      if (error.response.status === 401) {
         try {
           const res = await refresh();
           const { newAccessToken } = res.data;
@@ -139,7 +139,7 @@ export const getOneStudentThunk = createAsyncThunk(
       const res = await getOneStudent(accessToken, student_id, school_id);
       return { res: res.data, accessToken };
     } catch (error: any) {
-      if (error.response.status === 403) {
+      if (error.response.status === 401) {
         try {
           const res = await refresh();
           const { newAccessToken } = res.data;
@@ -195,14 +195,14 @@ export const updateStudentThunk = createAsyncThunk(
       );
       return { res: res.data, accessToken };
     } catch (error: any) {
-      if (error.response.status === 403) {
+      if (error.response.status === 401) {
         try {
           const res = await refresh();
           const { newAccessToken } = res.data;
           if (newAccessToken) {
             try {
               const res = await updateStudent(
-                accessToken,
+                newAccessToken,
                 studentData,
                 student_id,
                 school_id
@@ -245,14 +245,14 @@ export const deleteStudentThunk = createAsyncThunk(
       const res = await deleteStudent(accessToken, student_id, school_id);
       return { res: res.data, accessToken };
     } catch (error: any) {
-      if (error.response.status === 403) {
+      if (error.response.status === 401) {
         try {
           const res = await refresh();
           const { newAccessToken } = res.data;
           if (newAccessToken) {
             try {
               const res = await deleteStudent(
-                accessToken,
+                newAccessToken,
                 student_id,
                 school_id
               );

@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { LogOut, Menu, User, X } from "lucide-react";
-import logo from "../../public/ChatGPT Image Apr 4, 2025, 07_11_46 PM.png";
+import logo from "../../public/website_logo.png";
 import Image from "next/image";
 import { useState } from "react";
 import { Appdipatch, RootState } from "@/redux/store";

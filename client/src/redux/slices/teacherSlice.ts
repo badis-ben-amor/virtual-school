@@ -157,7 +157,7 @@ export const getOneTeacherThunk = createAsyncThunk(
           if (newAccessToken) {
             try {
               const res = await getOneTeacher(
-                accessToken,
+                newAccessToken,
                 teacher_id,
                 school_id
               );
@@ -213,7 +213,7 @@ export const updateTeacherThunk = createAsyncThunk(
           if (newAccessToken) {
             try {
               const res = await updateTeacher(
-                accessToken,
+                newAccessToken,
                 teacher_id,
                 school_id,
                 teacherData
@@ -263,7 +263,7 @@ export const deleteTeacherThunk = createAsyncThunk(
           if (newAccessToken) {
             try {
               const res = await deleteTeacher(
-                accessToken,
+                newAccessToken,
                 teacher_id,
                 school_id
               );

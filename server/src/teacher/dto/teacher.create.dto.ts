@@ -16,13 +16,13 @@ export class TeacherCreateDto {
   @IsNotEmpty()
   last_name: string;
 
-  @IsMongoId({ each: true })
+  // @IsMongoId({ each: true })
   @IsArray()
   @IsOptional()
   @Transform(({ value }) => JSON.parse(value))
   subjects: string[];
 
-  @IsMongoId({ each: true })
+  // @IsMongoId({ each: true })
   @IsArray()
   @IsOptional()
   @Transform(({ value }) => JSON.parse(value))

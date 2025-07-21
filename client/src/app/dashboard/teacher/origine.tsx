@@ -652,29 +652,34 @@ const Teacher = () => {
             <div className="space-y-2">
               <Label>Select teacher classroom(s)</Label>
               <div className="flex flex-wrap gap-1 w-full">
-                {teacherForm.classrooms.map((classroom: ClassroomType) => (
+                {teacherForm.classrooms.map((classroom) => (
                   <div
                     className="bg-blue-100 p-0.5 rounded-lg mt-1"
                     key={classroom._id}
                   >
-                    <div className="relative">
-                      <Button
-                        variant={"destructive"}
-                        className=" h-4 w-4 p-0 m-0 absolute -top-3 -right-2"
-                        onClick={() => {
-                          setTeacherForm((prev) => ({
-                            ...prev,
-                            classrooms: prev.classrooms.filter(
-                              (formClassroom) =>
-                                formClassroom._id !== classroom._id
-                            ),
-                          }));
-                        }}
-                      >
-                        x
-                      </Button>
-                      <p>{classroom.classroom_name}</p>
-                    </div>
+                    {classrooms.map(
+                      (classroomObject) =>
+                        classroomObject._id === classroom._id && (
+                          <div key={classroomObject._id} className="relative">
+                            <Button
+                              variant={"destructive"}
+                              className=" h-4 w-4 p-0 m-0 absolute -top-3 -right-2"
+                              onClick={() => {
+                                setTeacherForm((prev) => ({
+                                  ...prev,
+                                  classrooms: prev.classrooms.filter(
+                                    (formClassroom) =>
+                                      formClassroom._id !== classroom._id
+                                  ),
+                                }));
+                              }}
+                            >
+                              x
+                            </Button>
+                            <p>{classroomObject.classroom_name}</p>
+                          </div>
+                        )
+                    )}
                   </div>
                 ))}
               </div>
@@ -682,9 +687,7 @@ const Teacher = () => {
                 onValueChange={(value) => {
                   setTeacherForm((prev) => ({
                     ...prev,
-                    classrooms: [...prev.classrooms, JSON.parse(value)],
-                    // ↑ i use JSON.parse(value) because i pass the whole classroom object in SelectItem as
-                    //  a string
+                    classrooms: [...prev.classrooms, { _id: value }],
                   }));
                 }}
               >
@@ -701,12 +704,7 @@ const Teacher = () => {
                     placeholder="search by classroom..."
                   />
                   {classroomsInDialog.map((classroom) => (
-                    <SelectItem
-                      key={classroom._id}
-                      // ↓ i use JSON.stringify(classroom) because i need pass the whole classroom object but value in
-                      //  SelectItem accept just string
-                      value={JSON.stringify(classroom)}
-                    >
+                    <SelectItem key={classroom._id} value={classroom._id}>
                       {classroom.classroom_name}
                     </SelectItem>
                   ))}
@@ -716,28 +714,34 @@ const Teacher = () => {
             <div className="space-y-2">
               <Label>Select Teacher Subject(s)</Label>
               <div className="flex flex-wrap gap-1 w-full">
-                {teacherForm.subjects.map((subject: SubjectType) => (
+                {teacherForm.subjects.map((subject) => (
                   <div
                     key={subject._id}
                     className="bg-blue-100 rounded-lg mt-1"
                   >
-                    <div className="relative">
-                      <Button
-                        variant={"destructive"}
-                        className="h-4 w-4 p-0 m-0 absolute -top-3 -right-2 "
-                        onClick={() => {
-                          setTeacherForm((prev) => ({
-                            ...prev,
-                            subjects: prev.subjects.filter(
-                              (formSubject) => formSubject._id !== subject._id
-                            ),
-                          }));
-                        }}
-                      >
-                        x
-                      </Button>
-                      <p>{subject.subject_name}</p>
-                    </div>
+                    {subjects.map(
+                      (subjectObject) =>
+                        subjectObject._id === subject._id && (
+                          <div key={subjectObject._id} className="relative">
+                            <Button
+                              variant={"destructive"}
+                              className="h-4 w-4 p-0 m-0 absolute -top-3 -right-2 "
+                              onClick={() => {
+                                setTeacherForm((prev) => ({
+                                  ...prev,
+                                  subjects: prev.subjects.filter(
+                                    (formSubject) =>
+                                      formSubject._id !== subject._id
+                                  ),
+                                }));
+                              }}
+                            >
+                              x
+                            </Button>
+                            <p>{subjectObject.subject_name}</p>
+                          </div>
+                        )
+                    )}
                   </div>
                 ))}
               </div>
@@ -745,9 +749,7 @@ const Teacher = () => {
                 onValueChange={(value) => {
                   setTeacherForm((prev) => ({
                     ...prev,
-                    subjects: [...prev.subjects, JSON.parse(value)],
-                    // ↑ i use JSON.parse(value) because i pass the whole subject object in SelectItem as
-                    //  a string
+                    subjects: [...prev.subjects, { _id: value }],
                   }));
                 }}
               >
@@ -764,12 +766,7 @@ const Teacher = () => {
                     placeholder="search by subject..."
                   />
                   {subjectsInDialog.map((subject) => (
-                    // ↓ i use JSON.stringify(subject) because i need pass the whole subject object but value in
-                    //  SelectItem accept just string
-                    <SelectItem
-                      key={subject._id}
-                      value={JSON.stringify(subject)}
-                    >
+                    <SelectItem key={subject._id} value={subject._id}>
                       {subject.subject_name}
                     </SelectItem>
                   ))}
